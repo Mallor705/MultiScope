@@ -1,4 +1,3 @@
-```markdown
 # Linux Local Co-Op with Proton and Gamescope
 
 Este projeto permite executar jogos Windows em modo cooperativo local no Linux utilizando o Proton (via Steam) e o gamescope para gerenciar múltiplas instâncias do jogo.
