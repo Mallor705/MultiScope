@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # --- Configuração Inicial ---
-SCRIPT_NAME=$(basename "$0")
+mkdir -p profiles
+mkdir -p "$HOME/.local/share/linux-coop/logs"
+mkdir -p "$HOME/.local/share/linux-coop/prefixes"
+
+SCRIPT_NAME=$(basename "$0") # Nome do script
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")") # Diretório onde o script está localizado
 PROFILE_DIR="${SCRIPT_DIR}/profiles"       # Diretório para guardar os perfis
 LOG_DIR="$HOME/.local/share/linux-coop/logs" # Diretório para logs
