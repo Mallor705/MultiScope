@@ -14,10 +14,10 @@ LOG_DIR="$HOME/.local/share/linux-coop/logs"         # Diretório para arquivos 
 PREFIX_BASE_DIR="$HOME/.local/share/linux-coop/prefixes" # Diretório base para Prefixos (Wine)
 # Diretório temporário para configs do InputPlumber geradas por este script
 INPUTPLUMBER_TEMP_CONFIG_DIR="/tmp/linux-coop-inputplumber-configs"
-INPUTPLUMBER_SERVICE_NAME="inputplumber.service" # Nome correto do serviço systemd
-INPUTPLUMBER_CTL_CMD="inputplumberctl" # Comando hipotético de controle do InputPlumber, ajustar conforme necessário.
+INPUTPLUMBER_SERVICE_NAME="inputplumber" # Nome correto do serviço
+INPUTPLUMBER_SUSPEND_SERVICE_NAME="inputplumber-suspend" # Nome do serviço de suspensão
 INPUTPLUMBER_DBUS_SERVICE="org.shadowblip.InputPlumber"  # Usa a interface padrão do D-Bus
-INPUTPLUMBER_DBUS_PATH="/org/shadowblip/InputPlumber"          # Caminho do objeto
+INPUTPLUMBER_DBUS_PATH="/org/shadowblip/InputPlumber/CompositeDevice0"   # Caminho do objeto
 # Diretório para configs YAML temporárias do InputPlumber
 INPUTPLUMBER_TEMP_YAML_DIR="/tmp/linux-coop-ip-yamls"
 
@@ -103,18 +103,12 @@ get_evdev_property() {
 # --- Funções InputPlumber ---
 # Função que garante que o serviço InputPlumber esteja ativo.
 ensure_inputplumber_running() {
-  log_message "Verificando status do serviço ${INPUTPLUMBER_SERVICE_NAME}..."
-  if ! systemctl is-active --quiet "$INPUTPLUMBER_SERVICE_NAME"; then
-    log_message "Serviço não está ativo. Tentando iniciar..."
-    sudo systemctl start "$INPUTPLUMBER_SERVICE_NAME" || {
-      log_message "ERRO: Falha ao iniciar ${INPUTPLUMBER_SERVICE_NAME}. Verifique se está instalado e configurado."
-      exit 1
-    }
-    log_message "Serviço iniciado."
-    sleep 2 # Dar um tempo para o serviço inicializar
-  else
-    log_message "Serviço já está ativo."
-  fi
+  log_message "Verificando status dos serviços..."
+  sudo systemctl enable "$INPUTPLUMBER_SERVICE_NAME" "$INPUTPLUMBER_SUSPEND_SERVICE_NAME" --now || {
+    log_message "ERRO: Falha ao iniciar os serviços do InputPlumber."
+    exit 1
+  }
+  log_message "Serviços ativos."
 }
 
 # Função que gera um arquivo YAML para definir um dispositivo composto para um jogador.
@@ -143,17 +137,18 @@ source_devices:
       name: "$match_prop_value"
 target_devices:
   - gamepad
-capability_map_id: ""
+capability_map_id: "generic"  # Mapeamento genérico
 EOF
-    [ ! -f "$yaml_file" ] && { log_message "ERRO: Falha ao criar arquivo YAML $yaml_file"; return 1; }
-    return 0
 }
 
 # Função que envia a definição do dispositivo composto via D-Bus para o InputPlumber.
 load_composite_device_via_dbus() {
     local yaml_file="$1"
-    log_message "Tentando carregar definição de Composite Device via D-Bus: $yaml_file"
-    busctl call $INPUTPLUMBER_DBUS_SERVICE $INPUTPLUMBER_DBUS_PATH org.freedesktop.DBus.ObjectManager AddDevice s "$yaml_file"
+    log_message "Carregando perfil via LoadProfilePath..."
+    busctl call "$INPUTPLUMBER_DBUS_SERVICE" \
+      "/org/shadowblip/InputPlumber/CompositeDevice0" \
+      "org.shadowblip.Input.CompositeDevice" \
+      LoadProfilePath "s" "$yaml_file"
     if [ $? -ne 0 ]; then
         log_message "ERRO: Comando busctl para carregar Composite Device falhou para $yaml_file."
         return 1
