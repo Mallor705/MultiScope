@@ -8,7 +8,7 @@ LOG_DIR="$HOME/.local/share/linux-coop/logs"
 PREFIX_BASE_DIR="$HOME/.local/share/linux-coop/prefixes"
 # Diretório temporário para configs do InputPlumber geradas por este script
 INPUTPLUMBER_TEMP_CONFIG_DIR="/tmp/linux-coop-inputplumber-configs"
-INPUTPLUMBER_SERVICE_NAME="input-plumber.service" # Nome hipotético do serviço systemd
+INPUTPLUMBER_SERVICE_NAME="inputplumber.service" # Nome correto do serviço systemd
 INPUTPLUMBER_CTL_CMD="inputplumberctl" # Comando hipotético de controle
 
 # --- Funções Auxiliares ---
@@ -118,15 +118,8 @@ generate_inputplumber_config() {
 
 # Recarrega a configuração do InputPlumber
 reload_inputplumber() {
-  log_message "Solicitando recarregamento da configuração do InputPlumber..."
-  # Comando hipotético - pode variar muito!
-  if ! "$INPUTPLUMBER_CTL_CMD" reload --config-dir "$INPUTPLUMBER_TEMP_CONFIG_DIR"; then
-     log_message "ERRO: Falha ao recarregar configuração do InputPlumber. Verifique os logs do serviço."
-     # Poderia tentar parar/iniciar o serviço como alternativa, mas é mais drástico
-     exit 1
-  fi
-  log_message "Configuração InputPlumber recarregada. Aguardando criação dos dispositivos..."
-  sleep 3 # Dar tempo para udev/uinput criarem os nós de dispositivo
+  log_message "Iniciando daemon InputPlumber..."
+  sudo ./inputplumber /dev/input/by-id/usb-Microsoft_Inc._Controller_188A6F4-event-joystick &
 }
 
 # Remove a configuração temporária e recarrega InputPlumber para liberar devices
@@ -209,19 +202,26 @@ fi
 log_message "Verificando dependências..."
 command -v gamescope &> /dev/null || { echo "Erro: 'gamescope' não encontrado."; exit 1; }
 command -v bwrap &> /dev/null || { echo "Erro: 'bwrap' (bubblewrap) não encontrado."; exit 1; }
-command -v "$INPUTPLUMBER_CTL_CMD" &> /dev/null || { echo "Erro: Comando de controle '$INPUTPLUMBER_CTL_CMD' não encontrado."; exit 1; }
-# (Opcional) Verificar se o serviço systemd existe, se for usar
-# systemctl list-unit-files | grep -q "$INPUTPLUMBER_SERVICE_NAME" || { echo "Aviso: Serviço '$INPUTPLUMBER_SERVICE_NAME' não encontrado."; }
+# Removido check obrigatório de "$INPUTPLUMBER_CTL_CMD"
+# command -v "$INPUTPLUMBER_CTL_CMD" &> /dev/null || { echo "Erro: Comando de controle '$INPUTPLUMBER_CTL_CMD' não encontrado."; exit 1; }
+log_message "Dependências verificadas com sucesso."  # Nova mensagem de log
 
 # Preparação
 mkdir -p "$LOG_DIR"
 mkdir -p "$PREFIX_BASE_DIR"
 mkdir -p "$INPUTPLUMBER_TEMP_CONFIG_DIR" || { echo "ERRO: Não foi possível criar diretório temporário para InputPlumber: $INPUTPLUMBER_TEMP_CONFIG_DIR"; exit 1; }
 
-PROTON_CMD_PATH=$(find_proton_path "$PROTON_VERSION") || exit 1
-[ ! -x "$PROTON_CMD_PATH" ] && { log_message "ERRO: Caminho do Proton não executável: $PROTON_CMD_PATH"; exit 1; }
-[ ! -f "$EXE_PATH" ] && { echo "Erro: Executável do jogo não existe: $EXE_PATH"; exit 1; }
-EXE_NAME=$(basename "$EXE_PATH")
+# Verificar se o Proton está instalado
+PROTON_CMD_PATH=$(find_proton_path "$PROTON_VERSION") || exit 1 
+# [ ! -x "$PROTON_CMD_PATH" ] && { log_message "ERRO: Caminho do Proton não executável: $PROTON_CMD_PATH"; exit 1; } 
+[ ! -f "$EXE_PATH" ] && { echo "Erro: Executável do jogo não existe: $EXE_PATH"; exit 1; } 
+EXE_NAME=$(basename "$EXE_PATH") 
+
+
+if [ ! -f "$EXE_PATH" ]; then
+    echo "Erro: Executável do jogo não encontrado em: $EXE_PATH"
+    exit 1
+fi
 
 # Preparar e Ativar Configuração InputPlumber
 ensure_inputplumber_running
