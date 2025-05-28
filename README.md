@@ -1,97 +1,104 @@
-# Linux Local Co-Op with Proton and Gamescope
+# Linux-Coop
 
-Este projeto permite executar jogos Windows em modo cooperativo local no Linux utilizando o Proton (via Steam) e o gamescope para gerenciar múltiplas instâncias do jogo.
+Permite jogar títulos Windows em modo cooperativo local no Linux, rodando múltiplas instâncias do mesmo jogo via Proton e gamescope, com perfis independentes e suporte a controles.
+
+## Funcionalidades
+
+- Executa duas instâncias do mesmo jogo simultaneamente (co-op local).
+- Perfis separados para cada jogo, com saves e configurações independentes.
+- Seleção de qualquer executável `.exe` e versão do Proton (incluindo GE-Proton).
+- Resolução customizável por instância.
+- Logs automáticos para depuração.
+- Mapeamento de controles físicos para cada jogador.
+- Suporte a múltiplos jogos via perfis.
+
+## Status
+
+- Jogos abrem em duas instâncias e saves são separados.
+- Coop funcional.
+- Desempenho esperado.
+- Versão do Proton é selecionável.
+- Suporte ao Proton GE.
+- Perfis para cada jogo.
+- **Problemas conhecidos:**
+  - Controles podem não ser reconhecidos em alguns casos (prioridade de correção).
+  - Instâncias abrem no mesmo monitor (mover manualmente se necessário).
 
 ## Pré-requisitos
 
 - **Steam** instalado e configurado.
-- **Gamescope** instalado (veja [instalação oficial](https://github.com/ValveSoftware/gamescope)).
-- **Proton** ou **GE-Proton** instalado via Steam (ex: Proton Experimental, GE-Proton9-26).
-- **Zenity** (para interfaces gráficas nos scripts).
-- Dependências do Wine/Proton (gerenciadores de prefixo, Vulkan, etc.).
-
----
+- **Proton** (ou GE-Proton) instalado via Steam.
+- **Gamescope** instalado ([instruções oficiais](https://github.com/ValveSoftware/gamescope)).
+- **Bubblewrap** (`bwrap`).
+- Permissões para acessar dispositivos de controle em `/dev/input/by-id/`.
+- Bash, utilitários básicos do Linux.
 
 ## Instalação
 
-1. Clone este repositório ou baixe os scripts:
+1. Clone o repositório:
    ```bash
-   git clone https://github.com/Mallor705/linux-coop.git
-   cd linux-coop
+   git clone https://github.com/Mallor705/Linux-Coop.git
+   cd Linux-Coop
+   ```
+2. Dê permissão de execução ao script:
+   ```bash
+   chmod +x Linux-coop.sh
    ```
 
-2. Dê permissão de execução aos scripts:
-   ```bash
-   chmod +x Linux-Co-Op_w-gamescope.sh Create-new-profile.sh
-   ```
+## Como Usar
 
----
+### 1. Crie um perfil de jogo
 
-## Uso
+Crie um arquivo em `profiles/` com o nome desejado e extensão `.profile`. Exemplo: `MeuJogo.profile`.
 
-### Passo 1: Criar um Perfil
-
-Execute o script `Create-new-profile.sh` para configurar um novo perfil:
+Exemplo de conteúdo:
 ```bash
-./Create-new-profile.sh
+GAME_NAME="Palworld"
+EXE_PATH="/caminho/para/Palworld.exe"
+PROTON_VERSION="GE-Proton10-3"
+NUM_PLAYERS=2
+INSTANCE_WIDTH=1920
+INSTANCE_HEIGHT=1080
+# (Opcional) Argumentos do jogo
+GAME_ARGS="-dx12"
+# (Opcional) IDs dos controles físicos
+PLAYER_PHYSICAL_DEVICE_IDS=(
+  "/dev/input/by-id/usb-Controller1-event-joystick"
+  "/dev/input/by-id/usb-Controller2-event-joystick"
+)
 ```
 
-- **Selecione**:
-  - O executável do jogo (.exe).
-  - A versão do Proton (ex: Experimental, GE-Proton).
-  - A resolução desejada (ex: 1920x1080).
-  - Os controladores para cada jogador (conecte-os antes de executar).
+### 2. Execute o script principal
 
-Um arquivo de perfil será gerado em `./profiles/`.
-
----
-
-### Passo 2: Executar o Jogo em Co-Op
-
-Use o script principal para iniciar duas instâncias do jogo:
 ```bash
-./Linux-Co-Op_w-gamescope.sh
+./Linux-coop.sh MeuJogo
 ```
+- O script irá:
+  - Validar dependências.
+  - Carregar o perfil.
+  - Criar prefixos separados para cada instância.
+  - Iniciar duas janelas do jogo via gamescope.
+  - Gerar logs em `~/.local/share/linux-coop/logs/`.
 
-- O script:
-  - Verifica se o Steam está em execução (inicia automaticamente, se necessário).
-  - Configura prefixos Wine separados para cada instância.
-  - Isola os controladores para evitar conflitos.
-  - Usa o gamescope para gerenciar janelas e resoluções.
+### 3. Mapeamento de controles
 
----
+- Os controles são definidos no perfil ou em arquivos dentro de `controller_config/`.
+- Para evitar conflitos, blacklists são criados automaticamente (exemplo: `Player1_Controller_Blacklist`).
+- Certifique-se de conectar os controles antes de iniciar o script.
 
-## Configuração de Controladores
+## Dicas e Solução de Problemas
 
-- Os controladores são mapeados para cada jogador via arquivos em `./controller_config/`.
-- **Importante**: Conecte os controladores antes de executar os scripts.
-- Para reconfigurar, exclua a pasta `controller_config` e execute `Create-new-profile.sh` novamente.
+- **Controles não reconhecidos:** Verifique permissões em `/dev/input/by-id/` e IDs corretos no perfil.
+- **Proton não encontrado:** Confirme o nome e instalação da versão desejada no Steam.
+- **Instâncias no mesmo monitor:** Mova manualmente cada janela para o monitor desejado.
+- **Logs:** Consulte `~/.local/share/linux-coop/logs/` para depuração.
 
----
+## Observações
 
-## Solução de Problemas
-
-### Erro: "Gamescope não está instalado"
-- Instale o gamescope seguindo as [instruções oficiais](https://github.com/ValveSoftware/gamescope#packaging).
-
-### Erro: Proton não encontrado
-- Verifique se a versão do Proton selecionada está instalada via Steam (ex: em `Steam/steamapps/common/`).
-
-### Controladores não detectados
-- Certifique-se de que estão conectados antes de executar o script.
-- Verifique permissões de acesso a `/dev/input/by-id/`.
-
-### Instâncias travando ou com baixo desempenho
-- Ajuste a resolução no perfil para valores compatíveis com seu hardware.
-- Verifique se o DXVK está habilitado (variável `DXVK_ASYNC=1` no script).
-
----
-
-## Notas
-
-- Testado com **Palworld**, mas pode funcionar com outros jogos (requer configuração manual).
-- Para jogos sem suporte nativo a múltiplas instâncias, considere usar sandboxes ou contas separadas.
-
----
+- Testado com Palworld, mas pode funcionar com outros jogos (pode exigir ajustes no perfil).
+- O script atualmente suporta apenas dois jogadores.
+- Para jogos que não suportam múltiplas instâncias, pode ser necessário usar sandboxes ou contas Steam separadas.
 
 ## Licença
+
+Consulte o arquivo LICENSE (se houver) ou o repositório para detalhes.
