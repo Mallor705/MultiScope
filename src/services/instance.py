@@ -40,6 +40,7 @@ class InstanceService:
             self.process_service.cleanup_previous_instances(proton_path, profile.exe_path)
         
         Config.LOG_DIR.mkdir(parents=True, exist_ok=True)
+        (Path.home() / '.config/protonfixes').mkdir(parents=True, exist_ok=True)
         Config.PREFIX_BASE_DIR.mkdir(parents=True, exist_ok=True)
         
         instances = self._create_instances(profile, profile_name)
@@ -76,7 +77,7 @@ class InstanceService:
         """Lança uma única instância do jogo."""
         self.logger.info(f"Preparing instance {instance.instance_num}...")
         env = self._prepare_environment(instance, steam_root, profile)
-        cmd = self._build_command(profile, proton_path)
+        cmd = self._build_command(profile, proton_path, instance)
         self.logger.info(f"Launching instance {instance.instance_num} (Log: {instance.log_file})")
         pid = self.process_service.launch_instance(cmd, instance.log_file, env)
         instance.pid = pid
@@ -86,8 +87,8 @@ class InstanceService:
         """Prepara as variáveis de ambiente para a instância do jogo, incluindo isolamento de controles."""
         # Começa com uma cópia completa do ambiente do usuário
         env = os.environ.copy()
+        env['PATH'] = os.environ['PATH']  # Garante que o PATH seja passado corretamente
         if not profile.is_native:
-            # Apenas atualiza/adiciona as variáveis do Proton
             env['STEAM_COMPAT_CLIENT_INSTALL_PATH'] = str(steam_root)
             env['STEAM_COMPAT_DATA_PATH'] = str(instance.prefix_dir)
             env['WINEPREFIX'] = str(instance.prefix_dir / 'pfx')
@@ -106,11 +107,14 @@ class InstanceService:
         print(f"[DEBUG] Ambiente da instância {instance.instance_num}: {env}")
         return env
     
-    def _build_command(self, profile: GameProfile, proton_path: Path) -> List[str]:
-        """Monta o comando para executar o gamescope e o jogo (nativo ou via Proton)."""
+    def _build_command(self, profile: GameProfile, proton_path: Path, instance: GameInstance = None) -> List[str]:
+        """Monta o comando para executar o gamescope e o jogo (nativo ou via Proton), usando bwrap para isolar o controle."""
+        base_cmd = []
+        gamescope_path = '/usr/bin/gamescope'
+        # Se for jogo nativo, não usa Proton
         if profile.is_native:
-            return [
-                'gamescope',
+            base_cmd = [
+                gamescope_path,
                 '-W', str(profile.instance_width),
                 '-H', str(profile.instance_height),
                 '-f',
@@ -118,8 +122,8 @@ class InstanceService:
                 str(profile.exe_path)
             ]
         else:
-            return [
-                'gamescope',
+            base_cmd = [
+                gamescope_path,
                 '-W', str(profile.instance_width),
                 '-H', str(profile.instance_height),
                 '-f',
@@ -128,6 +132,33 @@ class InstanceService:
                 'run',
                 str(profile.exe_path)
             ]
+         # Comando bwrap com isolamento mínimo
+        bwrap_cmd = [
+            'bwrap',
+            # Isolamento essencial
+            '--dev-bind', '/', '/',
+            '--proc', '/proc',
+            '--tmpfs', '/tmp',
+            
+            # Permissões especiais para dispositivos
+            '--chdir', '/',
+        ]
+        
+        # Isolamento específico de dispositivos de controle
+        if profile and profile.player_physical_device_ids and instance:
+            idx = instance.instance_num - 1
+            if idx < len(profile.player_physical_device_ids):
+                device = profile.player_physical_device_ids[idx]
+                if device:
+                    # Permitir apenas o dispositivo específico
+                    bwrap_cmd += [
+                        '--dev-bind', device, device,
+                        '--ro-bind', '/dev/input', '/dev/input'
+                    ]
+        
+        return bwrap_cmd + base_cmd
+        # return base_cmd
+
     
     def monitor_and_wait(self):
         """Monitora as instâncias até que todas sejam finalizadas."""
