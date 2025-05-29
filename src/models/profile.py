@@ -1,6 +1,6 @@
 from pathlib import Path
 from pydantic import BaseModel, Field, validator
-from typing import Optional
+from typing import Optional, List
 from ..core.exceptions import ProfileNotFoundError, ExecutableNotFoundError
 
 class GameProfile(BaseModel):
@@ -11,7 +11,9 @@ class GameProfile(BaseModel):
     num_players: int = Field(..., alias="NUM_PLAYERS")
     instance_width: int = Field(..., alias="INSTANCE_WIDTH")
     instance_height: int = Field(..., alias="INSTANCE_HEIGHT")
-    player_physical_device_ids: Optional[list] = Field(default=None, alias="PLAYER_PHYSICAL_DEVICE_IDS")
+    player_physical_device_ids: List[str] = Field(default_factory=list, alias="PLAYER_PHYSICAL_DEVICE_IDS")
+    player_mouse_event_paths: List[str] = Field(default_factory=list, alias="PLAYER_MOUSE_EVENT_PATHS")
+    player_keyboard_event_paths: List[str] = Field(default_factory=list, alias="PLAYER_KEYBOARD_EVENT_PATHS")
     is_native: bool = False
     
     @validator('num_players')
@@ -27,7 +29,7 @@ class GameProfile(BaseModel):
         if not v.exists():
             raise ExecutableNotFoundError(f"Game executable not found: {v}")
         return v
-    
+
     @classmethod
     def load_from_file(cls, profile_path: Path) -> "GameProfile":
         """Carrega um perfil de jogo a partir de um arquivo."""
@@ -51,14 +53,14 @@ class GameProfile(BaseModel):
                     if line.endswith(')'):
                         # Fim do array
                         array_key = array_key.strip()
-                        profile_vars[array_key] = array_values
+                        # Converte todos os valores do array para string
+                        profile_vars[array_key] = [str(val) for val in array_values]
                         array_key = None
                         array_values = []
                         continue
                     # Adiciona valor ao array
                     value = line.split('#')[0].strip().strip('"\'')
-                    if value:
-                        array_values.append(value)
+                    array_values.append(value)
                     continue
                 if '=' in line:
                     key, value = line.split('=', 1)
@@ -69,10 +71,13 @@ class GameProfile(BaseModel):
                     elif key == 'EXE_PATH':
                         value = Path(value)
                     profile_vars[key] = value
+        
         # Detecta se é nativo
         exe_path = profile_vars.get('EXE_PATH')
         is_native = False
         if exe_path and isinstance(exe_path, Path) and exe_path.suffix != '.exe':
             is_native = True
         profile_vars['is_native'] = is_native
+        
+        # Pydantic usará default_factory para campos de lista não presentes no arquivo
         return cls(**profile_vars)

@@ -84,7 +84,7 @@ class InstanceService:
         self.logger.info(f"Instance {instance.instance_num} started with PID: {pid}")
     
     def _prepare_environment(self, instance: GameInstance, steam_root: Path, profile: GameProfile = None) -> dict:
-        """Prepara as variáveis de ambiente para a instância do jogo, incluindo isolamento de controles."""
+        """Prepara as variáveis de ambiente para a instância do jogo, incluindo isolamento de controles e configuração XKB."""
         env = os.environ.copy()
         env['PATH'] = os.environ['PATH']
         if not profile.is_native:
@@ -95,89 +95,154 @@ class InstanceService:
             env['PROTON_LOG'] = '1'
             env['PROTON_LOG_DIR'] = str(Config.LOG_DIR)
 
-        assigned_device_path = None
+        # Configuração XKB para layout de teclado
+        xkb_vars = [
+            'XKB_DEFAULT_LAYOUT', 'XKB_DEFAULT_VARIANT', 'XKB_DEFAULT_RULES',
+            'XKB_DEFAULT_MODEL', 'XKB_DEFAULT_OPTIONS'
+        ]
+        for var in xkb_vars:
+            if var in os.environ:
+                env[var] = os.environ[var]
+                self.logger.info(f"Instance {instance.instance_num}: Setting XKB var {var}={os.environ[var]}")
+
+        assigned_joystick_path = None
         if profile and profile.player_physical_device_ids:
             idx = instance.instance_num - 1
             if 0 <= idx < len(profile.player_physical_device_ids):
                 device_from_profile = profile.player_physical_device_ids[idx]
-                # Tratar string vazia explicitamente como "sem dispositivo"
                 if device_from_profile and device_from_profile.strip(): 
                     if Path(device_from_profile).exists():
-                        self.logger.info(f"Instance {instance.instance_num}: Valid device '{device_from_profile}' found in profile and host. Assigning for SDL.")
-                        assigned_device_path = device_from_profile
+                        self.logger.info(f"Instance {instance.instance_num}: Valid joystick device '{device_from_profile}' found. Assigning for SDL.")
+                        assigned_joystick_path = device_from_profile
                     else:
-                        self.logger.warning(f"Instance {instance.instance_num}: Device '{device_from_profile}' from profile not found on host.")
+                        self.logger.warning(f"Instance {instance.instance_num}: Joystick device '{device_from_profile}' from profile not found on host.")
                 else:
-                    self.logger.info(f"Instance {instance.instance_num}: No device configured in profile for this instance (empty string).")
-            # else: Instance number out of bounds for device list or list is shorter than num_players
-
-        if assigned_device_path:
-            env['SDL_JOYSTICK_DEVICE'] = assigned_device_path
-            self.logger.info(f"Instance {instance.instance_num}: SDL_JOYSTICK_DEVICE set to '{assigned_device_path}'")
-        else:
-            env['SDL_JOYSTICK_DEVICE'] = "/dev/null"
-            self.logger.info(f"Instance {instance.instance_num}: SDL_JOYSTICK_DEVICE set to '/dev/null'.")
+                    self.logger.info(f"Instance {instance.instance_num}: No joystick device configured in profile for this instance.")
         
-        # print(f"[DEBUG] Ambiente da instância {instance.instance_num}: {env}")
+        if assigned_joystick_path:
+            env['SDL_JOYSTICK_DEVICE'] = assigned_joystick_path
+            self.logger.info(f"Instance {instance.instance_num}: SDL_JOYSTICK_DEVICE set to '{assigned_joystick_path}'")
+        else:
+            # Se nenhum joystick específico for atribuído, é importante não definir SDL_JOYSTICK_DEVICE
+            # ou defini-lo para algo que efetivamente o desabilite, se necessário,
+            # para evitar que a SDL pegue o primeiro joystick disponível no sandbox do bwrap.
+            # No entanto, com o bwrap vinculando dispositivos específicos, isso pode não ser estritamente necessário.
+            # Por segurança e clareza, vamos remover qualquer configuração SDL_JOYSTICK_DEVICE pré-existente se nenhum dispositivo for atribuído.
+            if 'SDL_JOYSTICK_DEVICE' in env:
+                del env['SDL_JOYSTICK_DEVICE']
+            self.logger.info(f"Instance {instance.instance_num}: No specific joystick device assigned. SDL_JOYSTICK_DEVICE unset.")
+        
         return env
     
     def _build_command(self, profile: GameProfile, proton_path: Path, instance: GameInstance = None) -> List[str]:
         """Monta o comando para executar o gamescope e o jogo (nativo ou via Proton), usando bwrap para isolar o controle."""
-        base_cmd = []
+        instance_idx = instance.instance_num - 1
+
+        # DEBUG LOGS
+        self.logger.info(f"[DEBUG] Instance {instance.instance_num} (idx {instance_idx}): Profile mouse_paths: {profile.player_mouse_event_paths}")
+        self.logger.info(f"[DEBUG] Instance {instance.instance_num} (idx {instance_idx}): Profile kbd_paths: {profile.player_keyboard_event_paths}")
+        if profile.player_mouse_event_paths and 0 <= instance_idx < len(profile.player_mouse_event_paths):
+            self.logger.info(f"[DEBUG] Instance {instance.instance_num} (idx {instance_idx}): Attempting to get mouse_path: {profile.player_mouse_event_paths[instance_idx]}")
+        if profile.player_keyboard_event_paths and 0 <= instance_idx < len(profile.player_keyboard_event_paths):
+            self.logger.info(f"[DEBUG] Instance {instance.instance_num} (idx {instance_idx}): Attempting to get kbd_path: {profile.player_keyboard_event_paths[instance_idx]}")
+
+        # Determinar se esta instância terá mouse e teclado dedicados e válidos
+        has_dedicated_mouse = False
+        mouse_path_str_for_instance = None
+        if profile.player_mouse_event_paths and 0 <= instance_idx < len(profile.player_mouse_event_paths):
+            mouse_path_str_for_instance = profile.player_mouse_event_paths[instance_idx]
+            if mouse_path_str_for_instance and mouse_path_str_for_instance.strip():
+                mouse_path_obj = Path(mouse_path_str_for_instance)
+                if mouse_path_obj.exists() and mouse_path_obj.is_char_device():
+                    has_dedicated_mouse = True
+                else:
+                    # Log de aviso se o dispositivo especificado não for válido mas estava na lista
+                    self.logger.warning(f"Instance {instance.instance_num}: Mouse device '{mouse_path_str_for_instance}' specified in profile but not found or not a char device.")
+        
+        has_dedicated_keyboard = False
+        keyboard_path_str_for_instance = None
+        if profile.player_keyboard_event_paths and 0 <= instance_idx < len(profile.player_keyboard_event_paths):
+            keyboard_path_str_for_instance = profile.player_keyboard_event_paths[instance_idx]
+            if keyboard_path_str_for_instance and keyboard_path_str_for_instance.strip():
+                keyboard_path_obj = Path(keyboard_path_str_for_instance)
+                if keyboard_path_obj.exists() and keyboard_path_obj.is_char_device():
+                    has_dedicated_keyboard = True
+                else:
+                    # Log de aviso
+                    self.logger.warning(f"Instance {instance.instance_num}: Keyboard device '{keyboard_path_str_for_instance}' specified in profile but not found or not a char device.")
+
+        should_add_grab_flags = has_dedicated_mouse and has_dedicated_keyboard
+
         gamescope_path = '/usr/bin/gamescope'
+        gamescope_cli_options = [
+            gamescope_path,
+            '-W', str(profile.instance_width),
+            '-H', str(profile.instance_height),
+            '-f', # Fullscreen
+            '--adaptive-sync',
+        ]
+
+        if should_add_grab_flags:
+            self.logger.info(f"Instance {instance.instance_num}: Using dedicated mouse and keyboard. Adding --grab and --force-grab-cursor to Gamescope.")
+            gamescope_cli_options.extend(['--grab', '--force-grab-cursor'])
+        
+        base_cmd_prefix = gamescope_cli_options + ['--'] # Separador para o comando a ser executado
+
+        base_cmd = []
         if profile.is_native:
-            base_cmd = [
-                gamescope_path,
-                '-W', str(profile.instance_width),
-                '-H', str(profile.instance_height),
-                '-f',
-                '--',
-                str(profile.exe_path)
-            ]
+            base_cmd = list(base_cmd_prefix) 
+            if profile.exe_path:
+                base_cmd.append(str(profile.exe_path))
         else:
-            base_cmd = [
-                gamescope_path,
-                '-W', str(profile.instance_width),
-                '-H', str(profile.instance_height),
-                '-f',
-                '--',
-                str(proton_path),
-                'run',
-                str(profile.exe_path)
-            ]
+            base_cmd = list(base_cmd_prefix)
+            if proton_path and profile.exe_path:
+                base_cmd.extend([str(proton_path), 'run', str(profile.exe_path)])
         
         bwrap_cmd = [
             'bwrap',
             '--dev-bind', '/', '/',
             '--proc', '/proc',
             '--tmpfs', '/tmp',
-            '--tmpfs', '/dev/input',
             '--chdir', '/',
         ]
         
-        assigned_device_path_for_bwrap = None
-        if profile and profile.player_physical_device_ids and instance:
-            idx = instance.instance_num - 1
-            if 0 <= idx < len(profile.player_physical_device_ids):
-                device_from_profile = profile.player_physical_device_ids[idx]
-                # Tratar string vazia explicitamente como "sem dispositivo"
-                if device_from_profile and device_from_profile.strip(): 
-                    device_path_obj = Path(device_from_profile)
-                    if device_path_obj.exists() and device_path_obj.is_char_device():
-                        self.logger.info(f"Instance {instance.instance_num}: Binding device '{device_from_profile}' with bwrap.")
-                        assigned_device_path_for_bwrap = device_from_profile
-                    elif not device_path_obj.exists():
-                        self.logger.warning(f"Instance {instance.instance_num}: Device '{device_from_profile}' from profile not found on host. Not binding with bwrap.")
-                    else: # Exists but not a char device
-                        self.logger.warning(f"Instance {instance.instance_num}: Device '{device_from_profile}' from profile is not a character device. Not binding with bwrap.")
+        device_paths_to_bind = []
+
+        # Joysticks
+        if profile.player_physical_device_ids and 0 <= instance_idx < len(profile.player_physical_device_ids):
+            joystick_path_str = profile.player_physical_device_ids[instance_idx]
+            if joystick_path_str and joystick_path_str.strip():
+                joystick_path = Path(joystick_path_str)
+                if joystick_path.exists() and joystick_path.is_char_device():
+                    device_paths_to_bind.append(str(joystick_path))
+                    self.logger.info(f"Instance {instance.instance_num}: Queued joystick '{joystick_path}' for bwrap binding.")
                 else:
-                    self.logger.info(f"Instance {instance.instance_num}: No device configured in profile for this instance (empty string). Not binding any specific device with bwrap.")
-                        
-        if assigned_device_path_for_bwrap:
-            bwrap_cmd += ['--dev-bind', assigned_device_path_for_bwrap, assigned_device_path_for_bwrap]
-            self.logger.info(f"Instance {instance.instance_num}: bwrap will bind '{assigned_device_path_for_bwrap}'.")
-        else:
-            self.logger.info(f"Instance {instance.instance_num}: No specific device to bind with bwrap. /dev/input will be isolated and likely empty of joysticks.")
+                    self.logger.warning(f"Instance {instance.instance_num}: Joystick device '{joystick_path_str}' specified in profile but not found or not a char device. Not binding.")
+
+        # Mouses - usa as variáveis já validadas
+        if has_dedicated_mouse:
+            device_paths_to_bind.append(mouse_path_str_for_instance)
+            self.logger.info(f"Instance {instance.instance_num}: Queued mouse device '{mouse_path_str_for_instance}' for bwrap binding.")
+        # O aviso para mouse não válido já foi emitido acima, quando has_dedicated_mouse foi definido.
+
+        # Teclados - usa as variáveis já validadas
+        if has_dedicated_keyboard:
+            device_paths_to_bind.append(keyboard_path_str_for_instance)
+            self.logger.info(f"Instance {instance.instance_num}: Queued keyboard device '{keyboard_path_str_for_instance}' for bwrap binding.")
+        # O aviso para teclado não válido já foi emitido acima.
+        
+        if device_paths_to_bind:
+            bwrap_cmd.append('--tmpfs')
+            bwrap_cmd.append('/dev/input')
+
+        for device_path in device_paths_to_bind:
+            bwrap_cmd.extend(['--dev-bind', device_path, device_path])
+            self.logger.info(f"Instance {instance.instance_num}: bwrap will bind '{device_path}' to '{device_path}'.")
+
+        if not device_paths_to_bind:
+            self.logger.info(f"Instance {instance.instance_num}: No specific input devices to bind with bwrap. Creating an empty isolated /dev/input.")
+            bwrap_cmd.append('--tmpfs')
+            bwrap_cmd.append('/dev/input')
 
         final_bwrap_cmd_str = ' '.join(bwrap_cmd + base_cmd)
         self.logger.info(f"Instance {instance.instance_num}: Full bwrap command: {final_bwrap_cmd_str}")

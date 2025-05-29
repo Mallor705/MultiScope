@@ -14,18 +14,25 @@ NUM_PLAYERS=2
 INSTANCE_WIDTH=1920
 INSTANCE_HEIGHT=1080
 
-# --- Configuração InputPlumber ---
-# Nome base para os dispositivos virtuais que serão criados
-# (Resultará em: virtual-gamepad-p1, virtual-gamepad-p2)
-VIRTUAL_DEVICE_BASENAME="virtual-gamepad-p"
-
-# Array com identificadores PERSISTENTES dos controles FÍSICOS
-# Use caminhos de /dev/input/by-id/* ou nomes/IDs únicos
+# Joystick para jogador 1, nenhum para jogador 2
 PLAYER_PHYSICAL_DEVICE_IDS=(
-  "/dev/input/by-id/usb-045e_Gamesir-T4w_1.39-event-joystick" # Jogador 1 
-  "/dev/input/by-id/usb-8BitDo_8BitDo_Ultimate_wireless_Controller_for_PC_4057CAD817E4-event-joystick" # Jogador 2
+    "/dev/input/by-id/usb-8BitDo_8BitDo_Ultimate_wireless_Controller_for_PC_4057CAD817E4-event-joystick" # Jogador 1
+    "/dev/input/by-id/usb-045e_Gamesir-T4w_1.39-event-joystick" # Jogador 2
 )
-# Garantir que a ordem aqui corresponda à ordem dos jogadores
+
+# Mouse para jogador 1, mouse para jogador 2
+PLAYER_MOUSE_EVENT_PATHS=(
+    "" # Jogador 1
+    "/dev/input/by-id/usb-04d9_USB_Gaming_Mouse-event-mouse" # Jogador 2
+)
+
+# Teclado para jogador 1, teclado para jogador 2
+PLAYER_KEYBOARD_EVENT_PATHS=(
+    "" # Jogador 1
+    "/dev/input/by-id/usb-Evision_RGB_Keyboard-event-kbd" # Jogador 2
+)
+
+# Garanta que a ordem aqui corresponda à ordem dos jogadores
 
 # (Opcional) Argumentos do jogo
 GAME_ARGS="-dx12"
