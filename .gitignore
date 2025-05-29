@@ -71,4 +71,4 @@ coverage.xml
 
 # Outros arquivos
 *.log
-.profile
+*.profile
