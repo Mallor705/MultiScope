@@ -105,10 +105,28 @@ class LinuxCoopCLI:
     def _prompt_sudo(self):
         """Solicita senha sudo se necessário para operações privilegiadas."""
         try:
-            subprocess.run(['sudo', '-v'], check=True, capture_output=True)
-        except subprocess.CalledProcessError:
-            self.logger.error("Failed to validate sudo credentials")
+            # Tenta validar as credenciais sudo usando uma caixa de diálogo gráfica
+            self.logger.info("Attempting to get sudo credentials via graphical prompt (pkexec)...")
+            subprocess.run(['pkexec', 'whoami'], check=True, capture_output=True)
+            self.logger.info("Sudo credentials obtained successfully.")
+        except subprocess.CalledProcessError as e:
+            self.logger.error(f"Failed to validate sudo credentials using pkexec. Error: {e}")
+            # Adiciona uma mensagem mais amigável para o usuário
+            print("Falha ao obter permissões de superusuário. Verifique se você digitou a senha corretamente ou se o Polkit está configurado.")
             raise TerminateCLI()
+        except FileNotFoundError:
+            # Fallback para o método original se pkexec não for encontrado
+            self.logger.warning("pkexec not found. Falling back to 'sudo -v'.")
+            try:
+                subprocess.run(['sudo', '-v'], check=True, capture_output=True)
+            except subprocess.CalledProcessError:
+                self.logger.error("Failed to validate sudo credentials using 'sudo -v'")
+                print("Falha ao obter permissões de superusuário com 'sudo -v'.")
+                raise TerminateCLI()
+            except FileNotFoundError:
+                self.logger.error("'sudo' command not found. Cannot acquire root privileges.")
+                print("Comando 'sudo' não encontrado. Não é possível obter privilégios de root.")
+                raise TerminateCLI()
 
 @click.command()
 @click.argument('profile_name')
