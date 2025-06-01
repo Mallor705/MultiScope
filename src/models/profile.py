@@ -1,8 +1,10 @@
 import json
 from pathlib import Path
 from pydantic import BaseModel, Field, validator, ConfigDict
-from typing import Optional, List
+from typing import Optional, List, Dict
+
 from ..core.exceptions import ProfileNotFoundError, ExecutableNotFoundError
+from ..core.cache import get_cache
 
 class PlayerInstanceConfig(BaseModel):
     """Configurações específicas para uma instância de jogador."""
@@ -43,35 +45,56 @@ class GameProfile(BaseModel):
         """Valida se o caminho do executável existe."""
         # Se exe_path for uma string (vindo de JSON), converte para Path
         path_v = Path(v)
-        if not path_v.exists():
+        cache = get_cache()
+        if not cache.check_path_exists(path_v):
             raise ExecutableNotFoundError(f"Game executable not found: {path_v}")
         return path_v
 
     @classmethod
     def load_from_file(cls, profile_path: Path) -> "GameProfile":
         """Carrega um perfil de jogo a partir de um arquivo JSON."""
+        # Check cache first
+        cache = get_cache()
+        profile_key = str(profile_path)
+        cached_profile = cache.get_profile(profile_key)
+        if cached_profile is not None:
+            return cached_profile
+        
+        # Validações em lote
         if not profile_path.exists():
             raise ProfileNotFoundError(f"Profile not found: {profile_path}")
 
         if profile_path.suffix != '.json':
             raise ValueError(f"Unsupported profile file extension: {profile_path.suffix}. Only JSON profiles are supported.")
 
-        with open(profile_path, 'r') as f:
-            data = json.load(f)
+        # Leitura otimizada do arquivo
+        try:
+            with open(profile_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        except (IOError, json.JSONDecodeError) as e:
+            raise ValueError(f"Error reading profile file {profile_path}: {e}")
         
+        # Processamento em lote das configurações
+        cls._process_profile_data(data)
+        
+        profile = cls(**data)
+        # Cache the loaded profile
+        cache.set_profile(profile_key, profile)
+        return profile
+    
+    @classmethod
+    def _process_profile_data(cls, data: Dict) -> None:
+        """Processa dados do perfil de forma otimizada."""
         # Detecta se o jogo é nativo com base na extensão do executável
         exe_path_str = data.get('exe_path')
-        is_native = False
         if exe_path_str:
-            if Path(exe_path_str).suffix.lower() != '.exe':
-                is_native = True
-        data['is_native'] = is_native
+            data['is_native'] = not exe_path_str.lower().endswith('.exe')
+        else:
+            data['is_native'] = False
 
         # Se 'num_players' não estiver no JSON mas 'players' estiver, infere num_players
         if 'num_players' not in data and 'players' in data and isinstance(data['players'], list):
             data['num_players'] = len(data['players'])
-        
-        return cls(**data)
 
     # Adicionar getter para num_players para garantir consistência caso player_configs seja a fonte da verdade
     @property

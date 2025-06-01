@@ -2,7 +2,7 @@ import os
 import time
 import shutil
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Dict
 from ..core.config import Config
 from ..core.exceptions import DependencyError
 from ..core.logger import Logger
@@ -18,28 +18,49 @@ class InstanceService:
         self.logger = logger
         self.proton_service = ProtonService(logger)
         self.process_service = ProcessService(logger)
+        self._dependency_cache: Dict[str, bool] = {}
+        self._env_cache: Dict[str, dict] = {}
 
     def validate_dependencies(self) -> None:
         """Valida se todos os comandos necessários estão disponíveis no sistema."""
+        if self._dependency_cache:
+            self.logger.info("Dependencies already validated (cached)")
+            return
+            
         self.logger.info("Validating dependencies...")
         for cmd in Config.REQUIRED_COMMANDS:
-            if not shutil.which(cmd):
+            if cmd not in self._dependency_cache:
+                self._dependency_cache[cmd] = shutil.which(cmd) is not None
+            if not self._dependency_cache[cmd]:
                 raise DependencyError(f"Required command '{cmd}' not found")
         self.logger.info("Dependencies validated successfully")
 
     def launch_instances(self, profile: GameProfile, profile_name: str) -> None:
         """Lança todas as instâncias do jogo conforme o perfil fornecido."""
-        if profile.is_native:
-            proton_path = None
-            steam_root = None
+        # Cache proton lookup
+        proton_cache_key = f"{profile.is_native}_{profile.proton_version}"
+        if proton_cache_key not in self._env_cache:
+            if profile.is_native:
+                proton_path = None
+                steam_root = None
+            else:
+                proton_path, steam_root = self.proton_service.find_proton_path(profile.proton_version or "Experimental")
+            self._env_cache[proton_cache_key] = {'proton_path': proton_path, 'steam_root': steam_root}
         else:
-            proton_path, steam_root = self.proton_service.find_proton_path(profile.proton_version or "Experimental")
+            cached_data = self._env_cache[proton_cache_key]
+            proton_path = cached_data['proton_path']
+            steam_root = cached_data['steam_root']
 
         self.process_service.cleanup_previous_instances(proton_path, profile.exe_path)
 
-        Config.LOG_DIR.mkdir(parents=True, exist_ok=True)
-        (Path.home() / '.config/protonfixes').mkdir(parents=True, exist_ok=True)
-        Config.PREFIX_BASE_DIR.mkdir(parents=True, exist_ok=True)
+        # Create directories in batch
+        directories = [
+            Config.LOG_DIR,
+            Path.home() / '.config/protonfixes',
+            Config.PREFIX_BASE_DIR
+        ]
+        for directory in directories:
+            directory.mkdir(parents=True, exist_ok=True)
 
         instances = self._create_instances(profile, profile_name)
 
@@ -188,66 +209,66 @@ class InstanceService:
 
     def _prepare_environment(self, instance: GameInstance, steam_root: Optional[Path], profile: Optional[GameProfile] = None) -> dict:
         """Prepara as variáveis de ambiente para a instância do jogo, incluindo isolamento de controles e configuração XKB."""
-        env = os.environ.copy()
-        env['PATH'] = os.environ['PATH']
+        # Use cache for base environment
+        base_env_key = f"base_{profile.is_native if profile else False}_{steam_root}_{profile.app_id if profile else None}"
+        if base_env_key not in self._env_cache:
+            env = os.environ.copy()
+            env['PATH'] = os.environ['PATH']
 
-        # Limpar variáveis Python potencialmente conflitantes
-        env.pop('PYTHONHOME', None)
-        env.pop('PYTHONPATH', None)
+            # Limpar variáveis Python potencialmente conflitantes
+            env.pop('PYTHONHOME', None)
+            env.pop('PYTHONPATH', None)
 
-        if not profile.is_native if profile else False:
-            if steam_root:
-                env['STEAM_COMPAT_CLIENT_INSTALL_PATH'] = str(steam_root)
+            if not (profile.is_native if profile else False):
+                if steam_root:
+                    env['STEAM_COMPAT_CLIENT_INSTALL_PATH'] = str(steam_root)
+                env['DXVK_ASYNC'] = '1'
+                env['DXVK_LOG_LEVEL'] = 'info'
+
+                if profile and profile.app_id:
+                    env['SteamAppId'] = profile.app_id
+                    env['SteamGameId'] = profile.app_id
+
+            # Configuração XKB para layout de teclado (cache os valores)
+            xkb_vars = ['XKB_DEFAULT_LAYOUT', 'XKB_DEFAULT_VARIANT', 'XKB_DEFAULT_RULES', 'XKB_DEFAULT_MODEL', 'XKB_DEFAULT_OPTIONS']
+            for var in xkb_vars:
+                if var in os.environ:
+                    env[var] = os.environ[var]
+
+            self._env_cache[base_env_key] = env
+        else:
+            env = self._env_cache[base_env_key].copy()
+
+        # Instance-specific environment
+        if not (profile.is_native if profile else False):
             env['STEAM_COMPAT_DATA_PATH'] = str(instance.prefix_dir)
             env['WINEPREFIX'] = str(instance.prefix_dir / 'pfx')
-            env['DXVK_ASYNC'] = '1'
-            env['DXVK_LOG_LEVEL'] = 'info'
 
-            self.logger.info(f"Instance {instance.instance_num}: Setting DXVK_ASYNC=1 for async shader compilation")
-            self.logger.info(f"Instance {instance.instance_num}: Setting DXVK_LOG_LEVEL=info and DXVK_HUD=compiler for debugging")
-            if profile and profile.app_id:
-                env['SteamAppId'] = profile.app_id
-                env['SteamGameId'] = profile.app_id
-                self.logger.info(f"Instance {instance.instance_num}: Setting SteamAppId={profile.app_id} and SteamGameId={profile.app_id}")
-
-        # Configuração XKB para layout de teclado
-        xkb_vars = [
-            'XKB_DEFAULT_LAYOUT', 'XKB_DEFAULT_VARIANT', 'XKB_DEFAULT_RULES',
-            'XKB_DEFAULT_MODEL', 'XKB_DEFAULT_OPTIONS'
-        ]
-        for var in xkb_vars:
-            if var in os.environ:
-                env[var] = os.environ[var]
-                self.logger.info(f"Instance {instance.instance_num}: Setting XKB var {var}={os.environ[var]}")
-
-        assigned_joystick_path = None
-        if profile and profile.player_physical_device_ids:
-            idx = instance.instance_num - 1
-            if 0 <= idx < len(profile.player_physical_device_ids):
-                device_from_profile = profile.player_physical_device_ids[idx]
-                if device_from_profile and device_from_profile.strip():
-                    if Path(device_from_profile).exists():
-                        self.logger.info(f"Instance {instance.instance_num}: Valid joystick device '{device_from_profile}' found. Assigning for SDL.")
-                        assigned_joystick_path = device_from_profile
-                    else:
-                        self.logger.warning(f"Instance {instance.instance_num}: Joystick device '{device_from_profile}' from profile not found on host.")
-                else:
-                    self.logger.info(f"Instance {instance.instance_num}: No joystick device configured in profile for this instance.")
-
+        # Handle joystick assignment
+        assigned_joystick_path = self._get_joystick_for_instance(instance, profile)
         if assigned_joystick_path:
             env['SDL_JOYSTICK_DEVICE'] = assigned_joystick_path
-            self.logger.info(f"Instance {instance.instance_num}: SDL_JOYSTICK_DEVICE set to '{assigned_joystick_path}'")
         else:
-            # Se nenhum joystick específico for atribuído, é importante não definir SDL_JOYSTICK_DEVICE
-            # ou defini-lo para algo que efetivamente o desabilite, se necessário,
-            # para evitar que a SDL pegue o primeiro joystick disponível no sandbox do bwrap.
-            # No entanto, com o bwrap vinculando dispositivos específicos, isso pode não ser estritamente necessário.
-            # Por segurança e clareza, vamos remover qualquer configuração SDL_JOYSTICK_DEVICE pré-existente se nenhum dispositivo for atribuído.
-            if 'SDL_JOYSTICK_DEVICE' in env:
-                del env['SDL_JOYSTICK_DEVICE']
-            self.logger.info(f"Instance {instance.instance_num}: No specific joystick device assigned. SDL_JOYSTICK_DEVICE unset.")
+            env.pop('SDL_JOYSTICK_DEVICE', None)
 
         return env
+
+    def _get_joystick_for_instance(self, instance: GameInstance, profile: Optional[GameProfile]) -> Optional[str]:
+        """Get joystick path for instance."""
+        if not profile or not profile.player_physical_device_ids:
+            return None
+            
+        idx = instance.instance_num - 1
+        if not (0 <= idx < len(profile.player_physical_device_ids)):
+            return None
+            
+        device_from_profile = profile.player_physical_device_ids[idx]
+        if not device_from_profile or not device_from_profile.strip():
+            return None
+            
+        if Path(device_from_profile).exists():
+            return device_from_profile
+        return None
 
     def _build_command(self, profile: GameProfile, proton_path: Optional[Path], instance: GameInstance, symlinked_exe_path: Path) -> List[str]:
         """Monta o comando para executar o gamescope e o jogo (nativo ou via Proton), usando bwrap para isolar o controle."""
