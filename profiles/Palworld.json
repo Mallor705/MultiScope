@@ -31,6 +31,6 @@
     ""
   ],
   "app_id": "1623730",
-  "game_args": "gamemoderun %command% -dx12",
+  "game_args": "-dx12",
   "is_native": false
 }
