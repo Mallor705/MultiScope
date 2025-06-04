@@ -4,7 +4,7 @@ from pathlib import Path
 class Config:
     """Configurações globais do Linux-Coop, incluindo diretórios, comandos e caminhos do Steam."""
     SCRIPT_DIR = Path(__file__).parent.parent.parent
-    PROFILE_DIR = SCRIPT_DIR / "profiles"
+    PROFILE_DIR = Path.home() / ".config/linux-coop/profiles"
     LOG_DIR = Path.home() / ".cache/linux-coop/logs"
     PREFIX_BASE_DIR = Path.home() / "Games/linux-coop/prefixes/"
 
