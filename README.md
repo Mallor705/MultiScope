@@ -65,31 +65,40 @@ Crie um arquivo JSON em `profiles/` com o nome desejado. Exemplo: `MeuJogo.json`
 Exemplo de conteúdo:
 ```json
 {
-    "game_name": "Palworld",
-    "exe_path": "/caminho/para/Palworld.exe",
-    "proton_version": "GE-Proton10-3",
-    "num_players": 2,
-    "instance_width": 1920,
-    "instance_height": 1080,
-    "game_args": "-dx12",
-    "player_physical_device_ids": [
-        "/dev/input/by-id/usb-Controller1-event-joystick",
-        "/dev/input/by-id/usb-Controller2-event-joystick"
-    ],
-    "players": [
-      {
-        "account_name": "Jogador1",
-        "language": "brazilian",
-        "listen_port": "47584",
-        "user_steam_id": "76561198280659435"
-      },
-      {
-        "account_name": "Jogador2",
-        "language": "brazilian",
-        "listen_port": "47584",
-        "user_steam_id": "76561199508818215"
-      }
-    ]
+  "game_name": "Palworld",
+  "exe_path": "$HOME/.steam/steam/steamapps/common/Palworld/Palworld.exe",
+  "players": [
+    {
+      "account_name": "Player1",
+      "language": "brazilian",
+      "listen_port": "47584",
+      "user_steam_id": "76561190000000001"
+    },
+    {
+      "account_name": "Player2",
+      "language": "brazilian",
+      "listen_port": "47584",
+      "user_steam_id": "76561190000000002"
+    }
+  ],
+  "proton_version": "GE-Proton10-4",
+  "instance_width": 1920,
+  "instance_height": 1080,
+  "player_physical_device_ids": [
+    "",
+    "/dev/input/by-id/usb-Your_Joystick-event-joystick"
+  ],
+  "player_mouse_event_paths": [
+    "/dev/input/by-id/usb-Your_Mouse_Device-event-mouse",
+    ""
+  ],
+  "player_keyboard_event_paths": [
+    "/dev/input/by-id/usb-Your_Keyboard_Device-event-kbd",
+    ""
+  ],
+  "app_id": "1623730",
+  "game_args": "-dx12",
+  "is_native": false
 }
 ```
 
