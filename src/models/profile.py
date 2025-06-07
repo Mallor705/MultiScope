@@ -13,6 +13,11 @@ class PlayerInstanceConfig(BaseModel):
     listen_port: Optional[str] = None
     user_steam_id: Optional[str] = None
 
+class SplitscreenConfig(BaseModel):
+    """Configuração do modo splitscreen."""
+    orientation: str = "horizontal"
+    instances: int = 2
+
 class GameProfile(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
@@ -29,7 +34,9 @@ class GameProfile(BaseModel):
     app_id: Optional[str] = Field(default=None, alias="APP_ID")
     game_args: Optional[str] = Field(default=None, alias="GAME_ARGS")
     is_native: bool = False
-    
+    mode: Optional[str] = Field(default=None, alias="mode")
+    splitscreen: Optional[SplitscreenConfig] = Field(default=None, alias="splitscreen")
+
     # Novo campo para configurações por jogador, usando alias "players" para o JSON
     player_configs: Optional[List[PlayerInstanceConfig]] = Field(default=None, alias="players")
 
@@ -39,7 +46,7 @@ class GameProfile(BaseModel):
         if v < 2:
             raise ValueError("O número mínimo suportado é 2 jogadores")
         return v
-    
+
     @validator('exe_path')
     def validate_exe_path(cls, v, values):
         """Valida se o caminho do executável existe."""
@@ -50,6 +57,18 @@ class GameProfile(BaseModel):
             raise ExecutableNotFoundError(f"Game executable not found: {path_v}")
         return path_v
 
+    @property
+    def is_splitscreen_mode(self) -> bool:
+        """Verifica se está no modo splitscreen."""
+        return self.mode == "splitscreen"
+
+    @property
+    def effective_instance_width(self) -> int:
+        """Retorna a largura efetiva da instância, dividida se for splitscreen."""
+        if self.is_splitscreen_mode and self.splitscreen:
+            return self.instance_width // self.splitscreen.instances
+        return self.instance_width
+
     @classmethod
     def load_from_file(cls, profile_path: Path) -> "GameProfile":
         """Carrega um perfil de jogo a partir de um arquivo JSON."""
@@ -59,7 +78,7 @@ class GameProfile(BaseModel):
         cached_profile = cache.get_profile(profile_key)
         if cached_profile is not None:
             return cached_profile
-        
+
         # Validações em lote
         if not profile_path.exists():
             raise ProfileNotFoundError(f"Profile not found: {profile_path}")
@@ -73,15 +92,15 @@ class GameProfile(BaseModel):
                 data = json.load(f)
         except (IOError, json.JSONDecodeError) as e:
             raise ValueError(f"Error reading profile file {profile_path}: {e}")
-        
+
         # Processamento em lote das configurações
         cls._process_profile_data(data)
-        
+
         profile = cls(**data)
         # Cache the loaded profile
         cache.set_profile(profile_key, profile)
         return profile
-    
+
     @classmethod
     def _process_profile_data(cls, data: Dict) -> None:
         """Processa dados do perfil de forma otimizada."""

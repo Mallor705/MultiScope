@@ -26,7 +26,7 @@ class InstanceService:
         if self._dependency_cache:
             self.logger.info("Dependencies already validated (cached)")
             return
-            
+
         self.logger.info("Validating dependencies...")
         for cmd in Config.REQUIRED_COMMANDS:
             if cmd not in self._dependency_cache:
@@ -258,15 +258,15 @@ class InstanceService:
         """Get joystick path for instance."""
         if not profile or not profile.player_physical_device_ids:
             return None
-            
+
         idx = instance.instance_num - 1
         if not (0 <= idx < len(profile.player_physical_device_ids)):
             return None
-            
+
         device_from_profile = profile.player_physical_device_ids[idx]
         if not device_from_profile or not device_from_profile.strip():
             return None
-            
+
         if Path(device_from_profile).exists():
             return device_from_profile
         return None
@@ -329,15 +329,29 @@ class InstanceService:
     def _build_gamescope_command(self, profile: GameProfile, should_add_grab_flags: bool, instance_num: int) -> List[str]:
         """Constrói o comando do Gamescope."""
         gamescope_path = 'gamescope'
+
+        # Usa largura efetiva (dividida se for splitscreen)
+        effective_width = profile.effective_instance_width
+
         gamescope_cli_options = [
             gamescope_path,
-            '-W', str(profile.instance_width),
+            '-W', str(effective_width),
             '-H', str(profile.instance_height),
-            '-w', str(profile.instance_width),
+            '-w', str(effective_width),
             '-h', str(profile.instance_height),
-            '-f',
-            '--adaptive-sync',
         ]
+
+        # Configurações específicas para splitscreen vs normal
+        if profile.is_splitscreen_mode:
+            gamescope_cli_options.append('-b')  # borderless ao invés de fullscreen
+        else:
+            gamescope_cli_options.extend(['-f', '--adaptive-sync'])
+
+        if should_add_grab_flags:
+            self.logger.info(f"Instance {instance_num}: Using dedicated mouse and keyboard. Adding --grab and --force-grab-cursor to Gamescope.")
+            gamescope_cli_options.extend(['--grab', '--force-grab-cursor'])
+
+        return gamescope_cli_options
 
         if should_add_grab_flags:
             self.logger.info(f"Instance {instance_num}: Using dedicated mouse and keyboard. Adding --grab and --force-grab-cursor to Gamescope.")
