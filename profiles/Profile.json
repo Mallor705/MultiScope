@@ -1,0 +1,45 @@
+{
+  "game_name": "GAME",
+  "exe_path": ".steam/Steam/steamapps/common/GAME/game.exe",
+  "players": [
+    {
+      "account_name": "Player1",
+      "language": "brazilian",
+      "listen_port": "47584",
+      "user_steam_id": "76561190000000001"
+    },
+    {
+      "account_name": "Player2",
+      "language": "brazilian",
+      "listen_port": "47584",
+      "user_steam_id": "76561190000000002"
+    }
+  ],
+  "proton_version": "GE-Proton10-4",
+  "instance_width": 1920,
+  "instance_height": 1080,
+
+  "player_physical_device_ids": [
+    "", 
+    ""
+  ],
+  
+  "player_mouse_event_paths": [
+    "",
+    ""
+  ],
+  
+  "player_keyboard_event_paths": [
+    "",
+    ""
+  ],
+  
+  "app_id": "12345678",
+  "game_args": "",
+  "is_native": false,
+  "mode": "splitscreen",
+  "splitscreen": {
+    "orientation": "horizontal",
+    "instances": 2
+  }
+}
