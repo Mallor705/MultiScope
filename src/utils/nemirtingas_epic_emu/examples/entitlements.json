@@ -1,0 +1,12 @@
+{
+  "ebf06137bfaa4ad1851667d9128b4e19": {
+    "entitlement_name": "entitlement_1",
+    "catalog_item_id": "catalog_1",
+    "redeemed": true
+  },
+  "c248630de4db490d9a96b26ceef1ba4a": {
+    "entitlement_name": "entitlement_2",
+    "catalog_item_id": "catalog_2",
+    "redeemed": true
+  }
+}

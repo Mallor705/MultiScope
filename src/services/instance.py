@@ -120,63 +120,199 @@ class InstanceService:
         return symlinked_exe_path_target
 
     def _process_game_files(self, instance: GameInstance, original_game_path: Path, instance_game_root: Path, profile: GameProfile) -> None:
-        """Processa todos os arquivos do jogo, criando symlinks ou copiando conforme necessário."""
-        config_files_to_copy = [
-            "account_name.txt",
-            "language.txt",
-            "listen_port.txt",
-            "user_steam_id.txt"
-        ]
+        """Processa todos os arquivos do jogo, criando symlinks e configurando o Goldberg Emulator."""
+        self.logger.info(f"Instance {instance.instance_num}: Processing game files and setting up Goldberg Emulator")
 
+        # 1. Identificar arquivos do Steam no diretório do jogo
+        steam_api_files = self._identify_steam_api_files(original_game_path)
+        self.logger.info(f"Instance {instance.instance_num}: Found Steam API files: {steam_api_files}")
+
+        # 2. Criar estrutura de diretórios
+        instance_game_root.mkdir(parents=True, exist_ok=True)
+
+        # 3. Criar symlinks para os arquivos do jogo
         for item in original_game_path.rglob("*"):
             relative_item_path = item.relative_to(original_game_path)
             target_path_for_item = instance_game_root / relative_item_path
 
-            # Garante que o diretório pai do item (seja arquivo ou diretório) exista na estrutura de destino
+            # Garante que o diretório pai exista
             target_path_for_item.parent.mkdir(parents=True, exist_ok=True)
 
             if item.is_dir():
                 target_path_for_item.mkdir(parents=True, exist_ok=True)
             else:
-                self._process_game_file(instance, item, target_path_for_item, config_files_to_copy, profile)
+                # Não criar symlink se o arquivo já existir (caso do Goldberg)
+                if not target_path_for_item.exists():
+                    try:
+                        target_path_for_item.symlink_to(item)
+                        self.logger.info(f"Instance {instance.instance_num}: Created symlink: {target_path_for_item} -> {item}")
+                    except FileExistsError:
+                        self.logger.info(f"Instance {instance.instance_num}: File already exists: {target_path_for_item}")
+                    except Exception as e:
+                        self.logger.warning(f"Instance {instance.instance_num}: Failed to create symlink for {item}: {e}")
 
-    def _process_game_file(self, instance: GameInstance, item: Path, target_path_for_item: Path, config_files_to_copy: List[str], profile: GameProfile) -> None:
-        """Processa um arquivo individual do jogo."""
-        if target_path_for_item.exists() or target_path_for_item.is_symlink():
-            target_path_for_item.unlink()
+        # 4. Copiar arquivos do Goldberg para o mesmo local dos originais
+        self._copy_goldberg_files(instance_game_root, steam_api_files, profile, instance)
 
-        if item.name in config_files_to_copy:
-            self._handle_config_file(instance, item, target_path_for_item, profile)
+    def _copy_goldberg_files(self, instance_game_root: Path, steam_api_files: dict, profile: GameProfile, instance: GameInstance) -> None:
+        """Copia os arquivos do Goldberg Emulator para a pasta do jogo."""
+        goldberg_source_dir = Path(__file__).parent.parent / "utils" / "goldberg_emulator"
+        
+        if not goldberg_source_dir.exists():
+            self.logger.error(f"Goldberg source directory not found: {goldberg_source_dir}")
+            return
+
+        # Mapear arquivos do Goldberg para os arquivos do Steam
+        goldberg_files = {
+            'win64': {
+                'steam_api64.dll': 'steam_api64.dll',
+                'steamclient64.dll': 'steamclient64.dll',
+                'winmm.dll': 'winmm.dll'
+            },
+            'win32': {
+                'steam_api.dll': 'steam_api.dll',
+                'steamclient.dll': 'steamclient.dll',
+                'winmm.dll': 'winmm.dll'
+            },
+            'linux64': {
+                'steam_api64.dll': 'libsteam_api64.so',
+                'steamclient64.dll': 'libsteamclient64.so',
+                'winmm.dll': 'libwinmm.so'
+            },
+            'linux32': {
+                'steam_api.dll': 'libsteam_api.so',
+                'steamclient.dll': 'libsteamclient.so',
+                'winmm.dll': 'libwinmm.so'
+            }
+        }
+
+        # Variável para armazenar o diretório onde os arquivos do Steam API estão
+        steam_api_instance_dir = None
+
+        # Copiar arquivos do Goldberg para os locais corretos
+        for platform, files in goldberg_files.items():
+            # Encontrar o diretório onde está o arquivo do Steam API
+            steam_api_dir = None
+            if steam_api_files[platform]:
+                steam_api_dir = steam_api_files[platform].parent
+            else:
+                # Se não encontrou o arquivo do Steam API para esta plataforma,
+                # procura em todos os diretórios do jogo
+                for search_dir in instance_game_root.rglob("*"):
+                    if search_dir.is_dir():
+                        steam_api_dir = search_dir
+                        break
+
+            if steam_api_dir:
+                steam_api_instance_dir = steam_api_dir  # Guardar o diretório para usar depois
+                
+                # Copiar cada arquivo do Goldberg para o mesmo diretório
+                for goldberg_file, steam_file in files.items():
+                    source_file = goldberg_source_dir / goldberg_file
+                    if source_file.exists():
+                        target_file = steam_api_dir / steam_file
+                        # Remover arquivo existente se necessário
+                        if target_file.exists():
+                            target_file.unlink()
+                        shutil.copy2(source_file, target_file)
+                        self.logger.info(f"Copied Goldberg file {goldberg_file} to {target_file}")
+                    else:
+                        self.logger.warning(f"Goldberg file not found: {goldberg_file}")
+
+        # Copiar pasta settings para o mesmo diretório dos arquivos do Steam API
+        if steam_api_instance_dir:
+            settings_source = goldberg_source_dir / "settings"
+            if settings_source.exists():
+                settings_target = steam_api_instance_dir / "settings"
+                
+                # Criar pasta se não existir
+                settings_target.mkdir(exist_ok=True)
+                
+                # Copiar apenas os arquivos do Goldberg, preservando o resto
+                for item in settings_source.glob("*"):
+                    if item.is_file():
+                        target_file = settings_target / item.name
+                        if target_file.exists():
+                            target_file.unlink()
+                        shutil.copy2(item, target_file)
+                        self.logger.info(f"Copied Goldberg settings file: {item.name}")
+                    elif item.is_dir():
+                        target_dir = settings_target / item.name
+                        if target_dir.exists():
+                            shutil.rmtree(target_dir)
+                        shutil.copytree(item, target_dir)
+                        self.logger.info(f"Copied Goldberg settings directory: {item.name}")
+            else:
+                self.logger.warning("settings folder not found in Goldberg source directory")
+
+            # Configurar arquivos do Goldberg
+            self._setup_settings(steam_api_instance_dir, profile, instance)
         else:
-            target_path_for_item.symlink_to(item)
-            self.logger.info(f"Instance {instance.instance_num}: Created symlink: {target_path_for_item} -> {item}")
+            self.logger.error("Could not find Steam API files in the instance to copy settings")
 
-    def _handle_config_file(self, instance: GameInstance, item: Path, target_path_for_item: Path, profile: GameProfile) -> None:
-        """Manipula arquivos de configuração, copiando e customizando conforme necessário."""
-        shutil.copy2(item, target_path_for_item)
-        self.logger.info(f"Instance {instance.instance_num}: Copied config file: {target_path_for_item} from {item}")
+    def _setup_settings(self, instance_game_root: Path, profile: GameProfile, instance: GameInstance) -> None:
+        """Configura a pasta settings com as configurações específicas da instância."""
+        settings_dir = instance_game_root / "settings"
+        
+        # Garantir que a pasta existe
+        settings_dir.mkdir(exist_ok=True)
 
-        # Verifica se há configurações específicas da instância para este arquivo
+        # Configurar arquivos do Goldberg
+        self._setup_goldberg_config(settings_dir, profile, instance)
+
+    def _setup_goldberg_config(self, settings_dir: Path, profile: GameProfile, instance: GameInstance) -> None:
+        """Configura os arquivos de configuração do Goldberg Emulator."""
+        # Configurar AppID
+        if profile.app_id:
+            with open(settings_dir / "steam_appid.txt", "w") as f:
+                f.write(f"{profile.app_id}\n")
+            self.logger.info(f"Instance {instance.instance_num}: Set Steam AppID to {profile.app_id}")
+
+        # Configurar nome da conta e SteamID se houver configurações específicas da instância
         if profile.player_configs and (instance.instance_num - 1) < len(profile.player_configs):
             instance_config = profile.player_configs[instance.instance_num - 1]
-            content_to_write = self._get_config_content(item.name, instance_config)
+            
+            if instance_config.account_name:
+                with open(settings_dir / "account_name.txt", "w") as f:
+                    f.write(f"{instance_config.account_name}\n")
+                self.logger.info(f"Instance {instance.instance_num}: Set account name to {instance_config.account_name}")
 
-            if content_to_write is not None:
-                with open(target_path_for_item, 'w') as f_config:
-                    f_config.write(str(content_to_write) + '\n')
-                self.logger.info(f"Instance {instance.instance_num}: Customized config file {target_path_for_item} with value: '{content_to_write}'")
+            if instance_config.user_steam_id:
+                with open(settings_dir / "user_steam_id.txt", "w") as f:
+                    f.write(f"{instance_config.user_steam_id}\n")
+                self.logger.info(f"Instance {instance.instance_num}: Set SteamID to {instance_config.user_steam_id}")
 
-    def _get_config_content(self, filename: str, instance_config) -> Optional[str]:
-        """Retorna o conteúdo personalizado para um arquivo de configuração específico."""
-        if filename == "account_name.txt" and instance_config.account_name is not None:
-            return instance_config.account_name
-        elif filename == "language.txt" and instance_config.language is not None:
-            return instance_config.language
-        elif filename == "listen_port.txt" and instance_config.listen_port is not None:
-            return instance_config.listen_port
-        elif filename == "user_steam_id.txt" and instance_config.user_steam_id is not None:
-            return instance_config.user_steam_id
-        return None
+            if instance_config.language:
+                with open(settings_dir / "language.txt", "w") as f:
+                    f.write(f"{instance_config.language}\n")
+                self.logger.info(f"Instance {instance.instance_num}: Set language to {instance_config.language}")
+            
+            if instance_config.listen_port:
+                with open(settings_dir / "listen_port.txt", "w") as f:
+                    f.write(f"{instance_config.listen_port}\n")
+                self.logger.info(f"Instance {instance.instance_num}: Set listen port to {instance_config.listen_port}")
+
+    def _identify_steam_api_files(self, game_path: Path) -> dict:
+        """Identifica os arquivos do Steam API no diretório do jogo."""
+        steam_files = {
+            'win64': None,
+            'win32': None,
+            'linux64': None,
+            'linux32': None
+        }
+        
+        # Procurar por arquivos do Steam API
+        for file in game_path.rglob("*"):
+            if file.name == "steam_api64.dll":
+                steam_files['win64'] = file
+            elif file.name == "steam_api.dll":
+                steam_files['win32'] = file
+            elif file.name == "libsteam_api64.so":
+                steam_files['linux64'] = file
+            elif file.name == "libsteam_api.so":
+                steam_files['linux32'] = file
+        
+        return steam_files
 
     def _verify_executable_symlink(self, instance: GameInstance, symlinked_exe_path_target: Path, original_exe_path: Path) -> None:
         """Verifica se o link simbólico para o executável foi criado corretamente."""

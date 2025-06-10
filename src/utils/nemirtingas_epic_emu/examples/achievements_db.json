@@ -1,0 +1,4809 @@
+{
+  "DLC1_ACHIEVEMENT_01": {
+    "achievement_id": "DLC1_ACHIEVEMENT_01",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Build an Alcazar within 2 tiles of the Alhambra",
+    "locked_display_name": "Even Our Castles Have Castles",
+    "locked_icon_url": "file:///DLC1_ACHIEVEMENT_01_l",
+    "stats_thresholds": {
+      "DLC1_ACHIEVEMENT_01": {
+        "name": "DLC1_ACHIEVEMENT_01",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Build an Alcazar within 2 tiles of the Alhambra",
+    "unlocked_display_name": "Even Our Castles Have Castles",
+    "unlocked_icon_url": "file:///DLC1_ACHIEVEMENT_01_u"
+  },
+  "DLC1_ACHIEVEMENT_02": {
+    "achievement_id": "DLC1_ACHIEVEMENT_02",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Build a Monastery within 2 tiles of the Giant's Causeway",
+    "locked_display_name": "Finn MacCool's Pipe Organ",
+    "locked_icon_url": "file:///DLC1_ACHIEVEMENT_02_l",
+    "stats_thresholds": {
+      "DLC1_ACHIEVEMENT_02": {
+        "name": "DLC1_ACHIEVEMENT_02",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Build a Monastery within 2 tiles of the Giant's Causeway",
+    "unlocked_display_name": "Finn MacCool's Pipe Organ",
+    "unlocked_icon_url": "file:///DLC1_ACHIEVEMENT_02_u"
+  },
+  "DLC1_ACHIEVEMENT_03": {
+    "achievement_id": "DLC1_ACHIEVEMENT_03",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Build three Aerodromes within 2 tiles of Eyjafjallajökull",
+    "locked_display_name": "What Do You Mean, \"Active Volcano?\"",
+    "locked_icon_url": "file:///DLC1_ACHIEVEMENT_03_l",
+    "stats_thresholds": {
+      "DLC1_ACHIEVEMENT_03": {
+        "name": "DLC1_ACHIEVEMENT_03",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Build three Aerodromes within 2 tiles of Eyjafjallajökull",
+    "unlocked_display_name": "What Do You Mean, \"Active Volcano?\"",
+    "unlocked_icon_url": "file:///DLC1_ACHIEVEMENT_03_u"
+  },
+  "DLC1_ACHIEVEMENT_04": {
+    "achievement_id": "DLC1_ACHIEVEMENT_04",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win Vikings, Traders, and Raiders! as Canute",
+    "locked_display_name": "Absolutely Nothing Rotten in the State of Denmark",
+    "locked_icon_url": "file:///DLC1_ACHIEVEMENT_04_l",
+    "stats_thresholds": {
+      "DLC1_ACHIEVEMENT_04": {
+        "name": "DLC1_ACHIEVEMENT_04",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win Vikings, Traders, and Raiders! as Canute",
+    "unlocked_display_name": "Absolutely Nothing Rotten in the State of Denmark",
+    "unlocked_icon_url": "file:///DLC1_ACHIEVEMENT_04_u"
+  },
+  "DLC1_ACHIEVEMENT_05": {
+    "achievement_id": "DLC1_ACHIEVEMENT_05",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win Vikings, Traders, and Raiders! as Harald Hardrada",
+    "locked_display_name": "More Hacksilver For Harald",
+    "locked_icon_url": "file:///DLC1_ACHIEVEMENT_05_l",
+    "stats_thresholds": {
+      "DLC1_ACHIEVEMENT_05": {
+        "name": "DLC1_ACHIEVEMENT_05",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win Vikings, Traders, and Raiders! as Harald Hardrada",
+    "unlocked_display_name": "More Hacksilver For Harald",
+    "unlocked_icon_url": "file:///DLC1_ACHIEVEMENT_05_u"
+  },
+  "DLC1_ACHIEVEMENT_06": {
+    "achievement_id": "DLC1_ACHIEVEMENT_06",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win Vikings, Traders, and Raiders! as Olof Skötkonung",
+    "locked_display_name": "Master of the Baltic",
+    "locked_icon_url": "file:///DLC1_ACHIEVEMENT_06_l",
+    "stats_thresholds": {
+      "DLC1_ACHIEVEMENT_06": {
+        "name": "DLC1_ACHIEVEMENT_06",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win Vikings, Traders, and Raiders! as Olof Skötkonung",
+    "unlocked_display_name": "Master of the Baltic",
+    "unlocked_icon_url": "file:///DLC1_ACHIEVEMENT_06_u"
+  },
+  "DLC1_ACHIEVEMENT_07": {
+    "achievement_id": "DLC1_ACHIEVEMENT_07",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win Vikings, Traders, and Raiders! at Deity difficulty",
+    "locked_display_name": "God of the Sea",
+    "locked_icon_url": "file:///DLC1_ACHIEVEMENT_07_l",
+    "stats_thresholds": {
+      "DLC1_ACHIEVEMENT_07": {
+        "name": "DLC1_ACHIEVEMENT_07",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win Vikings, Traders, and Raiders! at Deity difficulty",
+    "unlocked_display_name": "God of the Sea",
+    "unlocked_icon_url": "file:///DLC1_ACHIEVEMENT_07_u"
+  },
+  "DLC2_ACHIEVEMENT_01": {
+    "achievement_id": "DLC2_ACHIEVEMENT_01",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Jadwiga",
+    "locked_display_name": "Armor of Faith",
+    "locked_icon_url": "file:///DLC2_ACHIEVEMENT_01_l",
+    "stats_thresholds": {
+      "DLC2_ACHIEVEMENT_01": {
+        "name": "DLC2_ACHIEVEMENT_01",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Jadwiga",
+    "unlocked_display_name": "Armor of Faith",
+    "unlocked_icon_url": "file:///DLC2_ACHIEVEMENT_01_u"
+  },
+  "DLC2_ACHIEVEMENT_02": {
+    "achievement_id": "DLC2_ACHIEVEMENT_02",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as Poland, destroy another civilization's incomplete wonder by initiating a Culture Bomb",
+    "locked_display_name": "You Are A Terrible Person",
+    "locked_icon_url": "file:///DLC2_ACHIEVEMENT_02_l",
+    "stats_thresholds": {
+      "DLC2_ACHIEVEMENT_02": {
+        "name": "DLC2_ACHIEVEMENT_02",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as Poland, destroy another civilization's incomplete wonder by initiating a Culture Bomb",
+    "unlocked_display_name": "You Are A Terrible Person",
+    "unlocked_icon_url": "file:///DLC2_ACHIEVEMENT_02_u"
+  },
+  "DLC2_ACHIEVEMENT_03": {
+    "achievement_id": "DLC2_ACHIEVEMENT_03",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win Jadwiga's Legacy as Stanislaw Potocki",
+    "locked_display_name": "Winged Hussar Mastery",
+    "locked_icon_url": "file:///DLC2_ACHIEVEMENT_03_l",
+    "stats_thresholds": {
+      "DLC2_ACHIEVEMENT_03": {
+        "name": "DLC2_ACHIEVEMENT_03",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win Jadwiga's Legacy as Stanislaw Potocki",
+    "unlocked_display_name": "Winged Hussar Mastery",
+    "unlocked_icon_url": "file:///DLC2_ACHIEVEMENT_03_u"
+  },
+  "DLC2_ACHIEVEMENT_04": {
+    "achievement_id": "DLC2_ACHIEVEMENT_04",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win Jadwiga's Legacy as Mikolaj \"the Black\" Radziwill",
+    "locked_display_name": "Always Bet On Black",
+    "locked_icon_url": "file:///DLC2_ACHIEVEMENT_04_l",
+    "stats_thresholds": {
+      "DLC2_ACHIEVEMENT_04": {
+        "name": "DLC2_ACHIEVEMENT_04",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win Jadwiga's Legacy as Mikolaj \"the Black\" Radziwill",
+    "unlocked_display_name": "Always Bet On Black",
+    "unlocked_icon_url": "file:///DLC2_ACHIEVEMENT_04_u"
+  },
+  "DLC2_ACHIEVEMENT_05": {
+    "achievement_id": "DLC2_ACHIEVEMENT_05",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win Jadwiga's Legacy as Konstanty Ostrogski",
+    "locked_display_name": "The Grandest of Hetmans",
+    "locked_icon_url": "file:///DLC2_ACHIEVEMENT_05_l",
+    "stats_thresholds": {
+      "DLC2_ACHIEVEMENT_05": {
+        "name": "DLC2_ACHIEVEMENT_05",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win Jadwiga's Legacy as Konstanty Ostrogski",
+    "unlocked_display_name": "The Grandest of Hetmans",
+    "unlocked_icon_url": "file:///DLC2_ACHIEVEMENT_05_u"
+  },
+  "DLC2_ACHIEVEMENT_06": {
+    "achievement_id": "DLC2_ACHIEVEMENT_06",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win Jadwiga's Legacy at Deity difficulty",
+    "locked_display_name": "God-Like Legacy",
+    "locked_icon_url": "file:///DLC2_ACHIEVEMENT_06_l",
+    "stats_thresholds": {
+      "DLC2_ACHIEVEMENT_06": {
+        "name": "DLC2_ACHIEVEMENT_06",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win Jadwiga's Legacy at Deity difficulty",
+    "unlocked_display_name": "God-Like Legacy",
+    "unlocked_icon_url": "file:///DLC2_ACHIEVEMENT_06_u"
+  },
+  "DLC3_ACHIEVEMENT_01": {
+    "achievement_id": "DLC3_ACHIEVEMENT_01",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as John Curtin",
+    "locked_display_name": "A Smashing Victory",
+    "locked_icon_url": "file:///DLC3_ACHIEVEMENT_01_l",
+    "stats_thresholds": {
+      "DLC3_ACHIEVEMENT_01": {
+        "name": "DLC3_ACHIEVEMENT_01",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as John Curtin",
+    "unlocked_display_name": "A Smashing Victory",
+    "unlocked_icon_url": "file:///DLC3_ACHIEVEMENT_01_u"
+  },
+  "DLC3_ACHIEVEMENT_02": {
+    "achievement_id": "DLC3_ACHIEVEMENT_02",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as Australia, build a Pasture over Sheep and steal an adjacent player's Lumbermill",
+    "locked_display_name": "Wood for Sheep",
+    "locked_icon_url": "file:///DLC3_ACHIEVEMENT_02_l",
+    "stats_thresholds": {
+      "DLC3_ACHIEVEMENT_02": {
+        "name": "DLC3_ACHIEVEMENT_02",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as Australia, build a Pasture over Sheep and steal an adjacent player's Lumbermill",
+    "unlocked_display_name": "Wood for Sheep",
+    "unlocked_icon_url": "file:///DLC3_ACHIEVEMENT_02_u"
+  },
+  "DLC3_ACHIEVEMENT_03": {
+    "achievement_id": "DLC3_ACHIEVEMENT_03",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win Outback Tycoon as Queensland",
+    "locked_display_name": "Revenge of the Banana Benders",
+    "locked_icon_url": "file:///DLC3_ACHIEVEMENT_03_l",
+    "stats_thresholds": {
+      "DLC3_ACHIEVEMENT_03": {
+        "name": "DLC3_ACHIEVEMENT_03",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win Outback Tycoon as Queensland",
+    "unlocked_display_name": "Revenge of the Banana Benders",
+    "unlocked_icon_url": "file:///DLC3_ACHIEVEMENT_03_u"
+  },
+  "DLC3_ACHIEVEMENT_04": {
+    "achievement_id": "DLC3_ACHIEVEMENT_04",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win Outback Tycoon as South Australia",
+    "locked_display_name": "Crow-eater Conquest",
+    "locked_icon_url": "file:///DLC3_ACHIEVEMENT_04_l",
+    "stats_thresholds": {
+      "DLC3_ACHIEVEMENT_04": {
+        "name": "DLC3_ACHIEVEMENT_04",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win Outback Tycoon as South Australia",
+    "unlocked_display_name": "Crow-eater Conquest",
+    "unlocked_icon_url": "file:///DLC3_ACHIEVEMENT_04_u"
+  },
+  "DLC3_ACHIEVEMENT_05": {
+    "achievement_id": "DLC3_ACHIEVEMENT_05",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win Outback Tycoon as Victoria",
+    "locked_display_name": "Gumsucker Punch",
+    "locked_icon_url": "file:///DLC3_ACHIEVEMENT_05_l",
+    "stats_thresholds": {
+      "DLC3_ACHIEVEMENT_05": {
+        "name": "DLC3_ACHIEVEMENT_05",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win Outback Tycoon as Victoria",
+    "unlocked_display_name": "Gumsucker Punch",
+    "unlocked_icon_url": "file:///DLC3_ACHIEVEMENT_05_u"
+  },
+  "DLC3_ACHIEVEMENT_06": {
+    "achievement_id": "DLC3_ACHIEVEMENT_06",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win Outback Tycoon as Western Australia",
+    "locked_display_name": "Sandgroper Sweep",
+    "locked_icon_url": "file:///DLC3_ACHIEVEMENT_06_l",
+    "stats_thresholds": {
+      "DLC3_ACHIEVEMENT_06": {
+        "name": "DLC3_ACHIEVEMENT_06",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win Outback Tycoon as Western Australia",
+    "unlocked_display_name": "Sandgroper Sweep",
+    "unlocked_icon_url": "file:///DLC3_ACHIEVEMENT_06_u"
+  },
+  "DLC3_ACHIEVEMENT_07": {
+    "achievement_id": "DLC3_ACHIEVEMENT_07",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win Outback Tycoon at Deity difficulty",
+    "locked_display_name": "Meanwhile, in Australia",
+    "locked_icon_url": "file:///DLC3_ACHIEVEMENT_07_l",
+    "stats_thresholds": {
+      "DLC3_ACHIEVEMENT_07": {
+        "name": "DLC3_ACHIEVEMENT_07",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win Outback Tycoon at Deity difficulty",
+    "unlocked_display_name": "Meanwhile, in Australia",
+    "unlocked_icon_url": "file:///DLC3_ACHIEVEMENT_07_u"
+  },
+  "DLC3_ACHIEVEMENT_08": {
+    "achievement_id": "DLC3_ACHIEVEMENT_08",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Complete an online multiplayer game of Outback Tycoon",
+    "locked_display_name": "Quite a Crowded House",
+    "locked_icon_url": "file:///DLC3_ACHIEVEMENT_08_l",
+    "stats_thresholds": {
+      "DLC3_ACHIEVEMENT_08": {
+        "name": "DLC3_ACHIEVEMENT_08",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Complete an online multiplayer game of Outback Tycoon",
+    "unlocked_display_name": "Quite a Crowded House",
+    "unlocked_icon_url": "file:///DLC3_ACHIEVEMENT_08_u"
+  },
+  "DLC3_ACHIEVEMENT_09": {
+    "achievement_id": "DLC3_ACHIEVEMENT_09",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Build an Oil Well on the final turn of the Outback Tycoon scenario",
+    "locked_display_name": "Midnight Oil",
+    "locked_icon_url": "file:///DLC3_ACHIEVEMENT_09_l",
+    "stats_thresholds": {
+      "DLC3_ACHIEVEMENT_09": {
+        "name": "DLC3_ACHIEVEMENT_09",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Build an Oil Well on the final turn of the Outback Tycoon scenario",
+    "unlocked_display_name": "Midnight Oil",
+    "unlocked_icon_url": "file:///DLC3_ACHIEVEMENT_09_u"
+  },
+  "DLC3_ACHIEVEMENT_10": {
+    "achievement_id": "DLC3_ACHIEVEMENT_10",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Lose a unit to the perils of Australia in the Outback Tycoon scenario",
+    "locked_display_name": "Attack of the Drop Bear",
+    "locked_icon_url": "file:///DLC3_ACHIEVEMENT_10_l",
+    "stats_thresholds": {
+      "DLC3_ACHIEVEMENT_10": {
+        "name": "DLC3_ACHIEVEMENT_10",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Lose a unit to the perils of Australia in the Outback Tycoon scenario",
+    "unlocked_display_name": "Attack of the Drop Bear",
+    "unlocked_icon_url": "file:///DLC3_ACHIEVEMENT_10_u"
+  },
+  "DLC4_ACHIEVEMENT_01": {
+    "achievement_id": "DLC4_ACHIEVEMENT_01",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Alexander",
+    "locked_display_name": "Never Lost a Battle",
+    "locked_icon_url": "file:///DLC4_ACHIEVEMENT_01_l",
+    "stats_thresholds": {
+      "DLC4_ACHIEVEMENT_01": {
+        "name": "DLC4_ACHIEVEMENT_01",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Alexander",
+    "unlocked_display_name": "Never Lost a Battle",
+    "unlocked_icon_url": "file:///DLC4_ACHIEVEMENT_01_u"
+  },
+  "DLC4_ACHIEVEMENT_02": {
+    "achievement_id": "DLC4_ACHIEVEMENT_02",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Cyrus",
+    "locked_display_name": "King of the Four Corners of the World",
+    "locked_icon_url": "file:///DLC4_ACHIEVEMENT_02_l",
+    "stats_thresholds": {
+      "DLC4_ACHIEVEMENT_02": {
+        "name": "DLC4_ACHIEVEMENT_02",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Cyrus",
+    "unlocked_display_name": "King of the Four Corners of the World",
+    "unlocked_icon_url": "file:///DLC4_ACHIEVEMENT_02_u"
+  },
+  "DLC4_ACHIEVEMENT_03": {
+    "achievement_id": "DLC4_ACHIEVEMENT_03",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as Macedon, conquer a city containing both the Great Library and Great Lighthouse wonders",
+    "locked_display_name": "Greatest Is As Greatest Does",
+    "locked_icon_url": "file:///DLC4_ACHIEVEMENT_03_l",
+    "stats_thresholds": {
+      "DLC4_ACHIEVEMENT_03": {
+        "name": "DLC4_ACHIEVEMENT_03",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as Macedon, conquer a city containing both the Great Library and Great Lighthouse wonders",
+    "unlocked_display_name": "Greatest Is As Greatest Does",
+    "unlocked_icon_url": "file:///DLC4_ACHIEVEMENT_03_u"
+  },
+  "DLC4_ACHIEVEMENT_04": {
+    "achievement_id": "DLC4_ACHIEVEMENT_04",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as Persia, conquer the original Scythian capital within 10 turns of declaring a surprise war on Scythia",
+    "locked_display_name": "Some Wine For Your Soldiers?",
+    "locked_icon_url": "file:///DLC4_ACHIEVEMENT_04_l",
+    "stats_thresholds": {
+      "DLC4_ACHIEVEMENT_04": {
+        "name": "DLC4_ACHIEVEMENT_04",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as Persia, conquer the original Scythian capital within 10 turns of declaring a surprise war on Scythia",
+    "unlocked_display_name": "Some Wine For Your Soldiers?",
+    "unlocked_icon_url": "file:///DLC4_ACHIEVEMENT_04_u"
+  },
+  "DLC4_ACHIEVEMENT_05": {
+    "achievement_id": "DLC4_ACHIEVEMENT_05",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "After building the Apadana wonder, construct 7 additional wonders in the same city",
+    "locked_display_name": "Envoy Convoy",
+    "locked_icon_url": "file:///DLC4_ACHIEVEMENT_05_l",
+    "stats_thresholds": {
+      "DLC4_ACHIEVEMENT_05": {
+        "name": "DLC4_ACHIEVEMENT_05",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "After building the Apadana wonder, construct 7 additional wonders in the same city",
+    "unlocked_display_name": "Envoy Convoy",
+    "unlocked_icon_url": "file:///DLC4_ACHIEVEMENT_05_u"
+  },
+  "DLC4_ACHIEVEMENT_06": {
+    "achievement_id": "DLC4_ACHIEVEMENT_06",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win Conquests of Alexander on any difficulty",
+    "locked_display_name": "No More Worlds To Conquer",
+    "locked_icon_url": "file:///DLC4_ACHIEVEMENT_06_l",
+    "stats_thresholds": {
+      "DLC4_ACHIEVEMENT_06": {
+        "name": "DLC4_ACHIEVEMENT_06",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win Conquests of Alexander on any difficulty",
+    "unlocked_display_name": "No More Worlds To Conquer",
+    "unlocked_icon_url": "file:///DLC4_ACHIEVEMENT_06_u"
+  },
+  "DLC4_ACHIEVEMENT_07": {
+    "achievement_id": "DLC4_ACHIEVEMENT_07",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Achieve the highest possible rank in Conquests of Alexander at Deity difficulty",
+    "locked_display_name": "You're the Demonstrably Greatest",
+    "locked_icon_url": "file:///DLC4_ACHIEVEMENT_07_l",
+    "stats_thresholds": {
+      "DLC4_ACHIEVEMENT_07": {
+        "name": "DLC4_ACHIEVEMENT_07",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Achieve the highest possible rank in Conquests of Alexander at Deity difficulty",
+    "unlocked_display_name": "You're the Demonstrably Greatest",
+    "unlocked_icon_url": "file:///DLC4_ACHIEVEMENT_07_u"
+  },
+  "DLC4_ACHIEVEMENT_08": {
+    "achievement_id": "DLC4_ACHIEVEMENT_08",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Settle four cities in Conquests of Alexander on any difficulty",
+    "locked_display_name": "He Named Them All After Himself?",
+    "locked_icon_url": "file:///DLC4_ACHIEVEMENT_08_l",
+    "stats_thresholds": {
+      "DLC4_ACHIEVEMENT_08": {
+        "name": "DLC4_ACHIEVEMENT_08",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Settle four cities in Conquests of Alexander on any difficulty",
+    "unlocked_display_name": "He Named Them All After Himself?",
+    "unlocked_icon_url": "file:///DLC4_ACHIEVEMENT_08_u"
+  },
+  "DLC4_ACHIEVEMENT_09": {
+    "achievement_id": "DLC4_ACHIEVEMENT_09",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Possess all of the following after conquering a city in Conquests of Alexander: Hoplite, Saka Horse Archer, Maryannu Chariot Archer, Immortal, and Varu",
+    "locked_display_name": "Resplendent Panoply",
+    "locked_icon_url": "file:///DLC4_ACHIEVEMENT_09_l",
+    "stats_thresholds": {
+      "DLC4_ACHIEVEMENT_09": {
+        "name": "DLC4_ACHIEVEMENT_09",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Possess all of the following after conquering a city in Conquests of Alexander: Hoplite, Saka Horse Archer, Maryannu Chariot Archer, Immortal, and Varu",
+    "unlocked_display_name": "Resplendent Panoply",
+    "unlocked_icon_url": "file:///DLC4_ACHIEVEMENT_09_u"
+  },
+  "DLC4_ACHIEVEMENT_10": {
+    "achievement_id": "DLC4_ACHIEVEMENT_10",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as Scythia, recapture one of your founded cities from Persia",
+    "locked_display_name": "I Quenched Your Thirst For Blood",
+    "locked_icon_url": "file:///DLC4_ACHIEVEMENT_10_l",
+    "stats_thresholds": {
+      "DLC4_ACHIEVEMENT_10": {
+        "name": "DLC4_ACHIEVEMENT_10",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as Scythia, recapture one of your founded cities from Persia",
+    "unlocked_display_name": "I Quenched Your Thirst For Blood",
+    "unlocked_icon_url": "file:///DLC4_ACHIEVEMENT_10_u"
+  },
+  "DLC5_ACHIEVEMENT_01": {
+    "achievement_id": "DLC5_ACHIEVEMENT_01",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Amanitore",
+    "locked_display_name": "gg nub",
+    "locked_icon_url": "file:///DLC5_ACHIEVEMENT_01_l",
+    "stats_thresholds": {
+      "DLC5_ACHIEVEMENT_01": {
+        "name": "DLC5_ACHIEVEMENT_01",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Amanitore",
+    "unlocked_display_name": "gg nub",
+    "unlocked_icon_url": "file:///DLC5_ACHIEVEMENT_01_u"
+  },
+  "DLC5_ACHIEVEMENT_02": {
+    "achievement_id": "DLC5_ACHIEVEMENT_02",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Nubia, earn six different adjacency bonuses on a Nubian Pyramid",
+    "locked_display_name": "Pyramid Scheme",
+    "locked_icon_url": "file:///DLC5_ACHIEVEMENT_02_l",
+    "stats_thresholds": {
+      "DLC5_ACHIEVEMENT_02": {
+        "name": "DLC5_ACHIEVEMENT_02",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Nubia, earn six different adjacency bonuses on a Nubian Pyramid",
+    "unlocked_display_name": "Pyramid Scheme",
+    "unlocked_icon_url": "file:///DLC5_ACHIEVEMENT_02_u"
+  },
+  "DLC5_ACHIEVEMENT_05": {
+    "achievement_id": "DLC5_ACHIEVEMENT_05",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "After building the Jebel Barkal wonder, earn 28 Faith per turn on its tile",
+    "locked_display_name": "Overclocked Conviction",
+    "locked_icon_url": "file:///DLC5_ACHIEVEMENT_05_l",
+    "stats_thresholds": {
+      "DLC5_ACHIEVEMENT_05": {
+        "name": "DLC5_ACHIEVEMENT_05",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "After building the Jebel Barkal wonder, earn 28 Faith per turn on its tile",
+    "unlocked_display_name": "Overclocked Conviction",
+    "unlocked_icon_url": "file:///DLC5_ACHIEVEMENT_05_u"
+  },
+  "DLC5_ACHIEVEMENT_06": {
+    "achievement_id": "DLC5_ACHIEVEMENT_06",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win Gifts of the Nile on any difficulty",
+    "locked_display_name": "More Wind for the Wind God",
+    "locked_icon_url": "file:///DLC5_ACHIEVEMENT_06_l",
+    "stats_thresholds": {
+      "DLC5_ACHIEVEMENT_06": {
+        "name": "DLC5_ACHIEVEMENT_06",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win Gifts of the Nile on any difficulty",
+    "unlocked_display_name": "More Wind for the Wind God",
+    "unlocked_icon_url": "file:///DLC5_ACHIEVEMENT_06_u"
+  },
+  "DLC5_ACHIEVEMENT_07": {
+    "achievement_id": "DLC5_ACHIEVEMENT_07",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing Gifts of the Nile as Egypt, win on Deity difficulty",
+    "locked_display_name": "Total A-Nile-hilation",
+    "locked_icon_url": "file:///DLC5_ACHIEVEMENT_07_l",
+    "stats_thresholds": {
+      "DLC5_ACHIEVEMENT_07": {
+        "name": "DLC5_ACHIEVEMENT_07",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing Gifts of the Nile as Egypt, win on Deity difficulty",
+    "unlocked_display_name": "Total A-Nile-hilation",
+    "unlocked_icon_url": "file:///DLC5_ACHIEVEMENT_07_u"
+  },
+  "DLC5_ACHIEVEMENT_08": {
+    "achievement_id": "DLC5_ACHIEVEMENT_08",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing Gifts of the Nile as Nubia, win on Deity difficulty",
+    "locked_display_name": "That's Some Good Kerma",
+    "locked_icon_url": "file:///DLC5_ACHIEVEMENT_08_l",
+    "stats_thresholds": {
+      "DLC5_ACHIEVEMENT_08": {
+        "name": "DLC5_ACHIEVEMENT_08",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing Gifts of the Nile as Nubia, win on Deity difficulty",
+    "unlocked_display_name": "That's Some Good Kerma",
+    "unlocked_icon_url": "file:///DLC5_ACHIEVEMENT_08_u"
+  },
+  "DLC5_ACHIEVEMENT_09": {
+    "achievement_id": "DLC5_ACHIEVEMENT_09",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing Gifts of the Nile as Nubia, found a coastal city on the Mediterranean Sea",
+    "locked_display_name": "Sea of the Bow",
+    "locked_icon_url": "file:///DLC5_ACHIEVEMENT_09_l",
+    "stats_thresholds": {
+      "DLC5_ACHIEVEMENT_09": {
+        "name": "DLC5_ACHIEVEMENT_09",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing Gifts of the Nile as Nubia, found a coastal city on the Mediterranean Sea",
+    "unlocked_display_name": "Sea of the Bow",
+    "unlocked_icon_url": "file:///DLC5_ACHIEVEMENT_09_u"
+  },
+  "DLC5_ACHIEVEMENT_10": {
+    "achievement_id": "DLC5_ACHIEVEMENT_10",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing Gifts of the Nile as Egypt, conquer Irem and Punt",
+    "locked_display_name": "From Med to Red to the Land of the Dead",
+    "locked_icon_url": "file:///DLC5_ACHIEVEMENT_10_l",
+    "stats_thresholds": {
+      "DLC5_ACHIEVEMENT_10": {
+        "name": "DLC5_ACHIEVEMENT_10",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing Gifts of the Nile as Egypt, conquer Irem and Punt",
+    "unlocked_display_name": "From Med to Red to the Land of the Dead",
+    "unlocked_icon_url": "file:///DLC5_ACHIEVEMENT_10_u"
+  },
+  "DLC5_ACHIEVEMENT_3": {
+    "achievement_id": "DLC5_ACHIEVEMENT_3",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as Egypt in a regular game, conquer the original Nubian capital within 10 turns of declaring a formal war on Nubia",
+    "locked_display_name": "Claim the Fourth Cataract",
+    "locked_icon_url": "file:///DLC5_ACHIEVEMENT_3_l",
+    "stats_thresholds": {
+      "DLC5_ACHIEVEMENT_3": {
+        "name": "DLC5_ACHIEVEMENT_3",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as Egypt in a regular game, conquer the original Nubian capital within 10 turns of declaring a formal war on Nubia",
+    "unlocked_display_name": "Claim the Fourth Cataract",
+    "unlocked_icon_url": "file:///DLC5_ACHIEVEMENT_3_u"
+  },
+  "DLC5_ACHIEVEMENT_4": {
+    "achievement_id": "DLC5_ACHIEVEMENT_4",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as Nubia, liberate the original Egyptian capital in a liberation war with the capital's conqueror",
+    "locked_display_name": "The 25th Dynasty",
+    "locked_icon_url": "file:///DLC5_ACHIEVEMENT_4_l",
+    "stats_thresholds": {
+      "DLC5_ACHIEVEMENT_4": {
+        "name": "DLC5_ACHIEVEMENT_4",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as Nubia, liberate the original Egyptian capital in a liberation war with the capital's conqueror",
+    "unlocked_display_name": "The 25th Dynasty",
+    "unlocked_icon_url": "file:///DLC5_ACHIEVEMENT_4_u"
+  },
+  "DLC6_ACHIEVEMENT_01": {
+    "achievement_id": "DLC6_ACHIEVEMENT_01",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Jayavarman VII",
+    "locked_display_name": "Cardamom and Mangos and Elephants",
+    "locked_icon_url": "file:///DLC6_ACHIEVEMENT_01_l",
+    "stats_thresholds": {
+      "DLC6_ACHIEVEMENT_01": {
+        "name": "DLC6_ACHIEVEMENT_01",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Jayavarman VII",
+    "unlocked_display_name": "Cardamom and Mangos and Elephants",
+    "unlocked_icon_url": "file:///DLC6_ACHIEVEMENT_01_u"
+  },
+  "DLC6_ACHIEVEMENT_02": {
+    "achievement_id": "DLC6_ACHIEVEMENT_02",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Gitarja",
+    "locked_display_name": "All Beneath the Wings of Garuda",
+    "locked_icon_url": "file:///DLC6_ACHIEVEMENT_02_l",
+    "stats_thresholds": {
+      "DLC6_ACHIEVEMENT_02": {
+        "name": "DLC6_ACHIEVEMENT_02",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Gitarja",
+    "unlocked_display_name": "All Beneath the Wings of Garuda",
+    "unlocked_icon_url": "file:///DLC6_ACHIEVEMENT_02_u"
+  },
+  "DLC6_ACHIEVEMENT_03": {
+    "achievement_id": "DLC6_ACHIEVEMENT_03",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win the Path to Nirvana scenario on any difficulty",
+    "locked_display_name": "What is Mind? No Matter. ",
+    "locked_icon_url": "file:///DLC6_ACHIEVEMENT_03_l",
+    "stats_thresholds": {
+      "DLC6_ACHIEVEMENT_03": {
+        "name": "DLC6_ACHIEVEMENT_03",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win the Path to Nirvana scenario on any difficulty",
+    "unlocked_display_name": "What is Mind? No Matter. ",
+    "unlocked_icon_url": "file:///DLC6_ACHIEVEMENT_03_u"
+  },
+  "DLC6_ACHIEVEMENT_04": {
+    "achievement_id": "DLC6_ACHIEVEMENT_04",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win the Path to Nirvana scenario on Deity",
+    "locked_display_name": "What is Matter? Nevermind. ",
+    "locked_icon_url": "file:///DLC6_ACHIEVEMENT_04_l",
+    "stats_thresholds": {
+      "DLC6_ACHIEVEMENT_04": {
+        "name": "DLC6_ACHIEVEMENT_04",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win the Path to Nirvana scenario on Deity",
+    "unlocked_display_name": "What is Matter? Nevermind. ",
+    "unlocked_icon_url": "file:///DLC6_ACHIEVEMENT_04_u"
+  },
+  "DLC6_ACHIEVEMENT_05": {
+    "achievement_id": "DLC6_ACHIEVEMENT_05",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Build Angkor Wat and a Wat in Angkor Wat",
+    "locked_display_name": "Wat is Love",
+    "locked_icon_url": "file:///DLC6_ACHIEVEMENT_05_l",
+    "stats_thresholds": {
+      "DLC6_ACHIEVEMENT_05": {
+        "name": "DLC6_ACHIEVEMENT_05",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Build Angkor Wat and a Wat in Angkor Wat",
+    "unlocked_display_name": "Wat is Love",
+    "unlocked_icon_url": "file:///DLC6_ACHIEVEMENT_05_u"
+  },
+  "DLC6_ACHIEVEMENT_06": {
+    "achievement_id": "DLC6_ACHIEVEMENT_06",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have 5 cities on landmasses 5 or less tiles with Indonesia",
+    "locked_display_name": "Thalassocratophile ",
+    "locked_icon_url": "file:///DLC6_ACHIEVEMENT_06_l",
+    "stats_thresholds": {
+      "DLC6_ACHIEVEMENT_06": {
+        "name": "DLC6_ACHIEVEMENT_06",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have 5 cities on landmasses 5 or less tiles with Indonesia",
+    "unlocked_display_name": "Thalassocratophile ",
+    "unlocked_icon_url": "file:///DLC6_ACHIEVEMENT_06_u"
+  },
+  "DLC6_ACHIEVEMENT_07": {
+    "achievement_id": "DLC6_ACHIEVEMENT_07",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have a Warrior Monk with 4 Promotions",
+    "locked_display_name": "Try To Snatch the Pebble From My Hand ",
+    "locked_icon_url": "file:///DLC6_ACHIEVEMENT_07_l",
+    "stats_thresholds": {
+      "DLC6_ACHIEVEMENT_07": {
+        "name": "DLC6_ACHIEVEMENT_07",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have a Warrior Monk with 4 Promotions",
+    "unlocked_display_name": "Try To Snatch the Pebble From My Hand ",
+    "unlocked_icon_url": "file:///DLC6_ACHIEVEMENT_07_u"
+  },
+  "DLC6_ACHIEVEMENT_08": {
+    "achievement_id": "DLC6_ACHIEVEMENT_08",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "With a Guru Heal 7 religious units with one action",
+    "locked_display_name": "Raid Healer",
+    "locked_icon_url": "file:///DLC6_ACHIEVEMENT_08_l",
+    "stats_thresholds": {
+      "DLC6_ACHIEVEMENT_08": {
+        "name": "DLC6_ACHIEVEMENT_08",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "With a Guru Heal 7 religious units with one action",
+    "unlocked_display_name": "Raid Healer",
+    "unlocked_icon_url": "file:///DLC6_ACHIEVEMENT_08_u"
+  },
+  "DLC6_ACHIEVEMENT_09": {
+    "achievement_id": "DLC6_ACHIEVEMENT_09",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Build all 3 Wonders in the Paths to Nirvana scenario",
+    "locked_display_name": "Many Signs and Wonders ",
+    "locked_icon_url": "file:///DLC6_ACHIEVEMENT_09_l",
+    "stats_thresholds": {
+      "DLC6_ACHIEVEMENT_09": {
+        "name": "DLC6_ACHIEVEMENT_09",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Build all 3 Wonders in the Paths to Nirvana scenario",
+    "unlocked_display_name": "Many Signs and Wonders ",
+    "unlocked_icon_url": "file:///DLC6_ACHIEVEMENT_09_u"
+  },
+  "DLC6_ACHIEVEMENT_10": {
+    "achievement_id": "DLC6_ACHIEVEMENT_10",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Convert 3 opposing Holy Cities in the Paths to Nirvana scenario",
+    "locked_display_name": "Do You Have A Moment To Talk About Salvation?",
+    "locked_icon_url": "file:///DLC6_ACHIEVEMENT_10_l",
+    "stats_thresholds": {
+      "DLC6_ACHIEVEMENT_10": {
+        "name": "DLC6_ACHIEVEMENT_10",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Convert 3 opposing Holy Cities in the Paths to Nirvana scenario",
+    "unlocked_display_name": "Do You Have A Moment To Talk About Salvation?",
+    "unlocked_icon_url": "file:///DLC6_ACHIEVEMENT_10_u"
+  },
+  "NEW_ACHIEVEMENT_2_0": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_0",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game at Settler difficulty or harder",
+    "locked_display_name": "Game, Settler, Match",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_0_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_0": {
+        "name": "NEW_ACHIEVEMENT_2_0",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game at Settler difficulty or harder",
+    "unlocked_display_name": "Game, Settler, Match",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_0_u"
+  },
+  "NEW_ACHIEVEMENT_2_1": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_1",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game at Chieftain difficulty or harder",
+    "locked_display_name": "Irish Heartbeat",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_1_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_1": {
+        "name": "NEW_ACHIEVEMENT_2_1",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game at Chieftain difficulty or harder",
+    "unlocked_display_name": "Irish Heartbeat",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_1_u"
+  },
+  "NEW_ACHIEVEMENT_2_10": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_10",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game with a Culture victory on any difficulty with any leader",
+    "locked_display_name": "Buying Your Blue Jeans and Listening to Your Pop Music",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_10_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_10": {
+        "name": "NEW_ACHIEVEMENT_2_10",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game with a Culture victory on any difficulty with any leader",
+    "unlocked_display_name": "Buying Your Blue Jeans and Listening to Your Pop Music",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_10_u"
+  },
+  "NEW_ACHIEVEMENT_2_11": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_11",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game with a Domination victory on any difficulty with any leader",
+    "locked_display_name": "Veni, vidi, vici",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_11_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_11": {
+        "name": "NEW_ACHIEVEMENT_2_11",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game with a Domination victory on any difficulty with any leader",
+    "unlocked_display_name": "Veni, vidi, vici",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_11_u"
+  },
+  "NEW_ACHIEVEMENT_2_12": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_12",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Frederick Barbarossa",
+    "locked_display_name": "Crusader King",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_12_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_12": {
+        "name": "NEW_ACHIEVEMENT_2_12",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Frederick Barbarossa",
+    "unlocked_display_name": "Crusader King",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_12_u"
+  },
+  "NEW_ACHIEVEMENT_2_13": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_13",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Catherine De Medici",
+    "locked_display_name": "Valois Dynasty",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_13_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_13": {
+        "name": "NEW_ACHIEVEMENT_2_13",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Catherine De Medici",
+    "unlocked_display_name": "Valois Dynasty",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_13_u"
+  },
+  "NEW_ACHIEVEMENT_2_14": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_14",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Cleopatra",
+    "locked_display_name": "Daughter of Isis",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_14_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_14": {
+        "name": "NEW_ACHIEVEMENT_2_14",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Cleopatra",
+    "unlocked_display_name": "Daughter of Isis",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_14_u"
+  },
+  "NEW_ACHIEVEMENT_2_15": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_15",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Gandhi",
+    "locked_display_name": "Be the Change You Wish to See In the World",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_15_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_15": {
+        "name": "NEW_ACHIEVEMENT_2_15",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Gandhi",
+    "unlocked_display_name": "Be the Change You Wish to See In the World",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_15_u"
+  },
+  "NEW_ACHIEVEMENT_2_16": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_16",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Gilgamesh",
+    "locked_display_name": "First to Civilize",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_16_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_16": {
+        "name": "NEW_ACHIEVEMENT_2_16",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Gilgamesh",
+    "unlocked_display_name": "First to Civilize",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_16_u"
+  },
+  "NEW_ACHIEVEMENT_2_17": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_17",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Gorgo",
+    "locked_display_name": "For Sparta!!!",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_17_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_17": {
+        "name": "NEW_ACHIEVEMENT_2_17",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Gorgo",
+    "unlocked_display_name": "For Sparta!!!",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_17_u"
+  },
+  "NEW_ACHIEVEMENT_2_18": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_18",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Harald Hardrada",
+    "locked_display_name": "Varangian Guard",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_18_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_18": {
+        "name": "NEW_ACHIEVEMENT_2_18",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Harald Hardrada",
+    "unlocked_display_name": "Varangian Guard",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_18_u"
+  },
+  "NEW_ACHIEVEMENT_2_19": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_19",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Hojo Tokimune",
+    "locked_display_name": "Katsu!",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_19_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_19": {
+        "name": "NEW_ACHIEVEMENT_2_19",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Hojo Tokimune",
+    "unlocked_display_name": "Katsu!",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_19_u"
+  },
+  "NEW_ACHIEVEMENT_2_2": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_2",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game at Warlord difficulty or harder",
+    "locked_display_name": "Warlording Over Others",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_2_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_2": {
+        "name": "NEW_ACHIEVEMENT_2_2",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game at Warlord difficulty or harder",
+    "unlocked_display_name": "Warlording Over Others",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_2_u"
+  },
+  "NEW_ACHIEVEMENT_2_20": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_20",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Montezuma",
+    "locked_display_name": "Montezuma's Revenge",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_20_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_20": {
+        "name": "NEW_ACHIEVEMENT_2_20",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Montezuma",
+    "unlocked_display_name": "Montezuma's Revenge",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_20_u"
+  },
+  "NEW_ACHIEVEMENT_2_21": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_21",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Mvemba a Nzinga",
+    "locked_display_name": "Mwene Kongo",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_21_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_21": {
+        "name": "NEW_ACHIEVEMENT_2_21",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Mvemba a Nzinga",
+    "unlocked_display_name": "Mwene Kongo",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_21_u"
+  },
+  "NEW_ACHIEVEMENT_2_22": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_22",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Pedro II",
+    "locked_display_name": "Emperor of Brazil",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_22_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_22": {
+        "name": "NEW_ACHIEVEMENT_2_22",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Pedro II",
+    "unlocked_display_name": "Emperor of Brazil",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_22_u"
+  },
+  "NEW_ACHIEVEMENT_2_23": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_23",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Pericles",
+    "locked_display_name": "Oratorical Skills",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_23_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_23": {
+        "name": "NEW_ACHIEVEMENT_2_23",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Pericles",
+    "unlocked_display_name": "Oratorical Skills",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_23_u"
+  },
+  "NEW_ACHIEVEMENT_2_24": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_24",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Peter the Great",
+    "locked_display_name": "Bronze Horseman",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_24_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_24": {
+        "name": "NEW_ACHIEVEMENT_2_24",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Peter the Great",
+    "unlocked_display_name": "Bronze Horseman",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_24_u"
+  },
+  "NEW_ACHIEVEMENT_2_25": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_25",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Philip II",
+    "locked_display_name": "Non Sufficit Orbis",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_25_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_25": {
+        "name": "NEW_ACHIEVEMENT_2_25",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Philip II",
+    "unlocked_display_name": "Non Sufficit Orbis",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_25_u"
+  },
+  "NEW_ACHIEVEMENT_2_26": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_26",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Qin Shi Huang",
+    "locked_display_name": "Elixir of Immortality",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_26_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_26": {
+        "name": "NEW_ACHIEVEMENT_2_26",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Qin Shi Huang",
+    "unlocked_display_name": "Elixir of Immortality",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_26_u"
+  },
+  "NEW_ACHIEVEMENT_2_27": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_27",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Saladin",
+    "locked_display_name": "Sultan of Egypt",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_27_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_27": {
+        "name": "NEW_ACHIEVEMENT_2_27",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Saladin",
+    "unlocked_display_name": "Sultan of Egypt",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_27_u"
+  },
+  "NEW_ACHIEVEMENT_2_28": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_28",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Tomyris",
+    "locked_display_name": "Warrior Queen",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_28_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_28": {
+        "name": "NEW_ACHIEVEMENT_2_28",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Tomyris",
+    "unlocked_display_name": "Warrior Queen",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_28_u"
+  },
+  "NEW_ACHIEVEMENT_2_29": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_29",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Trajan",
+    "locked_display_name": "Rome If You Want To",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_29_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_29": {
+        "name": "NEW_ACHIEVEMENT_2_29",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Trajan",
+    "unlocked_display_name": "Rome If You Want To",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_29_u"
+  },
+  "NEW_ACHIEVEMENT_2_3": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_3",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game at Prince difficulty or harder",
+    "locked_display_name": "Machiavelli's Great Work",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_3_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_3": {
+        "name": "NEW_ACHIEVEMENT_2_3",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game at Prince difficulty or harder",
+    "unlocked_display_name": "Machiavelli's Great Work",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_3_u"
+  },
+  "NEW_ACHIEVEMENT_2_30": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_30",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Theodore Roosevelt",
+    "locked_display_name": "Let Teddy Win",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_30_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_30": {
+        "name": "NEW_ACHIEVEMENT_2_30",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Theodore Roosevelt",
+    "unlocked_display_name": "Let Teddy Win",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_30_u"
+  },
+  "NEW_ACHIEVEMENT_2_31": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_31",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Victoria",
+    "locked_display_name": "I Am Amused",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_31_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_31": {
+        "name": "NEW_ACHIEVEMENT_2_31",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Victoria",
+    "unlocked_display_name": "I Am Amused",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_31_u"
+  },
+  "NEW_ACHIEVEMENT_2_4": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_4",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game at King difficulty or harder",
+    "locked_display_name": "The Divine Right of Kings",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_4_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_4": {
+        "name": "NEW_ACHIEVEMENT_2_4",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game at King difficulty or harder",
+    "unlocked_display_name": "The Divine Right of Kings",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_4_u"
+  },
+  "NEW_ACHIEVEMENT_2_5": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_5",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game at Emperor difficulty or harder",
+    "locked_display_name": "Emperor's New Groove",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_5_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_5": {
+        "name": "NEW_ACHIEVEMENT_2_5",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game at Emperor difficulty or harder",
+    "unlocked_display_name": "Emperor's New Groove",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_5_u"
+  },
+  "NEW_ACHIEVEMENT_2_6": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_6",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game at Immortal difficulty or harder",
+    "locked_display_name": "12 Labors of Hercules",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_6_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_6": {
+        "name": "NEW_ACHIEVEMENT_2_6",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game at Immortal difficulty or harder",
+    "unlocked_display_name": "12 Labors of Hercules",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_6_u"
+  },
+  "NEW_ACHIEVEMENT_2_7": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_7",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game at Deity difficulty",
+    "locked_display_name": "God-Like",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_7_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_7": {
+        "name": "NEW_ACHIEVEMENT_2_7",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game at Deity difficulty",
+    "unlocked_display_name": "God-Like",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_7_u"
+  },
+  "NEW_ACHIEVEMENT_2_8": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_8",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game with a Science victory on any difficulty with any leader",
+    "locked_display_name": "Mission to Mars",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_8_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_8": {
+        "name": "NEW_ACHIEVEMENT_2_8",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game with a Science victory on any difficulty with any leader",
+    "unlocked_display_name": "Mission to Mars",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_8_u"
+  },
+  "NEW_ACHIEVEMENT_2_9": {
+    "achievement_id": "NEW_ACHIEVEMENT_2_9",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game with a Religious victory on any difficulty with any leader",
+    "locked_display_name": "Nirvana",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_2_9_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_2_9": {
+        "name": "NEW_ACHIEVEMENT_2_9",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game with a Religious victory on any difficulty with any leader",
+    "unlocked_display_name": "Nirvana",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_2_9_u"
+  },
+  "NEW_ACHIEVEMENT_3_0": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_0",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Receive a Strategic Resource from Hattusa",
+    "locked_display_name": "Gift From the Storm God",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_0_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_0": {
+        "name": "NEW_ACHIEVEMENT_3_0",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Receive a Strategic Resource from Hattusa",
+    "unlocked_display_name": "Gift From the Storm God",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_0_u"
+  },
+  "NEW_ACHIEVEMENT_3_1": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_1",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Build a Colossal Head adjacent to a Holy Site with a Temple.",
+    "locked_display_name": "Legends of the Hidden Temple",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_1_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_1": {
+        "name": "NEW_ACHIEVEMENT_3_1",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Build a Colossal Head adjacent to a Holy Site with a Temple.",
+    "unlocked_display_name": "Legends of the Hidden Temple",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_1_u"
+  },
+  "NEW_ACHIEVEMENT_3_10": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_10",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as England on a Huge map, have a city on every continent at the start of the turn",
+    "locked_display_name": "For Queen and Country",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_10_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_10": {
+        "name": "NEW_ACHIEVEMENT_3_10",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as England on a Huge map, have a city on every continent at the start of the turn",
+    "unlocked_display_name": "For Queen and Country",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_10_u"
+  },
+  "NEW_ACHIEVEMENT_3_11": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_11",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Create 5 Châteaux in one city with the Wine resource.",
+    "locked_display_name": "Loire Valley",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_11_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_11": {
+        "name": "NEW_ACHIEVEMENT_3_11",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Create 5 Châteaux in one city with the Wine resource.",
+    "unlocked_display_name": "Loire Valley",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_11_u"
+  },
+  "NEW_ACHIEVEMENT_3_12": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_12",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as Frederick Barbarossa, conquer the city-state of Jerusalem",
+    "locked_display_name": "Third Crusade",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_12_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_12": {
+        "name": "NEW_ACHIEVEMENT_3_12",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as Frederick Barbarossa, conquer the city-state of Jerusalem",
+    "unlocked_display_name": "Third Crusade",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_12_u"
+  },
+  "NEW_ACHIEVEMENT_3_13": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_13",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have 12 Policy Slots as Greece",
+    "locked_display_name": "12 Olympians",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_13_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_13": {
+        "name": "NEW_ACHIEVEMENT_3_13",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have 12 Policy Slots as Greece",
+    "unlocked_display_name": "12 Olympians",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_13_u"
+  },
+  "NEW_ACHIEVEMENT_3_14": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_14",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as India on a Huge map, receive +35 Faith in one turn from the Satyagraha ability",
+    "locked_display_name": "Give Peace a Chance",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_14_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_14": {
+        "name": "NEW_ACHIEVEMENT_3_14",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as India on a Huge map, receive +35 Faith in one turn from the Satyagraha ability",
+    "unlocked_display_name": "Give Peace a Chance",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_14_u"
+  },
+  "NEW_ACHIEVEMENT_3_15": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_15",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as Japan, have a district with 6 adjacent unpillaged districts",
+    "locked_display_name": "Meiji Restoration",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_15_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_15": {
+        "name": "NEW_ACHIEVEMENT_3_15",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as Japan, have a district with 6 adjacent unpillaged districts",
+    "unlocked_display_name": "Meiji Restoration",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_15_u"
+  },
+  "NEW_ACHIEVEMENT_3_16": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_16",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as Kongo, have a capital city with a population of 30",
+    "locked_display_name": "City of Kongo",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_16_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_16": {
+        "name": "NEW_ACHIEVEMENT_3_16",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as Kongo, have a capital city with a population of 30",
+    "unlocked_display_name": "City of Kongo",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_16_u"
+  },
+  "NEW_ACHIEVEMENT_3_17": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_17",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Capture a settler with a Viking Longship",
+    "locked_display_name": "Viking Raid",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_17_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_17": {
+        "name": "NEW_ACHIEVEMENT_3_17",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Capture a settler with a Viking Longship",
+    "unlocked_display_name": "Viking Raid",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_17_u"
+  },
+  "NEW_ACHIEVEMENT_3_18": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_18",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Clear nuclear contamination with a Roman Legion",
+    "locked_display_name": "Missed That Day in History Class",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_18_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_18": {
+        "name": "NEW_ACHIEVEMENT_3_18",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Clear nuclear contamination with a Roman Legion",
+    "unlocked_display_name": "Missed That Day in History Class",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_18_u"
+  },
+  "NEW_ACHIEVEMENT_3_19": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_19",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as Russia, have a city that is at least 60 tiles away from your capital, connected by a Trade Route and road at the start of the turn.",
+    "locked_display_name": "Trans-Siberian Railroad",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_19_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_19": {
+        "name": "NEW_ACHIEVEMENT_3_19",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as Russia, have a city that is at least 60 tiles away from your capital, connected by a Trade Route and road at the start of the turn.",
+    "unlocked_display_name": "Trans-Siberian Railroad",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_19_u"
+  },
+  "NEW_ACHIEVEMENT_3_2": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_2",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Levy the military of Nan Madol",
+    "locked_display_name": "Army of Cthulhu",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_2_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_2": {
+        "name": "NEW_ACHIEVEMENT_3_2",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Levy the military of Nan Madol",
+    "unlocked_display_name": "Army of Cthulhu",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_2_u"
+  },
+  "NEW_ACHIEVEMENT_3_20": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_20",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as Scythia have 10 Saka Horse Archers in your army",
+    "locked_display_name": "Scythian Horse Rush",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_20_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_20": {
+        "name": "NEW_ACHIEVEMENT_3_20",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as Scythia have 10 Saka Horse Archers in your army",
+    "unlocked_display_name": "Scythian Horse Rush",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_20_u"
+  },
+  "NEW_ACHIEVEMENT_3_21": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_21",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Launch an Inquisition as Spain",
+    "locked_display_name": "Nobody Expects the Spanish Inquisition",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_21_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_21": {
+        "name": "NEW_ACHIEVEMENT_3_21",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Launch an Inquisition as Spain",
+    "unlocked_display_name": "Nobody Expects the Spanish Inquisition",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_21_u"
+  },
+  "NEW_ACHIEVEMENT_3_22": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_22",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Sumeria, have the first Great Work of Writing",
+    "locked_display_name": "Epic of Gilgamesh",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_22_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_22": {
+        "name": "NEW_ACHIEVEMENT_3_22",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Sumeria, have the first Great Work of Writing",
+    "unlocked_display_name": "Epic of Gilgamesh",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_22_u"
+  },
+  "NEW_ACHIEVEMENT_3_23": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_23",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Activate Darwin adjacent to the Galapagos Islands",
+    "locked_display_name": "The Origin of Species",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_23_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_23": {
+        "name": "NEW_ACHIEVEMENT_3_23",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Activate Darwin adjacent to the Galapagos Islands",
+    "unlocked_display_name": "The Origin of Species",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_23_u"
+  },
+  "NEW_ACHIEVEMENT_3_24": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_24",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have an Army of land Units and 2 Armadas",
+    "locked_display_name": "Oneth By Land Twoeth By Sea",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_24_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_24": {
+        "name": "NEW_ACHIEVEMENT_3_24",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have an Army of land Units and 2 Armadas",
+    "unlocked_display_name": "Oneth By Land Twoeth By Sea",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_24_u"
+  },
+  "NEW_ACHIEVEMENT_3_25": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_25",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game on a Duel Map",
+    "locked_display_name": "Here's Looking At You Kid",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_25_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_25": {
+        "name": "NEW_ACHIEVEMENT_3_25",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game on a Duel Map",
+    "unlocked_display_name": "Here's Looking At You Kid",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_25_u"
+  },
+  "NEW_ACHIEVEMENT_3_26": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_26",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game on a Tiny Map",
+    "locked_display_name": "Four Corners Offense",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_26_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_26": {
+        "name": "NEW_ACHIEVEMENT_3_26",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game on a Tiny Map",
+    "unlocked_display_name": "Four Corners Offense",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_26_u"
+  },
+  "NEW_ACHIEVEMENT_3_27": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_27",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game on a Small Map",
+    "locked_display_name": "Six Shooter",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_27_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_27": {
+        "name": "NEW_ACHIEVEMENT_3_27",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game on a Small Map",
+    "unlocked_display_name": "Six Shooter",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_27_u"
+  },
+  "NEW_ACHIEVEMENT_3_28": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_28",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game on a Standard Map",
+    "locked_display_name": "Eight is Enough",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_28_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_28": {
+        "name": "NEW_ACHIEVEMENT_3_28",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game on a Standard Map",
+    "unlocked_display_name": "Eight is Enough",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_28_u"
+  },
+  "NEW_ACHIEVEMENT_3_29": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_29",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game on a Large Map",
+    "locked_display_name": "Ten Commandments",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_29_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_29": {
+        "name": "NEW_ACHIEVEMENT_3_29",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game on a Large Map",
+    "unlocked_display_name": "Ten Commandments",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_29_u"
+  },
+  "NEW_ACHIEVEMENT_3_3": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_3",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As America make a National Park of Crater Lake and both tiles of Yosemite in one game",
+    "locked_display_name": "100th Anniversary",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_3_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_3": {
+        "name": "NEW_ACHIEVEMENT_3_3",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As America make a National Park of Crater Lake and both tiles of Yosemite in one game",
+    "unlocked_display_name": "100th Anniversary",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_3_u"
+  },
+  "NEW_ACHIEVEMENT_3_30": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_30",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game on a Huge Map",
+    "locked_display_name": "Dirty Dozen",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_30_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_30": {
+        "name": "NEW_ACHIEVEMENT_3_30",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game on a Huge Map",
+    "unlocked_display_name": "Dirty Dozen",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_30_u"
+  },
+  "NEW_ACHIEVEMENT_3_31": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_31",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game on the Continents Map",
+    "locked_display_name": "Tectonic Shift",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_31_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_31": {
+        "name": "NEW_ACHIEVEMENT_3_31",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game on the Continents Map",
+    "unlocked_display_name": "Tectonic Shift",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_31_u"
+  },
+  "NEW_ACHIEVEMENT_3_4": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_4",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Conquer a city with a Mamluk",
+    "locked_display_name": "Arabian Knights",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_4_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_4": {
+        "name": "NEW_ACHIEVEMENT_3_4",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Conquer a city with a Mamluk",
+    "unlocked_display_name": "Arabian Knights",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_4_u"
+  },
+  "NEW_ACHIEVEMENT_3_5": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_5",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Aztecs on a standard-sized map, attack an opponent while receiving a +16 Combat Strength bonus for having all of the luxuries",
+    "locked_display_name": "Huey Tlatoani",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_5_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_5": {
+        "name": "NEW_ACHIEVEMENT_3_5",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Aztecs on a standard-sized map, attack an opponent while receiving a +16 Combat Strength bonus for having all of the luxuries",
+    "unlocked_display_name": "Huey Tlatoani",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_5_u"
+  },
+  "NEW_ACHIEVEMENT_3_6": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_6",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as Brazil, complete both Estadio Do Maracana and Christo Redentor in one city",
+    "locked_display_name": "2016 Ready",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_6_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_6": {
+        "name": "NEW_ACHIEVEMENT_3_6",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as Brazil, complete both Estadio Do Maracana and Christo Redentor in one city",
+    "unlocked_display_name": "2016 Ready",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_6_u"
+  },
+  "NEW_ACHIEVEMENT_3_7": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_7",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as China, end a turn with 5 Crouching Tigers on Great Wall tiles",
+    "locked_display_name": "Crouching Tiger Hidden Cannon",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_7_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_7": {
+        "name": "NEW_ACHIEVEMENT_3_7",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as China, end a turn with 5 Crouching Tigers on Great Wall tiles",
+    "unlocked_display_name": "Crouching Tiger Hidden Cannon",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_7_u"
+  },
+  "NEW_ACHIEVEMENT_3_8": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_8",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Egypt build a Sphinx adjacent to the Pyramids both on Floodplains",
+    "locked_display_name": "Walk Like an Egyptian",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_8_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_8": {
+        "name": "NEW_ACHIEVEMENT_3_8",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Egypt build a Sphinx adjacent to the Pyramids both on Floodplains",
+    "unlocked_display_name": "Walk Like an Egyptian",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_8_u"
+  },
+  "NEW_ACHIEVEMENT_3_9": {
+    "achievement_id": "NEW_ACHIEVEMENT_3_9",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Airlift a level 3 Slinger",
+    "locked_display_name": "Flight Slingulator",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_3_9_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_3_9": {
+        "name": "NEW_ACHIEVEMENT_3_9",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Airlift a level 3 Slinger",
+    "unlocked_display_name": "Flight Slingulator",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_3_9_u"
+  },
+  "NEW_ACHIEVEMENT_4_0": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_0",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game on the Inland Sea Map",
+    "locked_display_name": "Mare Nostrum",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_0_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_0": {
+        "name": "NEW_ACHIEVEMENT_4_0",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game on the Inland Sea Map",
+    "unlocked_display_name": "Mare Nostrum",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_0_u"
+  },
+  "NEW_ACHIEVEMENT_4_1": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_1",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game on the Island Plates Map",
+    "locked_display_name": "The Taste of Victory",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_1_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_1": {
+        "name": "NEW_ACHIEVEMENT_4_1",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game on the Island Plates Map",
+    "unlocked_display_name": "The Taste of Victory",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_1_u"
+  },
+  "NEW_ACHIEVEMENT_4_10": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_10",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Steal a Great Work of Art and don't get caught",
+    "locked_display_name": "Repo Man",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_10_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_10": {
+        "name": "NEW_ACHIEVEMENT_4_10",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Steal a Great Work of Art and don't get caught",
+    "unlocked_display_name": "Repo Man",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_10_u"
+  },
+  "NEW_ACHIEVEMENT_4_11": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_11",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Build every district type in one city and the Colosseum",
+    "locked_display_name": "District 12",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_11_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_11": {
+        "name": "NEW_ACHIEVEMENT_4_11",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Build every district type in one city and the Colosseum",
+    "unlocked_display_name": "District 12",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_11_u"
+  },
+  "NEW_ACHIEVEMENT_4_12": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_12",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Play a multiplayer game",
+    "locked_display_name": "Land Party",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_12_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_12": {
+        "name": "NEW_ACHIEVEMENT_4_12",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Play a multiplayer game",
+    "unlocked_display_name": "Land Party",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_12_u"
+  },
+  "NEW_ACHIEVEMENT_4_13": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_13",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Put two units into a formation",
+    "locked_display_name": "Escort Service",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_13_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_13": {
+        "name": "NEW_ACHIEVEMENT_4_13",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Put two units into a formation",
+    "unlocked_display_name": "Escort Service",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_13_u"
+  },
+  "NEW_ACHIEVEMENT_4_14": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_14",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have 6 Improvements at one time.",
+    "locked_display_name": "If You Build It, They Will Come",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_14_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_14": {
+        "name": "NEW_ACHIEVEMENT_4_14",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have 6 Improvements at one time.",
+    "unlocked_display_name": "If You Build It, They Will Come",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_14_u"
+  },
+  "NEW_ACHIEVEMENT_4_15": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_15",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Found or conquer a city on a different continent",
+    "locked_display_name": "Voyage of the Mayflower",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_15_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_15": {
+        "name": "NEW_ACHIEVEMENT_4_15",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Found or conquer a city on a different continent",
+    "unlocked_display_name": "Voyage of the Mayflower",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_15_u"
+  },
+  "NEW_ACHIEVEMENT_4_16": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_16",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "At the start of the turn have an Ecstatic city.",
+    "locked_display_name": "Everything is Awesome!!!",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_16_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_16": {
+        "name": "NEW_ACHIEVEMENT_4_16",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "At the start of the turn have an Ecstatic city.",
+    "unlocked_display_name": "Everything is Awesome!!!",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_16_u"
+  },
+  "NEW_ACHIEVEMENT_4_17": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_17",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have an enemy city under siege at the start of the turn",
+    "locked_display_name": "Investment Banking",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_17_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_17": {
+        "name": "NEW_ACHIEVEMENT_4_17",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have an enemy city under siege at the start of the turn",
+    "unlocked_display_name": "Investment Banking",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_17_u"
+  },
+  "NEW_ACHIEVEMENT_4_18": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_18",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Declare a formal war",
+    "locked_display_name": "A Case for War",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_18_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_18": {
+        "name": "NEW_ACHIEVEMENT_4_18",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Declare a formal war",
+    "unlocked_display_name": "A Case for War",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_18_u"
+  },
+  "NEW_ACHIEVEMENT_4_19": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_19",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Name a unit",
+    "locked_display_name": "Naming Rights",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_19_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_19": {
+        "name": "NEW_ACHIEVEMENT_4_19",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Name a unit",
+    "unlocked_display_name": "Naming Rights",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_19_u"
+  },
+  "NEW_ACHIEVEMENT_4_2": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_2",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game on the Shuffle Map",
+    "locked_display_name": "Riffle and Bridge",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_2_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_2": {
+        "name": "NEW_ACHIEVEMENT_4_2",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game on the Shuffle Map",
+    "unlocked_display_name": "Riffle and Bridge",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_2_u"
+  },
+  "NEW_ACHIEVEMENT_4_20": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_20",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Change your government",
+    "locked_display_name": "A Revolution Without Dancing",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_20_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_20": {
+        "name": "NEW_ACHIEVEMENT_4_20",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Change your government",
+    "unlocked_display_name": "A Revolution Without Dancing",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_20_u"
+  },
+  "NEW_ACHIEVEMENT_4_21": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_21",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have top secret access with five civilizations in one game at once.",
+    "locked_display_name": "Secret Service",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_21_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_21": {
+        "name": "NEW_ACHIEVEMENT_4_21",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have top secret access with five civilizations in one game at once.",
+    "unlocked_display_name": "Secret Service",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_21_u"
+  },
+  "NEW_ACHIEVEMENT_4_22": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_22",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Possess 6 Silver luxury resources at the start of the turn",
+    "locked_display_name": "Silver Anniversary",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_22_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_22": {
+        "name": "NEW_ACHIEVEMENT_4_22",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Possess 6 Silver luxury resources at the start of the turn",
+    "unlocked_display_name": "Silver Anniversary",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_22_u"
+  },
+  "NEW_ACHIEVEMENT_4_23": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_23",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Become Suzerain of a City-State",
+    "locked_display_name": "New Orleans Style Spanish Rice",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_23_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_23": {
+        "name": "NEW_ACHIEVEMENT_4_23",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Become Suzerain of a City-State",
+    "unlocked_display_name": "New Orleans Style Spanish Rice",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_23_u"
+  },
+  "NEW_ACHIEVEMENT_4_24": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_24",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game with a Science victory on any difficulty with any leader with a captured Egyptian city -- having also activated Newton and Darwin",
+    "locked_display_name": "Man on the Moon",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_24_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_24": {
+        "name": "NEW_ACHIEVEMENT_4_24",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game with a Science victory on any difficulty with any leader with a captured Egyptian city -- having also activated Newton and Darwin",
+    "unlocked_display_name": "Man on the Moon",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_24_u"
+  },
+  "NEW_ACHIEVEMENT_4_25": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_25",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game with a Religious victory with your dominant religion being Zoroastrianism and at the time of victory you are the Suzerain of Zanzibar",
+    "locked_display_name": "We Are The Champions",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_25_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_25": {
+        "name": "NEW_ACHIEVEMENT_4_25",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game with a Religious victory with your dominant religion being Zoroastrianism and at the time of victory you are the Suzerain of Zanzibar",
+    "unlocked_display_name": "We Are The Champions",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_25_u"
+  },
+  "NEW_ACHIEVEMENT_4_26": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_26",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game with a Culture victory with your leader in the game as your opponent as well",
+    "locked_display_name": "Selfie",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_26_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_26": {
+        "name": "NEW_ACHIEVEMENT_4_26",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game with a Culture victory with your leader in the game as your opponent as well",
+    "unlocked_display_name": "Selfie",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_26_u"
+  },
+  "NEW_ACHIEVEMENT_4_27": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_27",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game with a Domination victory on any difficulty with any leader on a Huge Island Plates map.",
+    "locked_display_name": "Island Hopping",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_27_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_27": {
+        "name": "NEW_ACHIEVEMENT_4_27",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game with a Domination victory on any difficulty with any leader on a Huge Island Plates map.",
+    "unlocked_display_name": "Island Hopping",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_27_u"
+  },
+  "NEW_ACHIEVEMENT_4_28": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_28",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game with an Ancient Era start",
+    "locked_display_name": "The Test of Time",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_28_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_28": {
+        "name": "NEW_ACHIEVEMENT_4_28",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game with an Ancient Era start",
+    "unlocked_display_name": "The Test of Time",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_28_u"
+  },
+  "NEW_ACHIEVEMENT_4_29": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_29",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game with a Classical Era start",
+    "locked_display_name": "After Antiquity",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_29_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_29": {
+        "name": "NEW_ACHIEVEMENT_4_29",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game with a Classical Era start",
+    "unlocked_display_name": "After Antiquity",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_29_u"
+  },
+  "NEW_ACHIEVEMENT_4_3": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_3",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game on the Pangaea Map",
+    "locked_display_name": "Alfred Wegener's Legacy",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_3_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_3": {
+        "name": "NEW_ACHIEVEMENT_4_3",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game on the Pangaea Map",
+    "unlocked_display_name": "Alfred Wegener's Legacy",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_3_u"
+  },
+  "NEW_ACHIEVEMENT_4_30": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_30",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game with a Medieval Era start",
+    "locked_display_name": "Out of the Dark Ages",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_30_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_30": {
+        "name": "NEW_ACHIEVEMENT_4_30",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game with a Medieval Era start",
+    "unlocked_display_name": "Out of the Dark Ages",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_30_u"
+  },
+  "NEW_ACHIEVEMENT_4_31": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_31",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game with a Renaissance Era start",
+    "locked_display_name": "Renaissance Man",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_31_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_31": {
+        "name": "NEW_ACHIEVEMENT_4_31",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game with a Renaissance Era start",
+    "unlocked_display_name": "Renaissance Man",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_31_u"
+  },
+  "NEW_ACHIEVEMENT_4_4": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_4",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game on Fractal Map",
+    "locked_display_name": "Unique Snowflake",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_4_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_4": {
+        "name": "NEW_ACHIEVEMENT_4_4",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game on Fractal Map",
+    "unlocked_display_name": "Unique Snowflake",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_4_u"
+  },
+  "NEW_ACHIEVEMENT_4_5": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_5",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Get 5 Tech boosts in 1 turn",
+    "locked_display_name": "Archimedes Bath",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_5_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_5": {
+        "name": "NEW_ACHIEVEMENT_4_5",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Get 5 Tech boosts in 1 turn",
+    "unlocked_display_name": "Archimedes Bath",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_5_u"
+  },
+  "NEW_ACHIEVEMENT_4_6": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_6",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Get 5 Civic boosts in 1 turn",
+    "locked_display_name": "Civ 6 Civets System",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_6_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_6": {
+        "name": "NEW_ACHIEVEMENT_4_6",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Get 5 Civic boosts in 1 turn",
+    "unlocked_display_name": "Civ 6 Civets System",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_6_u"
+  },
+  "NEW_ACHIEVEMENT_4_7": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_7",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Use a bomber class unit to detonate a nuclear device, as long as its base and 9 Observation Balloons are located on the continent of Nena at the time of detonation.",
+    "locked_display_name": "Luftballons",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_7_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_7": {
+        "name": "NEW_ACHIEVEMENT_4_7",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Use a bomber class unit to detonate a nuclear device, as long as its base and 9 Observation Balloons are located on the continent of Nena at the time of detonation.",
+    "unlocked_display_name": "Luftballons",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_7_u"
+  },
+  "NEW_ACHIEVEMENT_4_8": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_8",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Activate Leonardo da Vinci in New York with Great Works from Michelangelo and Donatello -- and a sewer -- all in that city",
+    "locked_display_name": "Pizza Party!",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_8_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_8": {
+        "name": "NEW_ACHIEVEMENT_4_8",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Activate Leonardo da Vinci in New York with Great Works from Michelangelo and Donatello -- and a sewer -- all in that city",
+    "unlocked_display_name": "Pizza Party!",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_8_u"
+  },
+  "NEW_ACHIEVEMENT_4_9": {
+    "achievement_id": "NEW_ACHIEVEMENT_4_9",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Launch a weapon of mass destruction and have it pillage seven wonders",
+    "locked_display_name": "Seven Wonders of the Post-Apocalyptic World",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_4_9_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_4_9": {
+        "name": "NEW_ACHIEVEMENT_4_9",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Launch a weapon of mass destruction and have it pillage seven wonders",
+    "unlocked_display_name": "Seven Wonders of the Post-Apocalyptic World",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_4_9_u"
+  },
+  "NEW_ACHIEVEMENT_5_0": {
+    "achievement_id": "NEW_ACHIEVEMENT_5_0",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game with an Industrial Era start",
+    "locked_display_name": "Captain of Industry",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_5_0_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_5_0": {
+        "name": "NEW_ACHIEVEMENT_5_0",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game with an Industrial Era start",
+    "unlocked_display_name": "Captain of Industry",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_5_0_u"
+  },
+  "NEW_ACHIEVEMENT_5_1": {
+    "achievement_id": "NEW_ACHIEVEMENT_5_1",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game with a Modern Era start",
+    "locked_display_name": "Modern Major General",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_5_1_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_5_1": {
+        "name": "NEW_ACHIEVEMENT_5_1",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game with a Modern Era start",
+    "unlocked_display_name": "Modern Major General",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_5_1_u"
+  },
+  "NEW_ACHIEVEMENT_5_2": {
+    "achievement_id": "NEW_ACHIEVEMENT_5_2",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game with an Atomic Era start",
+    "locked_display_name": "Splitting the Atom",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_5_2_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_5_2": {
+        "name": "NEW_ACHIEVEMENT_5_2",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game with an Atomic Era start",
+    "unlocked_display_name": "Splitting the Atom",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_5_2_u"
+  },
+  "NEW_ACHIEVEMENT_5_3": {
+    "achievement_id": "NEW_ACHIEVEMENT_5_3",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game with an Information Era start",
+    "locked_display_name": "Through the Digital Age",
+    "locked_icon_url": "file:///NEW_ACHIEVEMENT_5_3_l",
+    "stats_thresholds": {
+      "NEW_ACHIEVEMENT_5_3": {
+        "name": "NEW_ACHIEVEMENT_5_3",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game with an Information Era start",
+    "unlocked_display_name": "Through the Digital Age",
+    "unlocked_icon_url": "file:///NEW_ACHIEVEMENT_5_3_u"
+  },
+  "RAF_ACHIEVEMENT_01": {
+    "achievement_id": "RAF_ACHIEVEMENT_01",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Shaka",
+    "locked_display_name": "uSuthu! uSuthu!",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_01_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_01": {
+        "name": "RAF_ACHIEVEMENT_01",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Shaka",
+    "unlocked_display_name": "uSuthu! uSuthu!",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_01_u"
+  },
+  "RAF_ACHIEVEMENT_02": {
+    "achievement_id": "RAF_ACHIEVEMENT_02",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Chandragupta",
+    "locked_display_name": "A Burning Splendor",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_02_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_02": {
+        "name": "RAF_ACHIEVEMENT_02",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Chandragupta",
+    "unlocked_display_name": "A Burning Splendor",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_02_u"
+  },
+  "RAF_ACHIEVEMENT_03": {
+    "achievement_id": "RAF_ACHIEVEMENT_03",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Queen Wilhelmina",
+    "locked_display_name": "A small Country, a great people, so sorely tried",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_03_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_03": {
+        "name": "RAF_ACHIEVEMENT_03",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Queen Wilhelmina",
+    "unlocked_display_name": "A small Country, a great people, so sorely tried",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_03_u"
+  },
+  "RAF_ACHIEVEMENT_04": {
+    "achievement_id": "RAF_ACHIEVEMENT_04",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Genghis Khan",
+    "locked_display_name": "Lord of All Who Live in Felt Tents",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_04_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_04": {
+        "name": "RAF_ACHIEVEMENT_04",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Genghis Khan",
+    "unlocked_display_name": "Lord of All Who Live in Felt Tents",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_04_u"
+  },
+  "RAF_ACHIEVEMENT_05": {
+    "achievement_id": "RAF_ACHIEVEMENT_05",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Queen Seondeok",
+    "locked_display_name": "From Peonies to Doricheon",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_05_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_05": {
+        "name": "RAF_ACHIEVEMENT_05",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Queen Seondeok",
+    "unlocked_display_name": "From Peonies to Doricheon",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_05_u"
+  },
+  "RAF_ACHIEVEMENT_06": {
+    "achievement_id": "RAF_ACHIEVEMENT_06",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Robert the Bruce",
+    "locked_display_name": "Let gentle blood shew generous might",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_06_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_06": {
+        "name": "RAF_ACHIEVEMENT_06",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Robert the Bruce",
+    "unlocked_display_name": "Let gentle blood shew generous might",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_06_u"
+  },
+  "RAF_ACHIEVEMENT_07": {
+    "achievement_id": "RAF_ACHIEVEMENT_07",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Tamar",
+    "locked_display_name": "Radiant Deeds, Bright as Sunshine",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_07_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_07": {
+        "name": "RAF_ACHIEVEMENT_07",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Tamar",
+    "unlocked_display_name": "Radiant Deeds, Bright as Sunshine",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_07_u"
+  },
+  "RAF_ACHIEVEMENT_08": {
+    "achievement_id": "RAF_ACHIEVEMENT_08",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Lautaro",
+    "locked_display_name": "Deeds of a Monarch-Scorning People",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_08_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_08": {
+        "name": "RAF_ACHIEVEMENT_08",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Lautaro",
+    "unlocked_display_name": "Deeds of a Monarch-Scorning People",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_08_u"
+  },
+  "RAF_ACHIEVEMENT_09": {
+    "achievement_id": "RAF_ACHIEVEMENT_09",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Poundmaker",
+    "locked_display_name": "Justice and Lasting Peace",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_09_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_09": {
+        "name": "RAF_ACHIEVEMENT_09",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Poundmaker",
+    "unlocked_display_name": "Justice and Lasting Peace",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_09_u"
+  },
+  "RAF_ACHIEVEMENT_10": {
+    "achievement_id": "RAF_ACHIEVEMENT_10",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game on the Archipelago Map",
+    "locked_display_name": "Master and Commander",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_10_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_10": {
+        "name": "RAF_ACHIEVEMENT_10",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game on the Archipelago Map",
+    "unlocked_display_name": "Master and Commander",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_10_u"
+  },
+  "RAF_ACHIEVEMENT_11": {
+    "achievement_id": "RAF_ACHIEVEMENT_11",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Lautaro, capture Philip II's original capital city",
+    "locked_display_name": "Reverse Colonialism",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_11_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_11": {
+        "name": "RAF_ACHIEVEMENT_11",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Lautaro, capture Philip II's original capital city",
+    "unlocked_display_name": "Reverse Colonialism",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_11_u"
+  },
+  "RAF_ACHIEVEMENT_12": {
+    "achievement_id": "RAF_ACHIEVEMENT_12",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Genghis, win a Cultural Victory",
+    "locked_display_name": "Buying your Deels and Listening to Your Throat Singing",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_12_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_12": {
+        "name": "RAF_ACHIEVEMENT_12",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Genghis, win a Cultural Victory",
+    "unlocked_display_name": "Buying your Deels and Listening to Your Throat Singing",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_12_u"
+  },
+  "RAF_ACHIEVEMENT_13": {
+    "achievement_id": "RAF_ACHIEVEMENT_13",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Wilhelmina, have seven cities and seven Zeven de Provincien at the start of the turn",
+    "locked_display_name": "Triple Seven",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_13_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_13": {
+        "name": "RAF_ACHIEVEMENT_13",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Wilhelmina, have seven cities and seven Zeven de Provincien at the start of the turn",
+    "unlocked_display_name": "Triple Seven",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_13_u"
+  },
+  "RAF_ACHIEVEMENT_14": {
+    "achievement_id": "RAF_ACHIEVEMENT_14",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Build a Golf Course in a tile where you had previously attempted to build a Wonder, but got beaten to the Wonder by another Civ",
+    "locked_display_name": "Mulligan",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_14_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_14": {
+        "name": "RAF_ACHIEVEMENT_14",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Build a Golf Course in a tile where you had previously attempted to build a Wonder, but got beaten to the Wonder by another Civ",
+    "unlocked_display_name": "Mulligan",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_14_u"
+  },
+  "RAF_ACHIEVEMENT_15": {
+    "achievement_id": "RAF_ACHIEVEMENT_15",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Poundmaker, have an active Alliance of every type",
+    "locked_display_name": "Adamantine Confederacy",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_15_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_15": {
+        "name": "RAF_ACHIEVEMENT_15",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Poundmaker, have an active Alliance of every type",
+    "unlocked_display_name": "Adamantine Confederacy",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_15_u"
+  },
+  "RAF_ACHIEVEMENT_16": {
+    "achievement_id": "RAF_ACHIEVEMENT_16",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Chandragupta, launch a nuclear weapon",
+    "locked_display_name": "I Thought We'd Moved Past This Joke",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_16_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_16": {
+        "name": "RAF_ACHIEVEMENT_16",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Chandragupta, launch a nuclear weapon",
+    "unlocked_display_name": "I Thought We'd Moved Past This Joke",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_16_u"
+  },
+  "RAF_ACHIEVEMENT_17": {
+    "achievement_id": "RAF_ACHIEVEMENT_17",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Seondeok, build a Spaceport district next to a Seowon",
+    "locked_display_name": "Advanced Seminar in Astrophysics",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_17_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_17": {
+        "name": "RAF_ACHIEVEMENT_17",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Seondeok, build a Spaceport district next to a Seowon",
+    "unlocked_display_name": "Advanced Seminar in Astrophysics",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_17_u"
+  },
+  "RAF_ACHIEVEMENT_18": {
+    "achievement_id": "RAF_ACHIEVEMENT_18",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Shaka, train a Corps of Impi using the Ikanda district",
+    "locked_display_name": "Ibutho",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_18_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_18": {
+        "name": "RAF_ACHIEVEMENT_18",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Shaka, train a Corps of Impi using the Ikanda district",
+    "unlocked_display_name": "Ibutho",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_18_u"
+  },
+  "RAF_ACHIEVEMENT_19": {
+    "achievement_id": "RAF_ACHIEVEMENT_19",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Tamar, have every city-state in the game following the religion you founded",
+    "locked_display_name": "Holy Righteous Queen Tamar",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_19_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_19": {
+        "name": "RAF_ACHIEVEMENT_19",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Tamar, have every city-state in the game following the religion you founded",
+    "unlocked_display_name": "Holy Righteous Queen Tamar",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_19_u"
+  },
+  "RAF_ACHIEVEMENT_20": {
+    "achievement_id": "RAF_ACHIEVEMENT_20",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have a Governor with every promotion",
+    "locked_display_name": "Subject Matter Expert",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_20_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_20": {
+        "name": "RAF_ACHIEVEMENT_20",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have a Governor with every promotion",
+    "unlocked_display_name": "Subject Matter Expert",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_20_u"
+  },
+  "RAF_ACHIEVEMENT_21": {
+    "achievement_id": "RAF_ACHIEVEMENT_21",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Unlock every Governor, and have them established at the same time before the game reaches the Industrial Era",
+    "locked_display_name": "Getting the Band Back Together",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_21_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_21": {
+        "name": "RAF_ACHIEVEMENT_21",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Unlock every Governor, and have them established at the same time before the game reaches the Industrial Era",
+    "unlocked_display_name": "Getting the Band Back Together",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_21_u"
+  },
+  "RAF_ACHIEVEMENT_22": {
+    "achievement_id": "RAF_ACHIEVEMENT_22",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Join or be the target of 3 Emergencies in a single game",
+    "locked_display_name": "Drama Queen",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_22_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_22": {
+        "name": "RAF_ACHIEVEMENT_22",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Join or be the target of 3 Emergencies in a single game",
+    "unlocked_display_name": "Drama Queen",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_22_u"
+  },
+  "RAF_ACHIEVEMENT_23": {
+    "achievement_id": "RAF_ACHIEVEMENT_23",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Join a Betrayal Emergency",
+    "locked_display_name": "Curse your sudden but inevitable betrayal!",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_23_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_23": {
+        "name": "RAF_ACHIEVEMENT_23",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Join a Betrayal Emergency",
+    "unlocked_display_name": "Curse your sudden but inevitable betrayal!",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_23_u"
+  },
+  "RAF_ACHIEVEMENT_24": {
+    "achievement_id": "RAF_ACHIEVEMENT_24",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As France, build an Intelligence Agency",
+    "locked_display_name": "Blackest Queen",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_24_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_24": {
+        "name": "RAF_ACHIEVEMENT_24",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As France, build an Intelligence Agency",
+    "unlocked_display_name": "Blackest Queen",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_24_u"
+  },
+  "RAF_ACHIEVEMENT_25": {
+    "achievement_id": "RAF_ACHIEVEMENT_25",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Achieve the maximum Alliance level with Gilgamesh",
+    "locked_display_name": "Bromance",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_25_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_25": {
+        "name": "RAF_ACHIEVEMENT_25",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Achieve the maximum Alliance level with Gilgamesh",
+    "unlocked_display_name": "Bromance",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_25_u"
+  },
+  "RAF_ACHIEVEMENT_26": {
+    "achievement_id": "RAF_ACHIEVEMENT_26",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Neutralize a Governor with a Spy",
+    "locked_display_name": "Die Another Day",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_26_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_26": {
+        "name": "RAF_ACHIEVEMENT_26",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Neutralize a Governor with a Spy",
+    "unlocked_display_name": "Die Another Day",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_26_u"
+  },
+  "RAF_ACHIEVEMENT_27": {
+    "achievement_id": "RAF_ACHIEVEMENT_27",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Build a Fishery adjacent to the Great Barrier Reef",
+    "locked_display_name": "Circle of Life",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_27_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_27": {
+        "name": "RAF_ACHIEVEMENT_27",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Build a Fishery adjacent to the Great Barrier Reef",
+    "unlocked_display_name": "Circle of Life",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_27_u"
+  },
+  "RAF_ACHIEVEMENT_28": {
+    "achievement_id": "RAF_ACHIEVEMENT_28",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Make a peace deal which includes you giving or receiving an Olives resource",
+    "locked_display_name": "Extend the Olive Branch",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_28_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_28": {
+        "name": "RAF_ACHIEVEMENT_28",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Make a peace deal which includes you giving or receiving an Olives resource",
+    "unlocked_display_name": "Extend the Olive Branch",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_28_u"
+  },
+  "RAF_ACHIEVEMENT_29": {
+    "achievement_id": "RAF_ACHIEVEMENT_29",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have 10 Shopping Malls in your civilization at the same time",
+    "locked_display_name": "Shopping Spree",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_29_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_29": {
+        "name": "RAF_ACHIEVEMENT_29",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have 10 Shopping Malls in your civilization at the same time",
+    "unlocked_display_name": "Shopping Spree",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_29_u"
+  },
+  "RAF_ACHIEVEMENT_30": {
+    "achievement_id": "RAF_ACHIEVEMENT_30",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Assign a Dark Policy to your Government",
+    "locked_display_name": "Desperate Times Call For Desperate Measures",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_30_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_30": {
+        "name": "RAF_ACHIEVEMENT_30",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Assign a Dark Policy to your Government",
+    "unlocked_display_name": "Desperate Times Call For Desperate Measures",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_30_u"
+  },
+  "RAF_ACHIEVEMENT_31": {
+    "achievement_id": "RAF_ACHIEVEMENT_31",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Gain control of an Ally's city after it becomes disloyal, and choose to keep it",
+    "locked_display_name": "Frenemy",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_31_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_31": {
+        "name": "RAF_ACHIEVEMENT_31",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Gain control of an Ally's city after it becomes disloyal, and choose to keep it",
+    "unlocked_display_name": "Frenemy",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_31_u"
+  },
+  "RAF_ACHIEVEMENT_32": {
+    "achievement_id": "RAF_ACHIEVEMENT_32",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Be the first player to circumnavigate the world after Ferdinand Magellan has been recruited by another player",
+    "locked_display_name": "Elcano's Revenge",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_32_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_32": {
+        "name": "RAF_ACHIEVEMENT_32",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Be the first player to circumnavigate the world after Ferdinand Magellan has been recruited by another player",
+    "unlocked_display_name": "Elcano's Revenge",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_32_u"
+  },
+  "RAF_ACHIEVEMENT_33": {
+    "achievement_id": "RAF_ACHIEVEMENT_33",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win the game while in a Dark Age",
+    "locked_display_name": "Dark Horse",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_33_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_33": {
+        "name": "RAF_ACHIEVEMENT_33",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win the game while in a Dark Age",
+    "unlocked_display_name": "Dark Horse",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_33_u"
+  },
+  "RAF_ACHIEVEMENT_34": {
+    "achievement_id": "RAF_ACHIEVEMENT_34",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As England, lose a city to disloyalty which has an established Financier Governor",
+    "locked_display_name": "Taxation Without Representation",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_34_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_34": {
+        "name": "RAF_ACHIEVEMENT_34",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As England, lose a city to disloyalty which has an established Financier Governor",
+    "unlocked_display_name": "Taxation Without Representation",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_34_u"
+  },
+  "RAF_ACHIEVEMENT_35": {
+    "achievement_id": "RAF_ACHIEVEMENT_35",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Achieve a Heroic Age",
+    "locked_display_name": "Victory Belongs to the Most Persevering",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_35_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_35": {
+        "name": "RAF_ACHIEVEMENT_35",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Achieve a Heroic Age",
+    "unlocked_display_name": "Victory Belongs to the Most Persevering",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_35_u"
+  },
+  "RAF_ACHIEVEMENT_36": {
+    "achievement_id": "RAF_ACHIEVEMENT_36",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Earn three Golden Ages in a row",
+    "locked_display_name": "I'm going to break the wheel",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_36_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_36": {
+        "name": "RAF_ACHIEVEMENT_36",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Earn three Golden Ages in a row",
+    "unlocked_display_name": "I'm going to break the wheel",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_36_u"
+  },
+  "RAF_ACHIEVEMENT_37": {
+    "achievement_id": "RAF_ACHIEVEMENT_37",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have an improved Amber resource in a city with a Zoo and an Archaeological Museum at the start of the turn",
+    "locked_display_name": "What Could Possibly Go Wrong?",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_37_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_37": {
+        "name": "RAF_ACHIEVEMENT_37",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have an improved Amber resource in a city with a Zoo and an Archaeological Museum at the start of the turn",
+    "unlocked_display_name": "What Could Possibly Go Wrong?",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_37_u"
+  },
+  "RAF_ACHIEVEMENT_38": {
+    "achievement_id": "RAF_ACHIEVEMENT_38",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Completely surround your Government Plaza with districts or wonders you own at the start of the turn",
+    "locked_display_name": "Metroplex",
+    "locked_icon_url": "file:///RAF_ACHIEVEMENT_38_l",
+    "stats_thresholds": {
+      "RAF_ACHIEVEMENT_38": {
+        "name": "RAF_ACHIEVEMENT_38",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Completely surround your Government Plaza with districts or wonders you own at the start of the turn",
+    "unlocked_display_name": "Metroplex",
+    "unlocked_icon_url": "file:///RAF_ACHIEVEMENT_38_u"
+  },
+  "ROYALE_ACHIEVEMENT_01": {
+    "achievement_id": "ROYALE_ACHIEVEMENT_01",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win the Red Death scenario",
+    "locked_display_name": "The Test of Royale",
+    "locked_icon_url": "file:///ROYALE_ACHIEVEMENT_01_l",
+    "stats_thresholds": {
+      "ROYALE_ACHIEVEMENT_01": {
+        "name": "ROYALE_ACHIEVEMENT_01",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win the Red Death scenario",
+    "unlocked_display_name": "The Test of Royale",
+    "unlocked_icon_url": "file:///ROYALE_ACHIEVEMENT_01_u"
+  },
+  "ROYALE_ACHIEVEMENT_02": {
+    "achievement_id": "ROYALE_ACHIEVEMENT_02",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Nuclear Strike another faction in the Red Death scenario",
+    "locked_display_name": "Do Unto Others",
+    "locked_icon_url": "file:///ROYALE_ACHIEVEMENT_02_l",
+    "stats_thresholds": {
+      "ROYALE_ACHIEVEMENT_02": {
+        "name": "ROYALE_ACHIEVEMENT_02",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Nuclear Strike another faction in the Red Death scenario",
+    "unlocked_display_name": "Do Unto Others",
+    "unlocked_icon_url": "file:///ROYALE_ACHIEVEMENT_02_u"
+  },
+  "ROYALE_ACHIEVEMENT_03": {
+    "achievement_id": "ROYALE_ACHIEVEMENT_03",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Get nuked by another faction in the Red Death scenario",
+    "locked_display_name": "Have Them Do Unto You",
+    "locked_icon_url": "file:///ROYALE_ACHIEVEMENT_03_l",
+    "stats_thresholds": {
+      "ROYALE_ACHIEVEMENT_03": {
+        "name": "ROYALE_ACHIEVEMENT_03",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Get nuked by another faction in the Red Death scenario",
+    "unlocked_display_name": "Have Them Do Unto You",
+    "unlocked_icon_url": "file:///ROYALE_ACHIEVEMENT_03_u"
+  },
+  "ROYALE_ACHIEVEMENT_04": {
+    "achievement_id": "ROYALE_ACHIEVEMENT_04",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Claim a Supply Drop in the Red Death scenario",
+    "locked_display_name": "Reinforcements Have Arrived",
+    "locked_icon_url": "file:///ROYALE_ACHIEVEMENT_04_l",
+    "stats_thresholds": {
+      "ROYALE_ACHIEVEMENT_04": {
+        "name": "ROYALE_ACHIEVEMENT_04",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Claim a Supply Drop in the Red Death scenario",
+    "unlocked_display_name": "Reinforcements Have Arrived",
+    "unlocked_icon_url": "file:///ROYALE_ACHIEVEMENT_04_u"
+  },
+  "ROYALE_ACHIEVEMENT_05": {
+    "achievement_id": "ROYALE_ACHIEVEMENT_05",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Lose your last Civilian within the first ten turns in the Red Death scenario",
+    "locked_display_name": "The Good Die Young",
+    "locked_icon_url": "file:///ROYALE_ACHIEVEMENT_05_l",
+    "stats_thresholds": {
+      "ROYALE_ACHIEVEMENT_05": {
+        "name": "ROYALE_ACHIEVEMENT_05",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Lose your last Civilian within the first ten turns in the Red Death scenario",
+    "unlocked_display_name": "The Good Die Young",
+    "unlocked_icon_url": "file:///ROYALE_ACHIEVEMENT_05_u"
+  },
+  "STK1_ACHIEVEMENT_01": {
+    "achievement_id": "STK1_ACHIEVEMENT_01",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Lady Six Sky.",
+    "locked_display_name": "The stars are right",
+    "locked_icon_url": "file:///STK1_ACHIEVEMENT_01_l",
+    "stats_thresholds": {
+      "STK1_ACHIEVEMENT_01": {
+        "name": "STK1_ACHIEVEMENT_01",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Lady Six Sky.",
+    "unlocked_display_name": "The stars are right",
+    "unlocked_icon_url": "file:///STK1_ACHIEVEMENT_01_u"
+  },
+  "STK1_ACHIEVEMENT_02": {
+    "achievement_id": "STK1_ACHIEVEMENT_02",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a regular game as Simón Bolívar.",
+    "locked_display_name": "El Libertador",
+    "locked_icon_url": "file:///STK1_ACHIEVEMENT_02_l",
+    "stats_thresholds": {
+      "STK1_ACHIEVEMENT_02": {
+        "name": "STK1_ACHIEVEMENT_02",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a regular game as Simón Bolívar.",
+    "unlocked_display_name": "El Libertador",
+    "unlocked_icon_url": "file:///STK1_ACHIEVEMENT_02_u"
+  },
+  "STK1_ACHIEVEMENT_03": {
+    "achievement_id": "STK1_ACHIEVEMENT_03",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As the Maya found a settlement adjacent to 4 luxury resources.",
+    "locked_display_name": "Court of Itzamna",
+    "locked_icon_url": "file:///STK1_ACHIEVEMENT_03_l",
+    "stats_thresholds": {
+      "STK1_ACHIEVEMENT_03": {
+        "name": "STK1_ACHIEVEMENT_03",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As the Maya found a settlement adjacent to 4 luxury resources.",
+    "unlocked_display_name": "Court of Itzamna",
+    "unlocked_icon_url": "file:///STK1_ACHIEVEMENT_03_u"
+  },
+  "STK1_ACHIEVEMENT_04": {
+    "achievement_id": "STK1_ACHIEVEMENT_04",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Simón Bolívar activate all the Comandante Generals across multiple games.",
+    "locked_display_name": "To plow the sea",
+    "locked_icon_url": "file:///STK1_ACHIEVEMENT_04_l",
+    "stats_thresholds": {
+      "STK1_ACHIEVEMENT_04": {
+        "name": "STK1_ACHIEVEMENT_04",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Simón Bolívar activate all the Comandante Generals across multiple games.",
+    "unlocked_display_name": "To plow the sea",
+    "unlocked_icon_url": "file:///STK1_ACHIEVEMENT_04_u"
+  },
+  "STK1_ACHIEVEMENT_05": {
+    "achievement_id": "STK1_ACHIEVEMENT_05",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win any Victory with Megadisasters enabled.",
+    "locked_display_name": "I'll melt with you",
+    "locked_icon_url": "file:///STK1_ACHIEVEMENT_05_l",
+    "stats_thresholds": {
+      "STK1_ACHIEVEMENT_05": {
+        "name": "STK1_ACHIEVEMENT_05",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win any Victory with Megadisasters enabled.",
+    "unlocked_display_name": "I'll melt with you",
+    "unlocked_icon_url": "file:///STK1_ACHIEVEMENT_05_u"
+  },
+  "STK1_ACHIEVEMENT_06": {
+    "achievement_id": "STK1_ACHIEVEMENT_06",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Be the last person standing after comets begin falling.",
+    "locked_display_name": "The end of the world as we know it",
+    "locked_icon_url": "file:///STK1_ACHIEVEMENT_06_l",
+    "stats_thresholds": {
+      "STK1_ACHIEVEMENT_06": {
+        "name": "STK1_ACHIEVEMENT_06",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Be the last person standing after comets begin falling.",
+    "unlocked_display_name": "The end of the world as we know it",
+    "unlocked_icon_url": "file:///STK1_ACHIEVEMENT_06_u"
+  },
+  "STK1_ACHIEVEMENT_07": {
+    "achievement_id": "STK1_ACHIEVEMENT_07",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Use a max-promotions Soothsayer to sacrifice a max-promotions GDR.",
+    "locked_display_name": "The accursed share",
+    "locked_icon_url": "file:///STK1_ACHIEVEMENT_07_l",
+    "stats_thresholds": {
+      "STK1_ACHIEVEMENT_07": {
+        "name": "STK1_ACHIEVEMENT_07",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Use a max-promotions Soothsayer to sacrifice a max-promotions GDR.",
+    "unlocked_display_name": "The accursed share",
+    "unlocked_icon_url": "file:///STK1_ACHIEVEMENT_07_u"
+  },
+  "VSV_ACHIEVEMENT_01": {
+    "achievement_id": "VSV_ACHIEVEMENT_01",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a game as Mansa Musa",
+    "locked_display_name": "Treasures of Heaven and Earth",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_01_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_01": {
+        "name": "VSV_ACHIEVEMENT_01",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a game as Mansa Musa",
+    "unlocked_display_name": "Treasures of Heaven and Earth",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_01_u"
+  },
+  "VSV_ACHIEVEMENT_02": {
+    "achievement_id": "VSV_ACHIEVEMENT_02",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a game as Pachacuti",
+    "locked_display_name": "Lord of Tahuantinsuyo",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_02_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_02": {
+        "name": "VSV_ACHIEVEMENT_02",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a game as Pachacuti",
+    "unlocked_display_name": "Lord of Tahuantinsuyo",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_02_u"
+  },
+  "VSV_ACHIEVEMENT_03": {
+    "achievement_id": "VSV_ACHIEVEMENT_03",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a game as Dido",
+    "locked_display_name": "Queen of the Byrsa",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_03_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_03": {
+        "name": "VSV_ACHIEVEMENT_03",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a game as Dido",
+    "unlocked_display_name": "Queen of the Byrsa",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_03_u"
+  },
+  "VSV_ACHIEVEMENT_04": {
+    "achievement_id": "VSV_ACHIEVEMENT_04",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a game as Suleiman The Magnificent",
+    "locked_display_name": "Padishah Efendim",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_04_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_04": {
+        "name": "VSV_ACHIEVEMENT_04",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a game as Suleiman The Magnificent",
+    "unlocked_display_name": "Padishah Efendim",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_04_u"
+  },
+  "VSV_ACHIEVEMENT_05": {
+    "achievement_id": "VSV_ACHIEVEMENT_05",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a game as Kristina",
+    "locked_display_name": "Literally Playable",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_05_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_05": {
+        "name": "VSV_ACHIEVEMENT_05",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a game as Kristina",
+    "unlocked_display_name": "Literally Playable",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_05_u"
+  },
+  "VSV_ACHIEVEMENT_06": {
+    "achievement_id": "VSV_ACHIEVEMENT_06",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a game as Wilfrid Laurier",
+    "locked_display_name": "The Sunny Way",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_06_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_06": {
+        "name": "VSV_ACHIEVEMENT_06",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a game as Wilfrid Laurier",
+    "unlocked_display_name": "The Sunny Way",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_06_u"
+  },
+  "VSV_ACHIEVEMENT_07": {
+    "achievement_id": "VSV_ACHIEVEMENT_07",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a game as Eleanor of Aquitaine",
+    "locked_display_name": "Majestrix of the Court of Love",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_07_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_07": {
+        "name": "VSV_ACHIEVEMENT_07",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a game as Eleanor of Aquitaine",
+    "unlocked_display_name": "Majestrix of the Court of Love",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_07_u"
+  },
+  "VSV_ACHIEVEMENT_08": {
+    "achievement_id": "VSV_ACHIEVEMENT_08",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a game as Matthias Corvinus",
+    "locked_display_name": "The Laurels of Virtues and Letters",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_08_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_08": {
+        "name": "VSV_ACHIEVEMENT_08",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a game as Matthias Corvinus",
+    "unlocked_display_name": "The Laurels of Virtues and Letters",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_08_u"
+  },
+  "VSV_ACHIEVEMENT_09": {
+    "achievement_id": "VSV_ACHIEVEMENT_09",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a game as Kupe",
+    "locked_display_name": "Tu Meke",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_09_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_09": {
+        "name": "VSV_ACHIEVEMENT_09",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a game as Kupe",
+    "unlocked_display_name": "Tu Meke",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_09_u"
+  },
+  "VSV_ACHIEVEMENT_10": {
+    "achievement_id": "VSV_ACHIEVEMENT_10",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a Diplomatic Victory",
+    "locked_display_name": "The Art of Telling Plain Truths",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_10_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_10": {
+        "name": "VSV_ACHIEVEMENT_10",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a Diplomatic Victory",
+    "unlocked_display_name": "The Art of Telling Plain Truths",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_10_u"
+  },
+  "VSV_ACHIEVEMENT_11": {
+    "achievement_id": "VSV_ACHIEVEMENT_11",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Playing as Russia, conquer a city with an Ice Hockey rink",
+    "locked_display_name": "Rivals on Ice",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_11_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_11": {
+        "name": "VSV_ACHIEVEMENT_11",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Playing as Russia, conquer a city with an Ice Hockey rink",
+    "unlocked_display_name": "Rivals on Ice",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_11_u"
+  },
+  "VSV_ACHIEVEMENT_12": {
+    "achievement_id": "VSV_ACHIEVEMENT_12",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Use two cities and the Panama Canal to make 7 contiguous land tiles passable by ships",
+    "locked_display_name": "Sid Meier's Ditchdigging Simulator",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_12_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_12": {
+        "name": "VSV_ACHIEVEMENT_12",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Use two cities and the Panama Canal to make 7 contiguous land tiles passable by ships",
+    "unlocked_display_name": "Sid Meier's Ditchdigging Simulator",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_12_u"
+  },
+  "VSV_ACHIEVEMENT_13": {
+    "achievement_id": "VSV_ACHIEVEMENT_13",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have a Canal, Dam, Aqueduct, Railroad, Golden Gate Bridge, and Mountain Tunnel in a city",
+    "locked_display_name": "An Engineer's Dream",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_13_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_13": {
+        "name": "VSV_ACHIEVEMENT_13",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have a Canal, Dam, Aqueduct, Railroad, Golden Gate Bridge, and Mountain Tunnel in a city",
+    "unlocked_display_name": "An Engineer's Dream",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_13_u"
+  },
+  "VSV_ACHIEVEMENT_14": {
+    "achievement_id": "VSV_ACHIEVEMENT_14",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have a fully upgraded Giant Death Robot capture a city",
+    "locked_display_name": "When Diplomacy Fails",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_14_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_14": {
+        "name": "VSV_ACHIEVEMENT_14",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have a fully upgraded Giant Death Robot capture a city",
+    "unlocked_display_name": "When Diplomacy Fails",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_14_u"
+  },
+  "VSV_ACHIEVEMENT_15": {
+    "achievement_id": "VSV_ACHIEVEMENT_15",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Build the Panama Canal as Teddy Roosevelt",
+    "locked_display_name": "A Man A Plan A Canal Panama",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_15_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_15": {
+        "name": "VSV_ACHIEVEMENT_15",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Build the Panama Canal as Teddy Roosevelt",
+    "unlocked_display_name": "A Man A Plan A Canal Panama",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_15_u"
+  },
+  "VSV_ACHIEVEMENT_16": {
+    "achievement_id": "VSV_ACHIEVEMENT_16",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Move a military unit into an enemy's owned tile using a Mountain Tunnel (or Qhapaq Nan)",
+    "locked_display_name": "Surprise Attack",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_16_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_16": {
+        "name": "VSV_ACHIEVEMENT_16",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Move a military unit into an enemy's owned tile using a Mountain Tunnel (or Qhapaq Nan)",
+    "unlocked_display_name": "Surprise Attack",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_16_u"
+  },
+  "VSV_ACHIEVEMENT_17": {
+    "achievement_id": "VSV_ACHIEVEMENT_17",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have one of your Rock Band units perform a concert adjacent to a Maori Pa unique improvement",
+    "locked_display_name": "One Tree Hill",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_17_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_17": {
+        "name": "VSV_ACHIEVEMENT_17",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have one of your Rock Band units perform a concert adjacent to a Maori Pa unique improvement",
+    "unlocked_display_name": "One Tree Hill",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_17_u"
+  },
+  "VSV_ACHIEVEMENT_18": {
+    "achievement_id": "VSV_ACHIEVEMENT_18",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have Stonehenge become submerged due to Coastal Flooding",
+    "locked_display_name": "Seahenge",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_18_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_18": {
+        "name": "VSV_ACHIEVEMENT_18",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have Stonehenge become submerged due to Coastal Flooding",
+    "unlocked_display_name": "Seahenge",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_18_u"
+  },
+  "VSV_ACHIEVEMENT_19": {
+    "achievement_id": "VSV_ACHIEVEMENT_19",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have no cities following your religion then convert a city to your religion using a Rock Band unit",
+    "locked_display_name": "Rock God",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_19_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_19": {
+        "name": "VSV_ACHIEVEMENT_19",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have no cities following your religion then convert a city to your religion using a Rock Band unit",
+    "unlocked_display_name": "Rock God",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_19_u"
+  },
+  "VSV_ACHIEVEMENT_20": {
+    "achievement_id": "VSV_ACHIEVEMENT_20",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Achieve first place in all three Nobel Prizes in the same game",
+    "locked_display_name": "Nobel-er than the Noblest",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_20_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_20": {
+        "name": "VSV_ACHIEVEMENT_20",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Achieve first place in all three Nobel Prizes in the same game",
+    "unlocked_display_name": "Nobel-er than the Noblest",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_20_u"
+  },
+  "VSV_ACHIEVEMENT_21": {
+    "achievement_id": "VSV_ACHIEVEMENT_21",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win a Diplomatic Victory Resolution and use it to reduce another player's progress toward that victory",
+    "locked_display_name": "Airing Your Grievances",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_21_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_21": {
+        "name": "VSV_ACHIEVEMENT_21",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win a Diplomatic Victory Resolution and use it to reduce another player's progress toward that victory",
+    "unlocked_display_name": "Airing Your Grievances",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_21_u"
+  },
+  "VSV_ACHIEVEMENT_22": {
+    "achievement_id": "VSV_ACHIEVEMENT_22",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Wilfrid Laurier, successfully complete an Emergency",
+    "locked_display_name": "Peacekeeper",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_22_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_22": {
+        "name": "VSV_ACHIEVEMENT_22",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Wilfrid Laurier, successfully complete an Emergency",
+    "unlocked_display_name": "Peacekeeper",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_22_u"
+  },
+  "VSV_ACHIEVEMENT_23": {
+    "achievement_id": "VSV_ACHIEVEMENT_23",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Hungary, have Christianity as your dominant religion and defeat a unit whose Civilization's dominant religion is not Christianity",
+    "locked_display_name": "Shield of Christianity",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_23_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_23": {
+        "name": "VSV_ACHIEVEMENT_23",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Hungary, have Christianity as your dominant religion and defeat a unit whose Civilization's dominant religion is not Christianity",
+    "unlocked_display_name": "Shield of Christianity",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_23_u"
+  },
+  "VSV_ACHIEVEMENT_24": {
+    "achievement_id": "VSV_ACHIEVEMENT_24",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Pachacuti, construct a Terrace Farm that is adjacent to 2 Aqueducts and 4 Mountains",
+    "locked_display_name": "Po-tay-toes!",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_24_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_24": {
+        "name": "VSV_ACHIEVEMENT_24",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Pachacuti, construct a Terrace Farm that is adjacent to 2 Aqueducts and 4 Mountains",
+    "unlocked_display_name": "Po-tay-toes!",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_24_u"
+  },
+  "VSV_ACHIEVEMENT_25": {
+    "achievement_id": "VSV_ACHIEVEMENT_25",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As the Maori, have a Maori Toa discover the Ngauruhoe volcano",
+    "locked_display_name": "One does not simply walk into Ngauruhoe",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_25_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_25": {
+        "name": "VSV_ACHIEVEMENT_25",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As the Maori, have a Maori Toa discover the Ngauruhoe volcano",
+    "unlocked_display_name": "One does not simply walk into Ngauruhoe",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_25_u"
+  },
+  "VSV_ACHIEVEMENT_26": {
+    "achievement_id": "VSV_ACHIEVEMENT_26",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Mansa Musa, send a Trade Route to Mecca that gives the sending player at least 30 gold",
+    "locked_display_name": "Hajj",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_26_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_26": {
+        "name": "VSV_ACHIEVEMENT_26",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Mansa Musa, send a Trade Route to Mecca that gives the sending player at least 30 gold",
+    "unlocked_display_name": "Hajj",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_26_u"
+  },
+  "VSV_ACHIEVEMENT_27": {
+    "achievement_id": "VSV_ACHIEVEMENT_27",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Dido, complete the Move Capital project on 4 different continents",
+    "locked_display_name": "Purple Reign",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_27_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_27": {
+        "name": "VSV_ACHIEVEMENT_27",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Dido, complete the Move Capital project on 4 different continents",
+    "unlocked_display_name": "Purple Reign",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_27_u"
+  },
+  "VSV_ACHIEVEMENT_28": {
+    "achievement_id": "VSV_ACHIEVEMENT_28",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As the Ottomans, capture another Civilization's capital and then rename it",
+    "locked_display_name": "Nobody's Business But the Turks",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_28_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_28": {
+        "name": "VSV_ACHIEVEMENT_28",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As the Ottomans, capture another Civilization's capital and then rename it",
+    "unlocked_display_name": "Nobody's Business But the Turks",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_28_u"
+  },
+  "VSV_ACHIEVEMENT_29": {
+    "achievement_id": "VSV_ACHIEVEMENT_29",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Kristina, at the start of a turn have cities in five different terrain types (Snow, Tundra, Desert, Plains and Grassland) and have Open Air Museums in all of them",
+    "locked_display_name": "Smörgåsbord",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_29_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_29": {
+        "name": "VSV_ACHIEVEMENT_29",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Kristina, at the start of a turn have cities in five different terrain types (Snow, Tundra, Desert, Plains and Grassland) and have Open Air Museums in all of them",
+    "unlocked_display_name": "Smörgåsbord",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_29_u"
+  },
+  "VSV_ACHIEVEMENT_30": {
+    "achievement_id": "VSV_ACHIEVEMENT_30",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Eleanor, gain a city to loyalty that was owned by a different civilization with Eleanor as its leader",
+    "locked_display_name": "Meet the New Boss, Same as the Old Boss",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_30_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_30": {
+        "name": "VSV_ACHIEVEMENT_30",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Eleanor, gain a city to loyalty that was owned by a different civilization with Eleanor as its leader",
+    "unlocked_display_name": "Meet the New Boss, Same as the Old Boss",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_30_u"
+  },
+  "VSV_ACHIEVEMENT_31": {
+    "achievement_id": "VSV_ACHIEVEMENT_31",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have a city with a Wind Farm, Solar Farm, Hydroelectric Dam, and Geothermal Plant",
+    "locked_display_name": "Let Our Powers Combine – Wait Heart is Missing!",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_31_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_31": {
+        "name": "VSV_ACHIEVEMENT_31",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have a city with a Wind Farm, Solar Farm, Hydroelectric Dam, and Geothermal Plant",
+    "unlocked_display_name": "Let Our Powers Combine – Wait Heart is Missing!",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_31_u"
+  },
+  "VSV_ACHIEVEMENT_32": {
+    "achievement_id": "VSV_ACHIEVEMENT_32",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Complete the Carbon Recapture project 10 times during a single game",
+    "locked_display_name": "Toward Carbon Neutrality",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_32_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_32": {
+        "name": "VSV_ACHIEVEMENT_32",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Complete the Carbon Recapture project 10 times during a single game",
+    "unlocked_display_name": "Toward Carbon Neutrality",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_32_u"
+  },
+  "VSV_ACHIEVEMENT_33": {
+    "achievement_id": "VSV_ACHIEVEMENT_33",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Be the first to complete all the technologies in the Future Era in a game with 8 or more players",
+    "locked_display_name": "Future is Now",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_33_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_33": {
+        "name": "VSV_ACHIEVEMENT_33",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Be the first to complete all the technologies in the Future Era in a game with 8 or more players",
+    "unlocked_display_name": "Future is Now",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_33_u"
+  },
+  "VSV_ACHIEVEMENT_34": {
+    "achievement_id": "VSV_ACHIEVEMENT_34",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have your Roman city lose 6 population from one Vesuvius eruption",
+    "locked_display_name": "And the Walls Kept Tumbling Down",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_34_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_34": {
+        "name": "VSV_ACHIEVEMENT_34",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have your Roman city lose 6 population from one Vesuvius eruption",
+    "unlocked_display_name": "And the Walls Kept Tumbling Down",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_34_u"
+  },
+  "VSV_ACHIEVEMENT_35": {
+    "achievement_id": "VSV_ACHIEVEMENT_35",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Have a district be pillaged by 3 different random events",
+    "locked_display_name": "Real Estate Disclosures Required",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_35_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_35": {
+        "name": "VSV_ACHIEVEMENT_35",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Have a district be pillaged by 3 different random events",
+    "unlocked_display_name": "Real Estate Disclosures Required",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_35_u"
+  },
+  "VSV_ACHIEVEMENT_36": {
+    "achievement_id": "VSV_ACHIEVEMENT_36",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win the Black Death as England",
+    "locked_display_name": "Eat, Drink and Be Merry",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_36_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_36": {
+        "name": "VSV_ACHIEVEMENT_36",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win the Black Death as England",
+    "unlocked_display_name": "Eat, Drink and Be Merry",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_36_u"
+  },
+  "VSV_ACHIEVEMENT_37": {
+    "achievement_id": "VSV_ACHIEVEMENT_37",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win the Black Death as France",
+    "locked_display_name": "Santé Passe Richesse",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_37_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_37": {
+        "name": "VSV_ACHIEVEMENT_37",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win the Black Death as France",
+    "unlocked_display_name": "Santé Passe Richesse",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_37_u"
+  },
+  "VSV_ACHIEVEMENT_38": {
+    "achievement_id": "VSV_ACHIEVEMENT_38",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win the Black Death as Castile",
+    "locked_display_name": "Bendición",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_38_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_38": {
+        "name": "VSV_ACHIEVEMENT_38",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win the Black Death as Castile",
+    "unlocked_display_name": "Bendición",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_38_u"
+  },
+  "VSV_ACHIEVEMENT_39": {
+    "achievement_id": "VSV_ACHIEVEMENT_39",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win the Black Death as the Holy Roman Empire",
+    "locked_display_name": "Gesundheit",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_39_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_39": {
+        "name": "VSV_ACHIEVEMENT_39",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win the Black Death as the Holy Roman Empire",
+    "unlocked_display_name": "Gesundheit",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_39_u"
+  },
+  "VSV_ACHIEVEMENT_40": {
+    "achievement_id": "VSV_ACHIEVEMENT_40",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win the Black Death after turn 80",
+    "locked_display_name": "I'm Not Dead Yet",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_40_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_40": {
+        "name": "VSV_ACHIEVEMENT_40",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win the Black Death after turn 80",
+    "unlocked_display_name": "I'm Not Dead Yet",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_40_u"
+  },
+  "VSV_ACHIEVEMENT_41": {
+    "achievement_id": "VSV_ACHIEVEMENT_41",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win the Black Death after conquering five cities",
+    "locked_display_name": "Aggressive Strain",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_41_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_41": {
+        "name": "VSV_ACHIEVEMENT_41",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win the Black Death after conquering five cities",
+    "unlocked_display_name": "Aggressive Strain",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_41_u"
+  },
+  "VSV_ACHIEVEMENT_42": {
+    "achievement_id": "VSV_ACHIEVEMENT_42",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Train 25 Plague Doctors during the Black Death scenario",
+    "locked_display_name": "Medieval Medicine",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_42_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_42": {
+        "name": "VSV_ACHIEVEMENT_42",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Train 25 Plague Doctors during the Black Death scenario",
+    "unlocked_display_name": "Medieval Medicine",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_42_u"
+  },
+  "VSV_ACHIEVEMENT_43": {
+    "achievement_id": "VSV_ACHIEVEMENT_43",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win War Machine as France",
+    "locked_display_name": "Élan",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_43_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_43": {
+        "name": "VSV_ACHIEVEMENT_43",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win War Machine as France",
+    "unlocked_display_name": "Élan",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_43_u"
+  },
+  "VSV_ACHIEVEMENT_44": {
+    "achievement_id": "VSV_ACHIEVEMENT_44",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win War Machine as Germany",
+    "locked_display_name": "Auftragstaktik",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_44_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_44": {
+        "name": "VSV_ACHIEVEMENT_44",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win War Machine as Germany",
+    "unlocked_display_name": "Auftragstaktik",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_44_u"
+  },
+  "VSV_ACHIEVEMENT_45": {
+    "achievement_id": "VSV_ACHIEVEMENT_45",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win War Machine without training any units",
+    "locked_display_name": "With The Army You Have",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_45_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_45": {
+        "name": "VSV_ACHIEVEMENT_45",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win War Machine without training any units",
+    "unlocked_display_name": "With The Army You Have",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_45_u"
+  },
+  "VSV_ACHIEVEMENT_46": {
+    "achievement_id": "VSV_ACHIEVEMENT_46",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "As Germany, win War Machine within 25 turns",
+    "locked_display_name": "Vernichtungsstrategie",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_46_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_46": {
+        "name": "VSV_ACHIEVEMENT_46",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "As Germany, win War Machine within 25 turns",
+    "unlocked_display_name": "Vernichtungsstrategie",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_46_u"
+  },
+  "VSV_ACHIEVEMENT_47": {
+    "achievement_id": "VSV_ACHIEVEMENT_47",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "In War Machine, as France, conquer Metz within 5 turns",
+    "locked_display_name": "Croix de Lorraine",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_47_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_47": {
+        "name": "VSV_ACHIEVEMENT_47",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "In War Machine, as France, conquer Metz within 5 turns",
+    "unlocked_display_name": "Croix de Lorraine",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_47_u"
+  },
+  "VSV_ACHIEVEMENT_48": {
+    "achievement_id": "VSV_ACHIEVEMENT_48",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "In War Machine, reduce and capture a full-health city in a single turn",
+    "locked_display_name": "Big Bertha",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_48_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_48": {
+        "name": "VSV_ACHIEVEMENT_48",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "In War Machine, reduce and capture a full-health city in a single turn",
+    "unlocked_display_name": "Big Bertha",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_48_u"
+  },
+  "VSV_ACHIEVEMENT_49": {
+    "achievement_id": "VSV_ACHIEVEMENT_49",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Win the Black Death scenario on Deity difficulty",
+    "locked_display_name": "Danse Macabre",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_49_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_49": {
+        "name": "VSV_ACHIEVEMENT_49",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Win the Black Death scenario on Deity difficulty",
+    "unlocked_display_name": "Danse Macabre",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_49_u"
+  },
+  "VSV_ACHIEVEMENT_50": {
+    "achievement_id": "VSV_ACHIEVEMENT_50",
+    "completion_description": "",
+    "flavor_text": "",
+    "hidden_description": "",
+    "is_hidden": false,
+    "locked_description": "Perform a Rock Concert in Cleveland",
+    "locked_display_name": "Hello Cleveland!",
+    "locked_icon_url": "file:///VSV_ACHIEVEMENT_50_l",
+    "stats_thresholds": {
+      "VSV_ACHIEVEMENT_50": {
+        "name": "VSV_ACHIEVEMENT_50",
+        "threshold": 0
+      }
+    },
+    "unlocked_description": "Perform a Rock Concert in Cleveland",
+    "unlocked_display_name": "Hello Cleveland!",
+    "unlocked_icon_url": "file:///VSV_ACHIEVEMENT_50_u"
+  }
+}
