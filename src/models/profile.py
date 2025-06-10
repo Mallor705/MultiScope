@@ -36,9 +36,11 @@ class GameProfile(BaseModel):
     is_native: bool = False
     mode: Optional[str] = Field(default=None, alias="mode")
     splitscreen: Optional[SplitscreenConfig] = Field(default=None, alias="splitscreen")
+    env_vars: Optional[Dict[str, str]] = Field(default=None, alias="ENV_VARS")
 
     # Novo campo para configurações por jogador, usando alias "players" para o JSON
     player_configs: Optional[List[PlayerInstanceConfig]] = Field(default=None, alias="players")
+    use_goldberg_emulator: bool = Field(default=True, alias="USE_GOLDBERG_EMULATOR")
 
     @validator('num_players')
     def validate_num_players(cls, v):

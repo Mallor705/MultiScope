@@ -36,6 +36,10 @@
   
   "app_id": "12345678",
   "game_args": "",
+  "USE_GOLDBERG_EMULATOR": false,
+  "ENV_VARS": {
+    "WINEDLLOVERRIDES": "OnlineFix64=n,b;steam_api64=n,b;winmm=n,b"
+  },
   "is_native": false,
   "mode": "splitscreen",
   "splitscreen": {

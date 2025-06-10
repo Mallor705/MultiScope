@@ -52,6 +52,7 @@ class LinuxCoopCLI:
             
             # Carrega perfil (com cache)
             profile = self._load_profile(profile_name)
+            self.logger.info(f"Loaded profile env_vars: {profile.env_vars}")
             
             self.logger.info(f"Loading profile: {profile.game_name} for {profile.effective_num_players} players")
 

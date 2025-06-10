@@ -155,7 +155,11 @@ class InstanceService:
         self._copy_goldberg_files(instance_game_root, steam_api_files, profile, instance)
 
     def _copy_goldberg_files(self, instance_game_root: Path, steam_api_files: dict, profile: GameProfile, instance: GameInstance) -> None:
-        """Copia os arquivos do Goldberg Emulator para a pasta do jogo."""
+        """Copia os arquivos do Goldberg Emulator para a pasta da instância."""
+        if not profile.use_goldberg_emulator:
+            self.logger.info(f"Instance {instance.instance_num}: Goldberg Emulator is disabled in profile. Skipping file copy.")
+            return
+
         goldberg_source_dir = Path(__file__).parent.parent / "utils" / "goldberg_emulator"
         
         if not goldberg_source_dir.exists():
@@ -163,7 +167,7 @@ class InstanceService:
             return
 
         # Mapear arquivos do Goldberg para os arquivos do Steam
-        goldberg_files = {
+        goldberg_files_map = {
             'win64': {
                 'steam_api64.dll': 'steam_api64.dll',
                 'steamclient64.dll': 'steamclient64.dll',
@@ -186,44 +190,54 @@ class InstanceService:
             }
         }
 
+        # Determine which Goldberg files to copy based on whether the game is native or not
+        files_to_copy = {}
+        if profile.is_native:
+            # For native Linux games, copy .so files
+            if 'linux64' in goldberg_files_map:
+                files_to_copy.update(goldberg_files_map['linux64'])
+            if 'linux32' in goldberg_files_map:
+                files_to_copy.update(goldberg_files_map['linux32'])
+        else:
+            # For non-native (Windows) games, copy .dll files
+            if 'win64' in goldberg_files_map:
+                files_to_copy.update(goldberg_files_map['win64'])
+            if 'win32' in goldberg_files_map:
+                files_to_copy.update(goldberg_files_map['win32'])
+
         # Variável para armazenar o diretório onde os arquivos do Steam API estão
         steam_api_instance_dir = None
 
-        # Copiar arquivos do Goldberg para os locais corretos
-        for platform, files in goldberg_files.items():
-            # Encontrar o diretório onde está o arquivo do Steam API
-            steam_api_dir = None
-            if steam_api_files[platform]:
-                steam_api_dir = steam_api_files[platform].parent
-            else:
-                # Se não encontrou o arquivo do Steam API para esta plataforma,
-                # procura em todos os diretórios do jogo
-                for search_dir in instance_game_root.rglob("*"):
-                    if search_dir.is_dir():
-                        steam_api_dir = search_dir
-                        break
+        # Coletar todos os diretórios únicos onde foram encontrados arquivos do Steam API
+        unique_dirs = set()
+        for platform_files in steam_api_files.values():
+            for relative_path in platform_files:
+                unique_dirs.add(relative_path.parent)
 
-            if steam_api_dir:
-                steam_api_instance_dir = steam_api_dir  # Guardar o diretório para usar depois
-                
-                # Copiar cada arquivo do Goldberg para o mesmo diretório
-                for goldberg_file, steam_file in files.items():
-                    source_file = goldberg_source_dir / goldberg_file
-                    if source_file.exists():
-                        target_file = steam_api_dir / steam_file
-                        # Remover arquivo existente se necessário
-                        if target_file.exists():
-                            target_file.unlink()
-                        shutil.copy2(source_file, target_file)
-                        self.logger.info(f"Copied Goldberg file {goldberg_file} to {target_file}")
-                    else:
-                        self.logger.warning(f"Goldberg file not found: {goldberg_file}")
+        # Copiar arquivos do Goldberg para todos os diretórios encontrados
+        for relative_dir in unique_dirs:
+            # Construir o caminho na instância usando o caminho relativo do jogo original
+            steam_api_dir = instance_game_root / relative_dir
+            if not steam_api_instance_dir:
+                steam_api_instance_dir = steam_api_dir  # Guardar o primeiro diretório para usar depois
+            
+            # Copiar os arquivos filtrados do Goldberg para cada diretório
+            for goldberg_file, steam_file in files_to_copy.items():
+                source_file = goldberg_source_dir / goldberg_file
+                if source_file.exists():
+                    target_file = steam_api_dir / steam_file
+                    # Remover arquivo existente se necessário
+                    if target_file.exists():
+                        target_file.unlink()
+                    shutil.copy2(source_file, target_file)
+                    self.logger.info(f"Copied Goldberg file {goldberg_file} to {target_file}")
+                else:
+                    self.logger.warning(f"Goldberg file not found: {goldberg_file}")
 
-        # Copiar pasta settings para o mesmo diretório dos arquivos do Steam API
-        if steam_api_instance_dir:
+            # Copiar pasta settings para o mesmo diretório dos arquivos do Steam API na instância
             settings_source = goldberg_source_dir / "settings"
             if settings_source.exists():
-                settings_target = steam_api_instance_dir / "settings"
+                settings_target = steam_api_dir / "settings"
                 
                 # Criar pasta se não existir
                 settings_target.mkdir(exist_ok=True)
@@ -245,10 +259,8 @@ class InstanceService:
             else:
                 self.logger.warning("settings folder not found in Goldberg source directory")
 
-            # Configurar arquivos do Goldberg
-            self._setup_settings(steam_api_instance_dir, profile, instance)
-        else:
-            self.logger.error("Could not find Steam API files in the instance to copy settings")
+            # Configurar arquivos do Goldberg para este diretório
+            self._setup_settings(steam_api_dir, profile, instance)
 
     def _setup_settings(self, instance_game_root: Path, profile: GameProfile, instance: GameInstance) -> None:
         """Configura a pasta settings com as configurações específicas da instância."""
@@ -295,22 +307,22 @@ class InstanceService:
     def _identify_steam_api_files(self, game_path: Path) -> dict:
         """Identifica os arquivos do Steam API no diretório do jogo."""
         steam_files = {
-            'win64': None,
-            'win32': None,
-            'linux64': None,
-            'linux32': None
+            'win64': [],
+            'win32': [],
+            'linux64': [],
+            'linux32': []
         }
         
-        # Procurar por arquivos do Steam API
+        # Procurar por arquivos do Steam API em todos os diretórios e subpastas
         for file in game_path.rglob("*"):
             if file.name == "steam_api64.dll":
-                steam_files['win64'] = file
+                steam_files['win64'].append(file.relative_to(game_path))
             elif file.name == "steam_api.dll":
-                steam_files['win32'] = file
+                steam_files['win32'].append(file.relative_to(game_path))
             elif file.name == "libsteam_api64.so":
-                steam_files['linux64'] = file
+                steam_files['linux64'].append(file.relative_to(game_path))
             elif file.name == "libsteam_api.so":
-                steam_files['linux32'] = file
+                steam_files['linux32'].append(file.relative_to(game_path))
         
         return steam_files
 
@@ -340,7 +352,7 @@ class InstanceService:
         env = self._prepare_environment(instance, steam_root, profile)
         cmd = self._build_command(profile, proton_path, instance, symlinked_executable_path)
         self.logger.info(f"Launching instance {instance.instance_num} (Log: {instance.log_file})")
-        pid = self.process_service.launch_instance(cmd, instance.log_file, env)
+        pid = self.process_service.launch_instance(cmd, instance.log_file, env, cwd=symlinked_executable_path.parent)
         instance.pid = pid
         self.logger.info(f"Instance {instance.instance_num} started with PID: {pid}")
 
@@ -376,10 +388,16 @@ class InstanceService:
         else:
             env = self._env_cache[base_env_key].copy()
 
-        # Instance-specific environment
+        # Variáveis de ambiente específicas da instância
         if not (profile.is_native if profile else False):
             env['STEAM_COMPAT_DATA_PATH'] = str(instance.prefix_dir)
-            env['WINEPREFIX'] = str(instance.prefix_dir / 'pfx')
+            env['WINEPREFIX'] = str(instance.prefix_dir / 'pfx')    
+            env['WINEDLLOVERRIDES'] = "OnlineFix64=n,b;steam_api64=n,b;winmm=n,b"
+
+        # Adicionar variáveis de ambiente definidas no perfil
+        if profile and profile.env_vars:
+            for key, value in profile.env_vars.items():
+                env[key] = value
 
         # Handle joystick assignment
         assigned_joystick_path = self._get_joystick_for_instance(instance, profile)

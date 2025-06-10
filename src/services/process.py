@@ -64,14 +64,19 @@ class ProcessService:
             self.logger.info(f"Terminated {terminated_count} previous instances")
             time.sleep(1)  # Final cleanup delay
     
-    def launch_instance(self, cmd: List[str], log_file: Path, env: dict) -> int:
+    def launch_instance(self, cmd: List[str], log_file: Path, env: dict, cwd: Optional[Path] = None) -> int:
         """Lança uma instância do jogo e retorna o PID do processo."""
+        self.logger.info(f"Launching process with command: {' '.join(cmd)}")
+        self.logger.info(f"Environment variables: {env}")
+        if cwd:
+            self.logger.info(f"Working directory (cwd): {cwd}")
         with open(log_file, 'w') as log:
             process = subprocess.Popen(
                 cmd, 
                 stdout=log, 
                 stderr=subprocess.STDOUT,
                 env=env,
+                cwd=cwd,
                 preexec_fn=os.setsid
             )
         
