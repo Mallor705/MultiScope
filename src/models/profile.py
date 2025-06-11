@@ -12,6 +12,7 @@ class PlayerInstanceConfig(BaseModel):
     language: Optional[str] = None
     listen_port: Optional[str] = None
     user_steam_id: Optional[str] = None
+    nice_value: Optional[int] = None
 
 class SplitscreenConfig(BaseModel):
     """Configuração do modo splitscreen."""

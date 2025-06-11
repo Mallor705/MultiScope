@@ -6,13 +6,15 @@
       "account_name": "Player1",
       "language": "brazilian",
       "listen_port": "47584",
-      "user_steam_id": "76561190000000001"
+      "user_steam_id": "76561190000000001",
+      "nice_value": -10
     },
     {
       "account_name": "Player2",
       "language": "brazilian",
       "listen_port": "47584",
-      "user_steam_id": "76561190000000002"
+      "user_steam_id": "76561190000000002",
+      "nice_value": -10
     }
   ],
   "proton_version": "GE-Proton10-4",
@@ -38,7 +40,8 @@
   "game_args": "",
   "USE_GOLDBERG_EMULATOR": false,
   "ENV_VARS": {
-    "WINEDLLOVERRIDES": "OnlineFix64=n,b;steam_api64=n,b;winmm=n,b"
+    "WINEDLLOVERRIDES": "",
+    "MANGOHUD": "1"
   },
   "is_native": false,
   "mode": "splitscreen",
