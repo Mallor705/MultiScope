@@ -496,11 +496,20 @@ class InstanceService:
 
         gamescope_cli_options = [
             gamescope_path,
+            '-v',
             '-W', str(effective_width),
             '-H', str(profile.instance_height),
             '-w', str(effective_width),
             '-h', str(profile.instance_height),
         ]
+
+        # Sempre definir um limite de FPS para janelas desfocadas para um valor muito alto
+        gamescope_cli_options.extend(['-o', '999'])
+        self.logger.info(f"Instance {instance_num}: Setting unfocused FPS limit to 999.")
+
+        # Sempre definir um limite de FPS para janelas focadas para um valor muito alto
+        gamescope_cli_options.extend(['-r', '999'])
+        self.logger.info(f"Instance {instance_num}: Setting focused FPS limit to 999.")
 
         # Configurações específicas para splitscreen vs normal
         if profile.is_splitscreen_mode:
