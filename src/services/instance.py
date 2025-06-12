@@ -352,14 +352,8 @@ class InstanceService:
         env = self._prepare_environment(instance, steam_root, profile)
         cmd = self._build_command(profile, proton_path, instance, symlinked_executable_path)
 
-        # Obter o nice_value para esta instância, se definido no perfil
-        instance_nice_value: Optional[int] = None
-        if profile.player_configs and (instance.instance_num - 1) < len(profile.player_configs):
-            player_config = profile.player_configs[instance.instance_num - 1]
-            instance_nice_value = player_config.nice_value
-
-        self.logger.info(f"Launching instance {instance.instance_num} (Log: {instance.log_file}) with nice value: {instance_nice_value}")
-        pid = self.process_service.launch_instance(cmd, instance.log_file, env, cwd=symlinked_executable_path.parent, nice_value=instance_nice_value)
+        self.logger.info(f"Launching instance {instance.instance_num} (Log: {instance.log_file})")
+        pid = self.process_service.launch_instance(cmd, instance.log_file, env, cwd=symlinked_executable_path.parent)
         instance.pid = pid
         self.logger.info(f"Instance {instance.instance_num} started with PID: {pid}")
 

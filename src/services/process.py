@@ -64,7 +64,7 @@ class ProcessService:
             self.logger.info(f"Terminated {terminated_count} previous instances")
             time.sleep(1)  # Final cleanup delay
     
-    def launch_instance(self, cmd: List[str], log_file: Path, env: dict, cwd: Optional[Path] = None, nice_value: Optional[int] = None) -> int:
+    def launch_instance(self, cmd: List[str], log_file: Path, env: dict, cwd: Optional[Path] = None) -> int:
         """Lança uma instância do jogo e retorna o PID do processo."""
         self.logger.info(f"Launching process with command: {' '.join(cmd)}")
         self.logger.info(f"Environment variables: {env}")
@@ -80,13 +80,6 @@ class ProcessService:
                 preexec_fn=os.setsid
             )
         
-        if nice_value is not None:
-            try:
-                psutil.Process(process.pid).nice(nice_value)
-                self.logger.info(f"Set nice value of PID {process.pid} to {nice_value}")
-            except (psutil.AccessDenied, psutil.NoSuchProcess) as e:
-                self.logger.warning(f"Failed to set nice value for PID {process.pid}: {e}")
-
         self.pids.append(process.pid)
         return process.pid
     

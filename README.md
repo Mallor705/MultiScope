@@ -64,8 +64,8 @@ Crie um arquivo JSON em `profiles/` com o nome desejado. Exemplo: `MeuJogo.json`
 Exemplo de conteúdo:
 ```json
 {
-  "game_name": "Palworld",
-  "exe_path": "$HOME/.steam/steam/steamapps/common/Palworld/Palworld.exe",
+  "game_name": "GAME",
+  "exe_path": ".steam/Steam/steamapps/common/GAME/game.exe",
   "players": [
     {
       "account_name": "Player1",
@@ -83,21 +83,35 @@ Exemplo de conteúdo:
   "proton_version": "GE-Proton10-4",
   "instance_width": 1920,
   "instance_height": 1080,
+
   "player_physical_device_ids": [
-    "",
-    "/dev/input/by-id/usb-Your_Joystick-event-joystick"
+    "", 
+    ""
   ],
+  
   "player_mouse_event_paths": [
-    "/dev/input/by-id/usb-Your_Mouse_Device-event-mouse",
+    "",
     ""
   ],
+  
   "player_keyboard_event_paths": [
-    "/dev/input/by-id/usb-Your_Keyboard_Device-event-kbd",
+    "",
     ""
   ],
-  "app_id": "1623730",
-  "game_args": "-dx12",
-  "is_native": false
+  
+  "app_id": "12345678",
+  "game_args": "",
+  "USE_GOLDBERG_EMULATOR": false,
+  "ENV_VARS": {
+    "WINEDLLOVERRIDES": "",
+    "MANGOHUD": "1"
+  },
+  "is_native": false,
+  "mode": "splitscreen",
+  "splitscreen": {
+    "orientation": "horizontal",
+    "instances": 2
+  }
 }
 ```
 
