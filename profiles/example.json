@@ -6,15 +6,13 @@
       "account_name": "Player1",
       "language": "brazilian",
       "listen_port": "47584",
-      "user_steam_id": "76561190000000001",
-      "nice_value": -15
+      "user_steam_id": "76561190000000001"
     },
     {
       "account_name": "Player2",
       "language": "brazilian",
       "listen_port": "47584",
-      "user_steam_id": "76561190000000002",
-      "nice_value": -15
+      "user_steam_id": "76561190000000002"
     }
   ],
   "proton_version": "GE-Proton10-4",
