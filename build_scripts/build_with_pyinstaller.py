@@ -28,7 +28,7 @@ def clean_previous_builds():
 
 def build_pyinstaller(onefile=True, noconsole=False, extra_args=None):
     cmd = [
-        sys.executable, "-m", "PyInstaller",
+        "pyinstaller",
         "--name", "linuxcoop",
         "--paths", str(PROJECT_ROOT / "src"),
         str(ENTRY_SCRIPT)
