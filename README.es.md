@@ -1,7 +1,6 @@
 # Linux-Coop
 
-🌍 **Available Languages:**  
-[Português](README.pt.md) | [English](README.md) | [Español](README.es.md) | [Français](README.fr.md)
+[Ver en portugués](README.pt.md) | [Ver en inglés](README.md) | [Ver el principal](README.md)
 
 # Linux-Coop
 
