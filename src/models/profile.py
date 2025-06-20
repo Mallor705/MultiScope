@@ -133,8 +133,6 @@ class GameProfile(BaseModel):
     # Adicionar getter para num_players para garantir consistência caso player_configs seja a fonte da verdade
     @property
     def effective_num_players(self) -> int:
-        if self.player_configs is not None:
-            return max(self.num_players, len(self.player_configs))
         return self.num_players
 
     def get_instance_dimensions(self, instance_num: int) -> Tuple[int, int]:
