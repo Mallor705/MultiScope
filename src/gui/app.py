@@ -42,6 +42,9 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         self.notebook = Gtk.Notebook()
         self.add(self.notebook)
 
+        # Initialize player config entries list
+        self.player_config_entries = []
+
         # Tab 1: General Settings
         self.general_settings_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         self.general_settings_page.set_border_width(10)
@@ -285,20 +288,24 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         return env_vars
 
     def _get_player_configs_from_ui(self) -> List[Dict[str, str]]:
-        player_configs = []
-        for i, player_combos in enumerate(self.player_device_combos):
-            player_config = {
-                "ACCOUNT_NAME": player_combos["account_name"].get_text() or f"Player{i+1}",
-                "LANGUAGE": player_combos["language"].get_text() or "brazilian",
-                "LISTEN_PORT": player_combos["listen_port"].get_text() or "47584",
-                "USER_STEAM_ID": player_combos["user_steam_id"].get_text() or f"7656119000000000{i+1}",
-                "PHYSICAL_DEVICE_ID": player_combos["physical_device_id"].get_active_text() if player_combos["physical_device_id"].get_active_text() != "None" else None,
-                "MOUSE_EVENT_PATH": player_combos["mouse_event_path"].get_active_text() if player_combos["mouse_event_path"].get_active_text() != "None" else None,
-                "KEYBOARD_EVENT_PATH": player_combos["keyboard_event_path"].get_active_text() if player_combos["keyboard_event_path"].get_active_text() != "None" else None,
-                "AUDIO_DEVICE_ID": player_combos["audio_device_id"].get_active_text() if player_combos["audio_device_id"].get_active_text() != "None" else None
-            }
-            player_configs.append(player_config)
-        return player_configs
+        player_configs_data = []
+        for _, widgets in self.player_config_entries:
+            config = {}
+            for key, widget in widgets.items():
+                if isinstance(widget, Gtk.Entry):
+                    config[key] = widget.get_text()
+                elif isinstance(widget, Gtk.ComboBox): # Alterado para Gtk.ComboBox
+                    model = widget.get_model()
+                    active_iter = widget.get_active_iter()
+                    if active_iter:
+                        selected_id = model.get_value(active_iter, 0) # Obtém o ID (coluna 0)
+                        config[key] = selected_id if selected_id != "" else None # Salva None se for a opção "None" do ListStore
+                    else:
+                        config[key] = None # Nenhum item selecionado
+                else:
+                    config[key] = ""
+            player_configs_data.append(config)
+        return player_configs_data
 
     def setup_player_configs(self):
         self.player_frames = [] # To hold a frame for each player's config
@@ -308,11 +315,11 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         self._create_player_config_uis(self.num_players_spin.get_value_as_int())
 
     def _create_player_config_uis(self, num_players: int):
-        # Clear existing player config UIs
         for frame in self.player_frames:
             frame.destroy()
         self.player_frames.clear()
         self.player_device_combos.clear()
+        self.player_config_entries.clear()
 
         # Clear existing widgets in player_config_vbox before repopulating
         for child in self.player_config_vbox.get_children():
@@ -335,33 +342,32 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
                 "language": Gtk.Entry(),
                 "listen_port": Gtk.Entry(),
                 "user_steam_id": Gtk.Entry(),
-                "physical_device_id": Gtk.ComboBoxText(),
-                "mouse_event_path": Gtk.ComboBoxText(),
-                "keyboard_event_path": Gtk.ComboBoxText(),
-                "audio_device_id": Gtk.ComboBoxText()
+                "physical_device_id": Gtk.ComboBox.new_with_model(self._create_device_list_store(self.detected_input_devices["joystick"])),
+                "mouse_event_path": Gtk.ComboBox.new_with_model(self._create_device_list_store(self.detected_input_devices["mouse"])),
+                "keyboard_event_path": Gtk.ComboBox.new_with_model(self._create_device_list_store(self.detected_input_devices["keyboard"])),
+                "audio_device_id": Gtk.ComboBox.new_with_model(self._create_device_list_store(self.detected_audio_devices))
             }
             self.player_device_combos.append(player_combos)
 
-            # Populate combos with detected devices
-            player_combos["physical_device_id"].append_text("None")
-            for dev in self.detected_input_devices.get("physical_device_ids", []):
-                player_combos["physical_device_id"].append_text(dev)
-            player_combos["physical_device_id"].set_active(0)
+            # Populate combos with detected devices - REMOVIDO: Já tratado por _create_device_list_store
+            # for dev in self.detected_input_devices.get("physical_device_ids", []):
+            #     player_combos["physical_device_id"].append_text(dev)
+            # player_combos["physical_device_id"].set_active(0)
 
-            player_combos["mouse_event_path"].append_text("None")
-            for dev in self.detected_input_devices.get("mouse_event_paths", []):
-                player_combos["mouse_event_path"].append_text(dev)
-            player_combos["mouse_event_path"].set_active(0)
+            # player_combos["mouse_event_path"].append_text("None")
+            # for dev in self.detected_input_devices.get("mouse_event_paths", []):
+            #     player_combos["mouse_event_path"].append_text(dev)
+            # player_combos["mouse_event_path"].set_active(0)
             
-            player_combos["keyboard_event_path"].append_text("None")
-            for dev in self.detected_input_devices.get("keyboard_event_paths", []):
-                player_combos["keyboard_event_path"].append_text(dev)
-            player_combos["keyboard_event_path"].set_active(0)
+            # player_combos["keyboard_event_path"].append_text("None")
+            # for dev in self.detected_input_devices.get("keyboard_event_paths", []):
+            #     player_combos["keyboard_event_path"].append_text(dev)
+            # player_combos["keyboard_event_path"].set_active(0)
 
-            player_combos["audio_device_id"].append_text("None")
-            for dev in self.detected_audio_devices:
-                player_combos["audio_device_id"].append_text(dev)
-            player_combos["audio_device_id"].set_active(0)
+            # player_combos["audio_device_id"].append_text("None")
+            # for dev in self.detected_audio_devices:
+            #     player_combos["audio_device_id"].append_text(dev)
+            # player_combos["audio_device_id"].set_active(0)
 
             # Add fields to player grid
             p_row = 0
@@ -381,22 +387,55 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             player_grid.attach(player_combos["user_steam_id"], 1, p_row, 1, 1)
             p_row += 1
 
-            player_grid.attach(Gtk.Label(label="Physical Device ID:", xalign=0), 0, p_row, 1, 1)
-            player_grid.attach(player_combos["physical_device_id"], 1, p_row, 1, 1)
+            player_grid.attach(Gtk.Label(label="Joystick Device:", xalign=0), 0, p_row, 1, 1)
+            physical_device_id_combo = player_combos["physical_device_id"]
+            renderer = Gtk.CellRendererText()
+            physical_device_id_combo.pack_start(renderer, True)
+            physical_device_id_combo.add_attribute(renderer, "text", 1) # Display 'name'
+            physical_device_id_combo.set_active(0) # Select "None" by default
+            player_grid.attach(physical_device_id_combo, 1, p_row, 1, 1)
             p_row += 1
 
-            player_grid.attach(Gtk.Label(label="Mouse Event Path:", xalign=0), 0, p_row, 1, 1)
-            player_grid.attach(player_combos["mouse_event_path"], 1, p_row, 1, 1)
+            player_grid.attach(Gtk.Label(label="Mouse Device:", xalign=0), 0, p_row, 1, 1)
+            mouse_event_path_combo = player_combos["mouse_event_path"]
+            renderer = Gtk.CellRendererText()
+            mouse_event_path_combo.pack_start(renderer, True)
+            mouse_event_path_combo.add_attribute(renderer, "text", 1) # Display 'name'
+            mouse_event_path_combo.set_active(0) # Select "None" by default
+            player_grid.attach(mouse_event_path_combo, 1, p_row, 1, 1)
             p_row += 1
 
-            player_grid.attach(Gtk.Label(label="Keyboard Event Path:", xalign=0), 0, p_row, 1, 1)
-            player_grid.attach(player_combos["keyboard_event_path"], 1, p_row, 1, 1)
+            player_grid.attach(Gtk.Label(label="Keyboard Device:", xalign=0), 0, p_row, 1, 1)
+            keyboard_event_path_combo = player_combos["keyboard_event_path"]
+            renderer = Gtk.CellRendererText()
+            keyboard_event_path_combo.pack_start(renderer, True)
+            keyboard_event_path_combo.add_attribute(renderer, "text", 1) # Display 'name'
+            keyboard_event_path_combo.set_active(0) # Select "None" by default
+            player_grid.attach(keyboard_event_path_combo, 1, p_row, 1, 1)
             p_row += 1
 
-            player_grid.attach(Gtk.Label(label="Audio Device ID:", xalign=0), 0, p_row, 1, 1)
-            player_grid.attach(player_combos["audio_device_id"], 1, p_row, 1, 1)
+            player_grid.attach(Gtk.Label(label="Audio Device:", xalign=0), 0, p_row, 1, 1)
+            audio_device_id_combo = player_combos["audio_device_id"]
+            renderer = Gtk.CellRendererText()
+            audio_device_id_combo.pack_start(renderer, True)
+            audio_device_id_combo.add_attribute(renderer, "text", 1) # Display 'name'
+            audio_device_id_combo.set_active(0) # Select "None" by default
+            player_grid.attach(audio_device_id_combo, 1, p_row, 1, 1)
             p_row += 1
+
+            player_config_widgets = {
+                "ACCOUNT_NAME": player_combos["account_name"],
+                "LANGUAGE": player_combos["language"],
+                "LISTEN_PORT": player_combos["listen_port"],
+                "USER_STEAM_ID": player_combos["user_steam_id"],
+                "PHYSICAL_DEVICE_ID": physical_device_id_combo,
+                "MOUSE_EVENT_PATH": mouse_event_path_combo,
+                "KEYBOARD_EVENT_PATH": keyboard_event_path_combo,
+                "AUDIO_DEVICE_ID": audio_device_id_combo,
+            }
+            self.player_config_entries.append((player_frame, player_config_widgets))
         self.player_config_vbox.show_all()
+        self.logger.info(f"DEBUG: Created {len(self.player_config_entries)} player config UIs.") # Debug line
     
     def on_num_players_changed(self, spin_button):
         num_players = spin_button.get_value_as_int()
@@ -413,8 +452,13 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
 
     def on_save_button_clicked(self, button):
         print("Save button clicked!")
-        profile_data = self.get_profile_data()
-        
+        profile_data_dumped = self.get_profile_data() # This call already uses model_dump(mode='json')
+
+        # DEBUG: Check the type of the 'exe_path' field within the dumped data
+        if "EXE_PATH" in profile_data_dumped:
+            print(f"DEBUG: Type of EXE_PATH in dumped data: {type(profile_data_dumped['EXE_PATH'])}")
+            print(f"DEBUG: Value of EXE_PATH in dumped data: {profile_data_dumped['EXE_PATH']}")
+
         # Save the profile data to a JSON file
         profile_name = self.game_name_entry.get_text().replace(" ", "_").lower()
         if not profile_name:
@@ -431,7 +475,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
 
         try:
             with open(profile_path, "w", encoding="utf-8") as f:
-                json.dump(profile_data, f, indent=2)
+                json.dump(profile_data_dumped, f, indent=2)
             dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK,
                                        f"Profile saved successfully to {profile_path}")
             dialog.run()
@@ -633,33 +677,22 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             proton_version = None
 
         player_configs_data = []
-        for i in range(self.num_players_spin.get_value_as_int()):
-            player_combos = self.player_device_combos[i]
-            
-            account_name_val = player_combos["account_name"].get_text()
-            language_val = player_combos["language"].get_text()
-            listen_port_val = player_combos["listen_port"].get_text()
-            user_steam_id_val = player_combos["user_steam_id"].get_text()
-            physical_device_id_val = player_combos["physical_device_id"].get_active_text()
-            mouse_event_path_val = player_combos["mouse_event_path"].get_active_text()
-            keyboard_event_path_val = player_combos["keyboard_event_path"].get_active_text()
-            audio_device_id_val = player_combos["audio_device_id"].get_active_text()
-
-            player_config_args = {
-                "ACCOUNT_NAME": account_name_val or f"Player{i+1}",
-                "LANGUAGE": language_val or "brazilian",
-                "LISTEN_PORT": listen_port_val or "47584",
-                "USER_STEAM_ID": user_steam_id_val or f"7656119000000000{i+1}",
-                "PHYSICAL_DEVICE_ID": physical_device_id_val if physical_device_id_val != "None" else None,
-                "MOUSE_EVENT_PATH": mouse_event_path_val if mouse_event_path_val != "None" else None,
-                "KEYBOARD_EVENT_PATH": keyboard_event_path_val if keyboard_event_path_val != "None" else None,
-                "AUDIO_DEVICE_ID": audio_device_id_val if audio_device_id_val != "None" else None,
-            }
-            print(f"Player {i+1} PlayerInstanceConfig arguments: {player_config_args}")
-
-            player_instance = PlayerInstanceConfig(**player_config_args)
-            print(f"Player {i+1} PlayerInstanceConfig object: {player_instance.model_dump(by_alias=True)}")
-            player_configs_data.append(player_instance)
+        for _, widgets in self.player_config_entries:
+            config = {}
+            for key, widget in widgets.items():
+                if isinstance(widget, Gtk.Entry):
+                    config[key] = widget.get_text()
+                elif isinstance(widget, Gtk.ComboBox): # Alterado para Gtk.ComboBox
+                    model = widget.get_model()
+                    active_iter = widget.get_active_iter()
+                    if active_iter:
+                        selected_id = model.get_value(active_iter, 0) # Obtém o ID (coluna 0)
+                        config[key] = selected_id if selected_id != "" else None # Salva None se for a opção "None" do ListStore
+                    else:
+                        config[key] = None # Nenhum item selecionado
+                else:
+                    config[key] = ""
+            player_configs_data.append(config)
 
         splitscreen_config = None
         if self.mode_combo.get_active_text() == "splitscreen":
@@ -686,7 +719,9 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             use_goldberg_emu=self.use_goldberg_emu_check.get_active()
         )
 
-        return profile_data.model_dump(by_alias=True, exclude_unset=False, exclude_defaults=False)
+        profile_dumped = profile_data.model_dump(by_alias=True, exclude_unset=False, exclude_defaults=False, mode='json')
+        self.logger.info(f"DEBUG: Collecting {len(profile_dumped.get('PLAYERS', []))} player configs for saving.") # Debug line
+        return profile_dumped
 
     def load_profile_data(self, profile_data):
         self.game_name_entry.set_text(profile_data.get("GAME_NAME", ""))
@@ -770,6 +805,12 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
                         else:
                             player_combos[combo_key].set_active(0)
 
+    def _create_device_list_store(self, devices: List[Dict[str, str]]) -> Gtk.ListStore:
+        list_store = Gtk.ListStore(str, str) # id, name
+        list_store.append(["", "None"]) # Add "None" option as the first choice
+        for device in devices:
+            list_store.append([device["id"], device["name"]])
+        return list_store
 
 class LinuxCoopApp(Gtk.Application):
     def __init__(self):

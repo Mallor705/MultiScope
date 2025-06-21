@@ -1,7 +1,7 @@
 import subprocess
 import re
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 class DeviceManager:
     def __init__(self):
@@ -17,64 +17,107 @@ class DeviceManager:
             # print(f"Stderr: {e.stderr}")
             return "" # Return empty string on error, the calling method should handle it
 
-    def get_input_devices(self) -> Dict[str, List[str]]:
+    def _get_device_name_from_id(self, device_id_full: str) -> str:
+        """Extracts a human-readable name from the /dev/input/by-id device string."""
+        # Remove the /dev/input/by-id/ prefix
+        name_part = device_id_full.replace("/dev/input/by-id/", "")
+        
+        # Remove common suffixes and prefixes that are not user-friendly
+        name_part = re.sub(r"-event-(kbd|mouse|joystick)", "", name_part)
+        name_part = re.sub(r"-if\d+", "", name_part) # Remove -ifXX
+        name_part = name_part.replace("usb-", "").replace("_", " ") # Replace underscores and usb prefix
+        
+        # Capitalize first letter of each word
+        name_part = " ".join([word.capitalize() for word in name_part.split(" ")]).strip()
+        
+        return name_part
+
+    def get_input_devices(self) -> Dict[str, List[Dict[str, str]]]:
         """
         Detects and returns input devices categorized by type.
         Returns a dictionary with keys:
-        - 'keyboard_event_paths': List of event paths for keyboards.
-        - 'mouse_event_paths': List of event paths for mice.
-        - 'joystick_event_paths': List of event paths for joysticks.
-        - 'physical_device_ids': List of physical device paths (e.g., /dev/input/jsX, /dev/input/mouseX).
+        - 'keyboard': List of dicts {id: ..., name: ...}
+        - 'mouse': List of dicts {id: ..., name: ...}
+        - 'joystick': List of dicts {id: ..., name: ...}
         """
-        detected_devices: Dict[str, List[str]] = {
-            "keyboard_event_paths": [],
-            "mouse_event_paths": [],
-            "joystick_event_paths": [],
-            "physical_device_ids": []
+        detected_devices: Dict[str, List[Dict[str, str]]] = {
+            "keyboard": [],
+            "mouse": [],
+            "joystick": []
         }
 
         by_id_output = self._run_command("ls -l /dev/input/by-id/")
         
         for line in by_id_output.splitlines():
-            # Example line: lrwxrwxrwx 1 root root 9 jun 20 12:20 usb-Rapoo_Rapoo_Gaming_Device-if01-event-kbd -> ../event3
             match = re.match(r".*?\s+([^\s]+)\s+->\s+\.\.(/event\d+|/mouse\d+|/js\d+)", line)
             if match:
-                device_name_id = match.group(1) # e.g., usb-Rapoo_Rapoo_Gaming_Device-if01-event-kbd
-                relative_path = match.group(2) # e.g., /event3
-                full_path = "/dev/input" + relative_path
+                device_name_id_raw = match.group(1) # e.g., usb-Rapoo_Rapoo_Gaming_Device-if01-event-kbd
+                full_device_id_path = f"/dev/input/by-id/{device_name_id_raw}"
+                device_human_name = self._get_device_name_from_id(full_device_id_path)
 
-                if "event-kbd" in device_name_id:
-                    detected_devices["keyboard_event_paths"].append(full_path)
-                elif "event-mouse" in device_name_id:
-                    detected_devices["mouse_event_paths"].append(full_path)
-                elif "event-joystick" in device_name_id:
-                    detected_devices["joystick_event_paths"].append(full_path)
-                
-                # Physical device IDs are typically /dev/input/jsX or /dev/input/mouseX
-                # The 'by-id' also lists these directly.
-                if "joystick" in device_name_id and relative_path.startswith("/js"):
-                    detected_devices["physical_device_ids"].append(full_path)
-                elif "mouse" in device_name_id and relative_path.startswith("/mouse"):
-                    detected_devices["physical_device_ids"].append(full_path)
+                if "event-kbd" in device_name_id_raw:
+                    detected_devices["keyboard"].append({"id": full_device_id_path, "name": device_human_name})
+                elif "event-mouse" in device_name_id_raw:
+                    detected_devices["mouse"].append({"id": full_device_id_path, "name": device_human_name})
+                elif "event-joystick" in device_name_id_raw:
+                    detected_devices["joystick"].append({"id": full_device_id_path, "name": device_human_name})
+                # Also add /dev/input/jsX paths to joystick if they exist and are relevant
+                elif "joystick" in device_name_id_raw and match.group(2).startswith("/js"):
+                    # For joysticks, we might still want to list the /dev/input/jsX path for direct use
+                    # if the profile or other parts of the code specifically look for it.
+                    # However, the user asked to store /dev/input/by-id/ format in profile.
+                    # I will add both if it's a joystick, for broader compatibility.
+                    # The 'id' will be the /dev/input/by-id path, and a 'secondary_id' for /dev/input/jsX
+                    pass # We only care about the by-id path for storage as per request.
         
-        # Ensure unique paths
-        detected_devices["keyboard_event_paths"] = sorted(list(set(detected_devices["keyboard_event_paths"])))
-        detected_devices["mouse_event_paths"] = sorted(list(set(detected_devices["mouse_event_paths"])))
-        detected_devices["joystick_event_paths"] = sorted(list(set(detected_devices["joystick_event_paths"])))
-        detected_devices["physical_device_ids"] = sorted(list(set(detected_devices["physical_device_ids"])))
+        # Sort devices by name for consistent UI display
+        for dev_type in detected_devices:
+            detected_devices[dev_type] = sorted(detected_devices[dev_type], key=lambda x: x['name'])
 
         return detected_devices
 
-    def get_audio_devices(self) -> List[str]:
+    def get_audio_devices(self) -> List[Dict[str, str]]:
         """
         Detects and returns available audio output devices (sinks).
-        Returns a list of audio device IDs (sink names).
+        Returns a list of dicts with keys:
+        - 'id': The pulse audio sink ID.
+        - 'name': A human-readable name for the sink.
         """
         audio_sinks = []
-        pactl_output = self._run_command("pactl list short sinks")
+        pactl_output = self._run_command("pactl list sinks").strip() # Use 'list sinks' for more details
+
+        # Regex to capture Sink #ID and Description
+        sink_id_pattern = re.compile(r"Sink #(\d+)")
+        description_pattern = re.compile(r"\s+Description: (.+)")
+        name_pattern = re.compile(r"\s+Name: (.+)")
+
+        current_sink_id = None
+        current_description = None
+        current_name = None
+
         for line in pactl_output.splitlines():
-            parts = line.split('\t')
-            if len(parts) > 1:
-                sink_name = parts[1] # The second column is the sink name/ID
-                audio_sinks.append(sink_name)
-        return sorted(list(set(audio_sinks))) # Ensure unique and sorted 
+            sink_id_match = sink_id_pattern.match(line)
+            if sink_id_match:
+                # New sink starts, save previous if complete
+                if current_sink_id and current_name:
+                    audio_sinks.append({"id": current_name, "name": current_description if current_description else current_name})
+                current_sink_id = sink_id_match.group(1)
+                current_description = None
+                current_name = None
+                continue
+
+            description_match = description_pattern.match(line)
+            if description_match:
+                current_description = description_match.group(1)
+                continue
+            
+            name_match = name_pattern.match(line)
+            if name_match:
+                current_name = name_match.group(1)
+                continue
+        
+        # Add the last sink if it's complete
+        if current_sink_id and current_name:
+            audio_sinks.append({"id": current_name, "name": current_description if current_description else current_name})
+
+        return sorted(audio_sinks, key=lambda x: x['name']) 
