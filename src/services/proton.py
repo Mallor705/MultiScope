@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Tuple, Optional, Dict
+from typing import Tuple, Optional, Dict, List
 from functools import lru_cache
 from ..core.config import Config
 from ..core.exceptions import ProtonNotFoundError
@@ -82,3 +82,28 @@ class ProtonService:
                     return proton_script
         
         return None
+
+    def list_installed_proton_versions(self) -> List[str]:
+        """Lista todas as versões do Proton instaladas encontradas nos diretórios do Steam."""
+        self.logger.info("Listing installed Proton versions.")
+        installed_versions = set()
+        
+        valid_steam_paths = self._get_valid_steam_paths()
+        
+        for steam_path in valid_steam_paths:
+            search_dirs = [
+                steam_path / "steamapps/common",
+                steam_path / "compatibilitytools.d"
+            ]
+            
+            for search_dir in search_dirs:
+                if search_dir.exists():
+                    for item in search_dir.iterdir():
+                        if item.is_dir() and ("Proton" in item.name or "GE-Proton" in item.name or "Wine" in item.name):
+                            # Basic check for a 'proton' executable within the directory
+                            if (item / "proton").exists():
+                                installed_versions.add(item.name)
+        
+        sorted_versions = sorted(list(installed_versions))
+        self.logger.info(f"Found Proton versions: {sorted_versions}")
+        return sorted_versions

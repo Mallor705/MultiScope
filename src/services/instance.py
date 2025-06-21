@@ -444,14 +444,13 @@ class InstanceService:
 
     def _get_joystick_for_instance(self, instance: GameInstance, profile: Optional[GameProfile]) -> Optional[str]:
         """Get joystick path for instance."""
-        if not profile or not profile.player_physical_device_ids:
+        if not profile or not profile.player_configs or not (0 <= instance.instance_num - 1 < len(profile.player_configs)):
             return None
 
         idx = instance.instance_num - 1
-        if not (0 <= idx < len(profile.player_physical_device_ids)):
-            return None
-
-        device_from_profile = profile.player_physical_device_ids[idx]
+        player_config = profile.player_configs[idx]
+        device_from_profile = player_config.get("physical_device_id")
+        
         if not device_from_profile or not device_from_profile.strip():
             return None
 
@@ -483,11 +482,14 @@ class InstanceService:
 
     def _validate_input_devices(self, profile: GameProfile, instance_idx: int, instance_num: int) -> dict:
         """Valida dispositivos de entrada e retorna informações sobre eles."""
-        # Determinar se esta instância terá mouse e teclado dedicados e válidos
         has_dedicated_mouse = False
         mouse_path_str_for_instance = None
-        if profile.player_mouse_event_paths and 0 <= instance_idx < len(profile.player_mouse_event_paths):
-            mouse_path_str_for_instance = profile.player_mouse_event_paths[instance_idx]
+        
+        # Obter config do jogador específico
+        player_config = profile.player_configs[instance_idx] if profile.player_configs and 0 <= instance_idx < len(profile.player_configs) else None
+
+        if player_config:
+            mouse_path_str_for_instance = player_config.get("mouse_event_path")
             if mouse_path_str_for_instance and mouse_path_str_for_instance.strip():
                 mouse_path_obj = Path(mouse_path_str_for_instance)
                 if mouse_path_obj.exists() and mouse_path_obj.is_char_device():
@@ -497,8 +499,8 @@ class InstanceService:
 
         has_dedicated_keyboard = False
         keyboard_path_str_for_instance = None
-        if profile.player_keyboard_event_paths and 0 <= instance_idx < len(profile.player_keyboard_event_paths):
-            keyboard_path_str_for_instance = profile.player_keyboard_event_paths[instance_idx]
+        if player_config:
+            keyboard_path_str_for_instance = player_config.get("keyboard_event_path")
             if keyboard_path_str_for_instance and keyboard_path_str_for_instance.strip():
                 keyboard_path_obj = Path(keyboard_path_str_for_instance)
                 if keyboard_path_obj.exists() and keyboard_path_obj.is_char_device():
@@ -507,8 +509,8 @@ class InstanceService:
                     self.logger.warning(f"Instance {instance_num}: Keyboard device '{keyboard_path_str_for_instance}' specified in profile but not found or not a char device.")
 
         audio_device_id_for_instance = None
-        if profile.player_audio_device_ids and 0 <= instance_idx < len(profile.player_audio_device_ids):
-            audio_device_id = profile.player_audio_device_ids[instance_idx]
+        if player_config:
+            audio_device_id = player_config.get("audio_device_id")
             if audio_device_id and audio_device_id.strip():
                 audio_device_id_for_instance = audio_device_id
                 self.logger.info(f"Instance {instance_num}: Audio device ID '{audio_device_id}' assigned.")
@@ -614,8 +616,11 @@ class InstanceService:
         device_paths_to_bind = []
 
         # Joysticks
-        if profile.player_physical_device_ids and 0 <= instance_idx < len(profile.player_physical_device_ids):
-            joystick_path_str = profile.player_physical_device_ids[instance_idx]
+        # Obter config do jogador específico
+        player_config = profile.player_configs[instance_idx] if profile.player_configs and 0 <= instance_idx < len(profile.player_configs) else None
+
+        if player_config:
+            joystick_path_str = player_config.get("physical_device_id")
             if joystick_path_str and joystick_path_str.strip():
                 joystick_path = Path(joystick_path_str)
                 if joystick_path.exists() and joystick_path.is_char_device():

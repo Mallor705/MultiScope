@@ -4,15 +4,40 @@ from gi.repository import Gtk
 from pathlib import Path
 import json
 from ..services.device_manager import DeviceManager
+from ..models.profile import GameProfile, PlayerInstanceConfig, SplitscreenConfig
+from ..services.proton import ProtonService
+from ..core.logger import Logger
+from typing import Dict, List
 
 class ProfileEditorWindow(Gtk.ApplicationWindow):
     def __init__(self, app):
         super().__init__(application=app, title="Linux Coop Profile Editor")
         self.set_default_size(1000, 700)
 
+        # Initialize configuration widgets early
+        self.num_players_spin = Gtk.SpinButton.new_with_range(1, 4, 1)
+        self.num_players_spin.set_value(1) # Default value
+        self.instance_width_spin = Gtk.SpinButton.new_with_range(640, 3840, 1)
+        self.instance_width_spin.set_value(1920) # Default from example.json
+        self.instance_height_spin = Gtk.SpinButton.new_with_range(480, 2160, 1)
+        self.instance_height_spin.set_value(1080) # Default from example.json
+        
+        self.mode_combo = Gtk.ComboBoxText()
+        self.mode_combo.append_text("None")
+        self.mode_combo.append_text("splitscreen")
+        self.mode_combo.set_active(0) # Default to None
+
+        self.splitscreen_orientation_label = Gtk.Label(label="Splitscreen Orientation:", xalign=0)
+        self.splitscreen_orientation_combo = Gtk.ComboBoxText()
+        self.splitscreen_orientation_combo.append_text("horizontal")
+        self.splitscreen_orientation_combo.append_text("vertical")
+        self.splitscreen_orientation_combo.set_active(0) # Default to horizontal
+
         self.device_manager = DeviceManager()
         self.detected_input_devices = self.device_manager.get_input_devices()
         self.detected_audio_devices = self.device_manager.get_audio_devices()
+        self.logger = Logger(name="LinuxCoopGUI", log_dir=Path("./logs"))
+        self.proton_service = ProtonService(self.logger)
         
         self.notebook = Gtk.Notebook()
         self.add(self.notebook)
@@ -51,6 +76,62 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         player_viewport.add(self.player_config_vbox) # Add the vbox to the viewport
         self.setup_player_configs()
         
+        # Tab 3: Window Layout Preview
+        self.window_layout_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        self.window_layout_page.set_border_width(10)
+        self.notebook.append_page(self.window_layout_page, Gtk.Label(label="Window Layout Preview"))
+
+        # Add a grid for layout settings in the preview tab
+        self.preview_settings_grid = Gtk.Grid()
+        self.preview_settings_grid.set_column_spacing(10)
+        self.preview_settings_grid.set_row_spacing(10)
+        self.window_layout_page.pack_start(self.preview_settings_grid, False, False, 0)
+        
+        # Num Players
+        preview_row = 0
+        self.preview_settings_grid.attach(Gtk.Label(label="Number of Players:", xalign=0), 0, preview_row, 1, 1)
+        self.preview_settings_grid.attach(self.num_players_spin, 1, preview_row, 1, 1)
+        preview_row += 1
+
+        # Instance Width
+        self.preview_settings_grid.attach(Gtk.Label(label="Instance Width:", xalign=0), 0, preview_row, 1, 1)
+        self.preview_settings_grid.attach(self.instance_width_spin, 1, preview_row, 1, 1)
+        preview_row += 1
+
+        # Instance Height
+        self.preview_settings_grid.attach(Gtk.Label(label="Instance Height:", xalign=0), 0, preview_row, 1, 1)
+        self.preview_settings_grid.attach(self.instance_height_spin, 1, preview_row, 1, 1)
+        preview_row += 1
+
+        # Mode (splitscreen or not)
+        self.preview_settings_grid.attach(Gtk.Label(label="Mode:", xalign=0), 0, preview_row, 1, 1)
+        self.preview_settings_grid.attach(self.mode_combo, 1, preview_row, 1, 1)
+        preview_row += 1
+
+        # Splitscreen Orientation
+        self.preview_settings_grid.attach(self.splitscreen_orientation_label, 0, preview_row, 1, 1)
+        self.preview_settings_grid.attach(self.splitscreen_orientation_combo, 1, preview_row, 1, 1)
+        self.splitscreen_orientation_label.hide()
+        self.splitscreen_orientation_combo.hide()
+        preview_row += 1
+
+        self.drawing_area = Gtk.DrawingArea()
+        self.drawing_area.connect("draw", self.on_draw_window_layout)
+        self.window_layout_page.pack_start(self.drawing_area, True, True, 0)
+
+        # Connect signals for redraw
+        self.instance_width_spin.connect("value-changed", self.on_layout_setting_changed)
+        self.instance_height_spin.connect("value-changed", self.on_layout_setting_changed)
+        self.num_players_spin.connect("value-changed", self.on_layout_setting_changed)
+        self.mode_combo.connect("changed", self.on_layout_setting_changed)
+        self.splitscreen_orientation_combo.connect("changed", self.on_layout_setting_changed)
+
+        # Connect mode combo to its specific handler for visibility
+        self.mode_combo.connect("changed", self.on_mode_changed)
+
+        # Connect num_players_spin to its specific handler for player config UI update
+        self.num_players_spin.connect("value-changed", self.on_num_players_changed)
+
         self.show_all()
 
     def setup_general_settings(self):
@@ -64,35 +145,34 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
 
         # Exe Path
         self.general_settings_grid.attach(Gtk.Label(label="Executable Path:", xalign=0), 0, row, 1, 1)
-        self.exe_path_entry = Gtk.FileChooserButton(title="Select Game Executable")
-        self.general_settings_grid.attach(self.exe_path_entry, 1, row, 1, 1)
-        row += 1
+        
+        exe_path_hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        self.exe_path_entry = Gtk.Entry()
+        self.exe_path_entry.set_hexpand(True)
+        exe_path_hbox.pack_start(self.exe_path_entry, True, True, 0)
+        
+        exe_path_button = Gtk.Button(label="Browse...")
+        exe_path_button.connect("clicked", self.on_exe_path_button_clicked)
+        exe_path_hbox.pack_start(exe_path_button, False, False, 0)
 
-        # Num Players
-        self.general_settings_grid.attach(Gtk.Label(label="Number of Players:", xalign=0), 0, row, 1, 1)
-        self.num_players_spin = Gtk.SpinButton.new_with_range(1, 4, 1)
-        self.num_players_spin.connect("value-changed", self.on_num_players_changed)
-        self.general_settings_grid.attach(self.num_players_spin, 1, row, 1, 1)
+        self.general_settings_grid.attach(exe_path_hbox, 1, row, 1, 1)
         row += 1
 
         # Proton Version
         self.general_settings_grid.attach(Gtk.Label(label="Proton Version:", xalign=0), 0, row, 1, 1)
-        self.proton_version_entry = Gtk.Entry()
-        self.general_settings_grid.attach(self.proton_version_entry, 1, row, 1, 1)
-        row += 1
+        self.proton_version_combo = Gtk.ComboBoxText()
+        # Populate with detected Proton versions
+        proton_versions = self.proton_service.list_installed_proton_versions()
+        if not proton_versions:
+            self.proton_version_combo.append_text("No Proton versions found")
+            self.proton_version_combo.set_sensitive(False) # Disable if no versions found
+        else:
+            self.proton_version_combo.append_text("None") # Option for no specific Proton version
+            for version in proton_versions:
+                self.proton_version_combo.append_text(version)
+            self.proton_version_combo.set_active(0) # Select "None" by default
 
-        # Instance Width
-        self.general_settings_grid.attach(Gtk.Label(label="Instance Width:", xalign=0), 0, row, 1, 1)
-        self.instance_width_spin = Gtk.SpinButton.new_with_range(640, 3840, 1)
-        self.instance_width_spin.set_value(1920) # Default from example.json
-        self.general_settings_grid.attach(self.instance_width_spin, 1, row, 1, 1)
-        row += 1
-
-        # Instance Height
-        self.general_settings_grid.attach(Gtk.Label(label="Instance Height:", xalign=0), 0, row, 1, 1)
-        self.instance_height_spin = Gtk.SpinButton.new_with_range(480, 2160, 1)
-        self.instance_height_spin.set_value(1080) # Default from example.json
-        self.general_settings_grid.attach(self.instance_height_spin, 1, row, 1, 1)
+        self.general_settings_grid.attach(self.proton_version_combo, 1, row, 1, 1)
         row += 1
 
         # App ID
@@ -112,28 +192,6 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         self.use_goldberg_emu_check = Gtk.CheckButton()
         self.use_goldberg_emu_check.set_active(True) # Default from example.json
         self.general_settings_grid.attach(self.use_goldberg_emu_check, 1, row, 1, 1)
-        row += 1
-
-        # Mode (splitscreen or not)
-        self.general_settings_grid.attach(Gtk.Label(label="Mode:", xalign=0), 0, row, 1, 1)
-        self.mode_combo = Gtk.ComboBoxText()
-        self.mode_combo.append_text("None")
-        self.mode_combo.append_text("splitscreen")
-        self.mode_combo.set_active(0) # Default to None
-        self.general_settings_grid.attach(self.mode_combo, 1, row, 1, 1)
-        self.mode_combo.connect("changed", self.on_mode_changed)
-        row += 1
-
-        # Splitscreen Orientation (initially hidden)
-        self.splitscreen_orientation_label = Gtk.Label(label="Splitscreen Orientation:", xalign=0)
-        self.general_settings_grid.attach(self.splitscreen_orientation_label, 0, row, 1, 1)
-        self.splitscreen_orientation_combo = Gtk.ComboBoxText()
-        self.splitscreen_orientation_combo.append_text("horizontal")
-        self.splitscreen_orientation_combo.append_text("vertical")
-        self.splitscreen_orientation_combo.set_active(0) # Default to horizontal
-        self.general_settings_grid.attach(self.splitscreen_orientation_combo, 1, row, 1, 1)
-        self.splitscreen_orientation_label.hide()
-        self.splitscreen_orientation_combo.hide()
         row += 1
 
         # Env Vars
@@ -163,6 +221,20 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         save_button = Gtk.Button(label="Save Profile")
         save_button.connect("clicked", self.on_save_button_clicked)
         self.general_settings_page.pack_end(save_button, False, False, 0)
+
+    def on_exe_path_button_clicked(self, button):
+        dialog = Gtk.FileChooserDialog(
+            title="Select Game Executable",
+            parent=self,
+            action=Gtk.FileChooserAction.OPEN,
+            buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
+        )
+
+        response = dialog.run()
+        if response == Gtk.ResponseType.OK:
+            self.exe_path_entry.set_text(dialog.get_filename())
+        
+        dialog.destroy()
 
     def _on_add_env_var_clicked(self, button):
         self._add_env_var_row()
@@ -203,6 +275,30 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         # Remove the tuple from our tracking list
         self.env_var_entries.remove((key_entry, value_entry, row))
 
+    def _get_env_vars_from_ui(self) -> Dict[str, str]:
+        env_vars = {}
+        for key_entry, value_entry, _ in self.env_var_entries:
+            key = key_entry.get_text().strip().upper() # Convert key to ALL CAPS
+            value = value_entry.get_text().strip()
+            if key:
+                env_vars[key] = value
+        return env_vars
+
+    def _get_player_configs_from_ui(self) -> List[Dict[str, str]]:
+        player_configs = []
+        for i, player_combos in enumerate(self.player_device_combos):
+            player_config = {
+                "ACCOUNT_NAME": player_combos["account_name"].get_text() or f"Player{i+1}",
+                "LANGUAGE": player_combos["language"].get_text() or "brazilian",
+                "LISTEN_PORT": player_combos["listen_port"].get_text() or "47584",
+                "USER_STEAM_ID": player_combos["user_steam_id"].get_text() or f"7656119000000000{i+1}",
+                "PHYSICAL_DEVICE_ID": player_combos["physical_device_id"].get_active_text() if player_combos["physical_device_id"].get_active_text() != "None" else None,
+                "MOUSE_EVENT_PATH": player_combos["mouse_event_path"].get_active_text() if player_combos["mouse_event_path"].get_active_text() != "None" else None,
+                "KEYBOARD_EVENT_PATH": player_combos["keyboard_event_path"].get_active_text() if player_combos["keyboard_event_path"].get_active_text() != "None" else None,
+                "AUDIO_DEVICE_ID": player_combos["audio_device_id"].get_active_text() if player_combos["audio_device_id"].get_active_text() != "None" else None
+            }
+            player_configs.append(player_config)
+        return player_configs
 
     def setup_player_configs(self):
         self.player_frames = [] # To hold a frame for each player's config
@@ -346,57 +442,333 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             dialog.run()
             dialog.destroy()
 
+    def on_layout_setting_changed(self, widget):
+        self.drawing_area.queue_draw()
+
+    def on_draw_window_layout(self, widget, cr):
+        width = self.instance_width_spin.get_value_as_int()
+        height = self.instance_height_spin.get_value_as_int()
+        num_players = self.num_players_spin.get_value_as_int()
+        mode = self.mode_combo.get_active_text()
+        orientation = self.splitscreen_orientation_combo.get_active_text()
+
+        # Calculate scaling factor to fit preview within drawing area
+        drawing_area_width = widget.get_allocated_width()
+        drawing_area_height = widget.get_allocated_height()
+
+        if width == 0 or height == 0:
+            return
+
+        scale_w = drawing_area_width / width
+        scale_h = drawing_area_height / height
+        scale = min(scale_w, scale_h) * 0.9 # Use 90% of available space
+
+        # These are the scaled dimensions of the total 'screen' area, not individual windows
+        scaled_total_width = width * scale
+        scaled_total_height = height * scale
+
+        # Calculate offsets to center the overall layout
+        x_offset_display = (drawing_area_width - scaled_total_width) / 2
+        y_offset_display = (drawing_area_height - scaled_total_height) / 2
+
+        try:
+            dummy_profile = GameProfile(
+                GAME_NAME="Preview",
+                EXE_PATH="linuxcoop.py",
+                NUM_PLAYERS=num_players,
+                INSTANCE_WIDTH=width,
+                INSTANCE_HEIGHT=height,
+                MODE=mode,
+                SPLITSCREEN={"orientation": orientation} if mode == "splitscreen" else None,
+                PLAYER_PHYSICAL_DEVICE_IDS=[],
+                PLAYER_MOUSE_EVENT_PATHS=[],
+                PLAYER_KEYBOARD_EVENT_PATHS=[],
+                PLAYER_AUDIO_DEVICE_IDS=[],
+                is_native=False,
+                use_goldberg_emu=False
+            )
+        except Exception as e:
+            print(f"Error creating dummy profile: {e}")
+            return
+
+        cr.set_line_width(2)
+
+        if mode == "splitscreen" and num_players > 1:
+            if num_players == 2:
+                instance_w, instance_h = dummy_profile.get_instance_dimensions(1)
+                draw_w = instance_w * scale
+                draw_h = instance_h * scale
+
+                if orientation == "horizontal":
+                    # Two windows side-by-side (each half width, full height)
+                    # Player 1
+                    cr.rectangle(x_offset_display, y_offset_display, draw_w, scaled_total_height)
+                    cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+                    cr.stroke()
+                    # Player 2
+                    cr.rectangle(x_offset_display + draw_w, y_offset_display, draw_w, scaled_total_height)
+                    cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+                    cr.stroke()
+                else: # vertical
+                    # Two windows top-bottom (each full width, half height)
+                    # Player 1
+                    cr.rectangle(x_offset_display, y_offset_display, scaled_total_width, draw_h)
+                    cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+                    cr.stroke()
+                    # Player 2
+                    cr.rectangle(x_offset_display, y_offset_display + draw_h, scaled_total_width, draw_h)
+                    cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+                    cr.stroke()
+
+            elif num_players == 3:
+                if orientation == "horizontal": # One large top, two small bottom
+                    # Player 1 (top, full width, half height)
+                    # Use get_instance_dimensions for precise dimensions
+                    inst1_w, inst1_h = dummy_profile.get_instance_dimensions(1)
+                    draw_inst1_w = inst1_w * scale
+                    draw_inst1_h = inst1_h * scale
+                    cr.rectangle(x_offset_display, y_offset_display, draw_inst1_w, draw_inst1_h)
+                    cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+                    cr.stroke()
+
+                    # Players 2 & 3 (bottom half, split horizontally)
+                    inst2_w, inst2_h = dummy_profile.get_instance_dimensions(2) # Dimensions for subsequent players
+                    draw_inst2_w = inst2_w * scale
+                    draw_inst2_h = inst2_h * scale
+
+                    # Player 2
+                    cr.rectangle(x_offset_display, y_offset_display + draw_inst1_h, draw_inst2_w, draw_inst2_h)
+                    cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+                    cr.stroke()
+
+                    # Player 3
+                    cr.rectangle(x_offset_display + draw_inst2_w, y_offset_display + draw_inst1_h, draw_inst2_w, draw_inst2_h)
+                    cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+                    cr.stroke()
+
+                else: # vertical # One large left, two small right
+                    # Player 1 (left, half width, full height)
+                    inst1_w, inst1_h = dummy_profile.get_instance_dimensions(1)
+                    draw_inst1_w = inst1_w * scale
+                    draw_inst1_h = inst1_h * scale
+                    cr.rectangle(x_offset_display, y_offset_display, draw_inst1_w, draw_inst1_h)
+                    cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+                    cr.stroke()
+
+                    # Players 2 & 3 (right half, split vertically)
+                    inst2_w, inst2_h = dummy_profile.get_instance_dimensions(2)
+                    draw_inst2_w = inst2_w * scale
+                    draw_inst2_h = inst2_h * scale
+
+                    # Player 2
+                    cr.rectangle(x_offset_display + draw_inst1_w, y_offset_display, draw_inst2_w, draw_inst2_h)
+                    cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+                    cr.stroke()
+
+                    # Player 3
+                    cr.rectangle(x_offset_display + draw_inst1_w, y_offset_display + draw_inst2_h, draw_inst2_w, draw_inst2_h)
+                    cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+                    cr.stroke()
+
+            elif num_players == 4:
+                # 2x2 Grid, all windows are the same size
+                instance_w, instance_h = dummy_profile.get_instance_dimensions(1)
+                draw_w = instance_w * scale
+                draw_h = instance_h * scale
+
+                # Player 1 (Top-Left)
+                cr.rectangle(x_offset_display, y_offset_display, draw_w, draw_h)
+                cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+                cr.stroke()
+
+                # Player 2 (Top-Right)
+                cr.rectangle(x_offset_display + draw_w, y_offset_display, draw_w, draw_h)
+                cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+                cr.stroke()
+
+                # Player 3 (Bottom-Left)
+                cr.rectangle(x_offset_display, y_offset_display + draw_h, draw_w, draw_h)
+                cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+                cr.stroke()
+
+                # Player 4 (Bottom-Right)
+                cr.rectangle(x_offset_display + draw_w, y_offset_display + draw_h, draw_w, draw_h)
+                cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+                cr.stroke()
+            
+            else: # General case for more than 4 players, or other splits (uniform horizontal/vertical)
+                current_x = x_offset_display
+                current_y = y_offset_display
+
+                if orientation == "horizontal": # Stacked vertically
+                    for i in range(num_players):
+                        instance_w, instance_h = dummy_profile.get_instance_dimensions(i + 1)
+                        draw_h = instance_h * scale # Width will be scaled_total_width
+                        
+                        cr.rectangle(x_offset_display, current_y, scaled_total_width, draw_h)
+                        cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+                        cr.stroke()
+                        current_y += draw_h
+                else: # vertical (Side by side)
+                    for i in range(num_players):
+                        instance_w, instance_h = dummy_profile.get_instance_dimensions(i + 1)
+                        draw_w = instance_w * scale # Height will be scaled_total_height
+                        
+                        cr.rectangle(current_x, y_offset_display, draw_w, scaled_total_height)
+                        cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+                        cr.stroke()
+                        current_x += draw_w
+
+        else: # None or single player
+            instance_w, instance_h = dummy_profile.get_instance_dimensions(1)
+            draw_w = instance_w * scale
+            draw_h = instance_h * scale
+            cr.rectangle(x_offset_display, y_offset_display, draw_w, draw_h)
+            cr.set_source_rgb(1.0, 1.0, 1.0) # White border
+            cr.stroke()
 
     def get_profile_data(self):
-        profile = {
-            "GAME_NAME": self.game_name_entry.get_text(),
-            "EXE_PATH": self.exe_path_entry.get_filename(),
-            "NUM_PLAYERS": self.num_players_spin.get_value_as_int(),
-            "PROTON_VERSION": self.proton_version_entry.get_text() if self.proton_version_entry.get_text() else None,
-            "INSTANCE_WIDTH": self.instance_width_spin.get_value_as_int(),
-            "INSTANCE_HEIGHT": self.instance_height_spin.get_value_as_int(),
-            "APP_ID": self.app_id_entry.get_text() if self.app_id_entry.get_text() else None,
-            "GAME_ARGS": self.game_args_entry.get_text() if self.game_args_entry.get_text() else None,
-            "USE_GOLDBERG_EMU": self.use_goldberg_emu_check.get_active(),
-            "ENV_VARS": {}, # Initialize empty dict for env vars
-            "MODE": self.mode_combo.get_active_text() if self.mode_combo.get_active_text() != "None" else None,
-        }
+        proton_version = self.proton_version_combo.get_active_text()
+        if proton_version == "None" or not proton_version:
+            proton_version = None
 
-        # Populate ENV_VARS from the ListBox
-        for key_entry, value_entry, _ in self.env_var_entries:
-            key = key_entry.get_text().strip()
-            value = value_entry.get_text().strip()
-            if key:
-                profile["ENV_VARS"][key] = value
-
-        if profile["MODE"] == "splitscreen":
-            profile["SPLITSCREEN"] = {
-                "ORIENTATION": self.splitscreen_orientation_combo.get_active_text()
-            }
-        
-        profile["PLAYERS"] = []
-        profile["PLAYER_PHYSICAL_DEVICE_IDS"] = []
-        profile["PLAYER_MOUSE_EVENT_PATHS"] = []
-        profile["PLAYER_KEYBOARD_EVENT_PATHS"] = []
-        profile["PLAYER_AUDIO_DEVICE_IDS"] = []
-
+        player_configs_data = []
         for i in range(self.num_players_spin.get_value_as_int()):
             player_combos = self.player_device_combos[i]
-            player_config = {
-                "ACCOUNT_NAME": player_combos["account_name"].get_text() or f"Player{i+1}",
-                "LANGUAGE": player_combos["language"].get_text() or "brazilian",
-                "LISTEN_PORT": player_combos["listen_port"].get_text() or "47584",
-                "USER_STEAM_ID": player_combos["user_steam_id"].get_text() or f"7656119000000000{i+1}"
+            
+            account_name_val = player_combos["account_name"].get_text()
+            language_val = player_combos["language"].get_text()
+            listen_port_val = player_combos["listen_port"].get_text()
+            user_steam_id_val = player_combos["user_steam_id"].get_text()
+            physical_device_id_val = player_combos["physical_device_id"].get_active_text()
+            mouse_event_path_val = player_combos["mouse_event_path"].get_active_text()
+            keyboard_event_path_val = player_combos["keyboard_event_path"].get_active_text()
+            audio_device_id_val = player_combos["audio_device_id"].get_active_text()
+
+            player_config_args = {
+                "ACCOUNT_NAME": account_name_val or f"Player{i+1}",
+                "LANGUAGE": language_val or "brazilian",
+                "LISTEN_PORT": listen_port_val or "47584",
+                "USER_STEAM_ID": user_steam_id_val or f"7656119000000000{i+1}",
+                "PHYSICAL_DEVICE_ID": physical_device_id_val if physical_device_id_val != "None" else None,
+                "MOUSE_EVENT_PATH": mouse_event_path_val if mouse_event_path_val != "None" else None,
+                "KEYBOARD_EVENT_PATH": keyboard_event_path_val if keyboard_event_path_val != "None" else None,
+                "AUDIO_DEVICE_ID": audio_device_id_val if audio_device_id_val != "None" else None,
             }
-            profile["PLAYERS"].append(player_config)
+            print(f"Player {i+1} PlayerInstanceConfig arguments: {player_config_args}")
 
-            # Collect device paths for top-level lists
-            profile["PLAYER_PHYSICAL_DEVICE_IDS"].append(player_combos["physical_device_id"].get_active_text() if player_combos["physical_device_id"].get_active_text() != "None" else "")
-            profile["PLAYER_MOUSE_EVENT_PATHS"].append(player_combos["mouse_event_path"].get_active_text() if player_combos["mouse_event_path"].get_active_text() != "None" else "")
-            profile["PLAYER_KEYBOARD_EVENT_PATHS"].append(player_combos["keyboard_event_path"].get_active_text() if player_combos["keyboard_event_path"].get_active_text() != "None" else "")
-            profile["PLAYER_AUDIO_DEVICE_IDS"].append(player_combos["audio_device_id"].get_active_text() if player_combos["audio_device_id"].get_active_text() != "None" else "")
+            player_instance = PlayerInstanceConfig(**player_config_args)
+            print(f"Player {i+1} PlayerInstanceConfig object: {player_instance.model_dump(by_alias=True)}")
+            player_configs_data.append(player_instance)
 
-        return profile
+        splitscreen_config = None
+        if self.mode_combo.get_active_text() == "splitscreen":
+            splitscreen_config = SplitscreenConfig(
+                orientation=self.splitscreen_orientation_combo.get_active_text()
+            )
+        
+        is_native_value = not Path(self.exe_path_entry.get_text()).name.lower().endswith('.exe')
+
+        profile_data = GameProfile(
+            game_name=self.game_name_entry.get_text(),
+            exe_path=self.exe_path_entry.get_text(),
+            num_players=self.num_players_spin.get_value_as_int(),
+            proton_version=proton_version,
+            instance_width=self.instance_width_spin.get_value_as_int(),
+            instance_height=self.instance_height_spin.get_value_as_int(),
+            app_id=self.app_id_entry.get_text() or None,
+            game_args=self.game_args_entry.get_text() or None,
+            is_native=is_native_value,
+            mode=self.mode_combo.get_active_text() if self.mode_combo.get_active_text() != "None" else None,
+            splitscreen=splitscreen_config,
+            env_vars=self._get_env_vars_from_ui(),
+            player_configs=player_configs_data,
+            use_goldberg_emu=self.use_goldberg_emu_check.get_active()
+        )
+
+        return profile_data.model_dump(by_alias=True, exclude_unset=False, exclude_defaults=False)
+
+    def load_profile_data(self, profile_data):
+        self.game_name_entry.set_text(profile_data.get("GAME_NAME", ""))
+        self.exe_path_entry.set_text(profile_data.get("EXE_PATH", ""))
+        self.num_players_spin.set_value(profile_data.get("NUM_PLAYERS", 1))
+        
+        # Set Proton Version Combo Box
+        proton_version = profile_data.get("PROTON_VERSION")
+        if proton_version:
+            # Try to find the index of the version in the combo box
+            model = self.proton_version_combo.get_model()
+            for i, row in enumerate(model):
+                if row[0] == proton_version:
+                    self.proton_version_combo.set_active(i)
+                    break
+            else:
+                # If not found, set to "None" or first item
+                self.proton_version_combo.set_active(0) # This would be "None" if present
+        else:
+            self.proton_version_combo.set_active(0) # Default to "None"
+
+        self.instance_width_spin.set_value(profile_data.get("INSTANCE_WIDTH", 1920))
+        self.instance_height_spin.set_value(profile_data.get("INSTANCE_HEIGHT", 1080))
+        self.app_id_entry.set_text(profile_data.get("APP_ID", ""))
+        self.game_args_entry.set_text(profile_data.get("GAME_ARGS", ""))
+
+        mode = profile_data.get("MODE")
+        if mode:
+            self.mode_combo.set_active_id(mode)
+        else:
+            self.mode_combo.set_active_id("None")
+
+        splitscreen_orientation = profile_data.get("SPLITSCREEN", {}).get("orientation")
+        if splitscreen_orientation:
+            self.splitscreen_orientation_combo.set_active_id(splitscreen_orientation)
+        else:
+            self.splitscreen_orientation_combo.set_active(0) # Default to horizontal or first item
+
+        self.use_goldberg_emu_check.set_active(profile_data.get("USE_GOLDBERG_EMU", True))
+
+        # Load environment variables
+        for key_entry, value_entry, list_box_row in self.env_var_entries:
+            list_box_row.destroy() # Clear existing rows before loading new ones
+        self.env_var_entries.clear()
+
+        env_vars = profile_data.get("ENV_VARS", {})
+        if env_vars:
+            for key, value in env_vars.items():
+                self._add_env_var_row(key, value)
+        
+        # Load player configurations
+        self._create_player_config_uis(profile_data.get("NUM_PLAYERS", 1)) # Re-create based on num_players
+
+        player_configs_data = profile_data.get("PLAYERS", [])
+        if player_configs_data:
+            for i, player_config_data in enumerate(player_configs_data):
+                if i < len(self.player_device_combos):
+                    player_combos = self.player_device_combos[i]
+                    player_combos["account_name"].set_text(player_config_data.get("ACCOUNT_NAME", ""))
+                    player_combos["language"].set_text(player_config_data.get("LANGUAGE", ""))
+                    player_combos["listen_port"].set_text(player_config_data.get("LISTEN_PORT", ""))
+                    player_combos["user_steam_id"].set_text(player_config_data.get("USER_STEAM_ID", ""))
+                    
+                    # Set ComboBoxText for device IDs/paths
+                    for combo_key, alias_key in [
+                        ("physical_device_id", "PHYSICAL_DEVICE_ID"),
+                        ("mouse_event_path", "MOUSE_EVENT_PATH"),
+                        ("keyboard_event_path", "KEYBOARD_EVENT_PATH"),
+                        ("audio_device_id", "AUDIO_DEVICE_ID")
+                    ]:
+                        selected_value = player_config_data.get(alias_key) # Use alias_key to get ALL CAPS value
+                        if selected_value:
+                            model = player_combos[combo_key].get_model()
+                            for j, row in enumerate(model):
+                                if row[0] == selected_value:
+                                    player_combos[combo_key].set_active(j)
+                                    break
+                            else:
+                                # If not found, set to "None" or first item
+                                player_combos[combo_key].set_active(0)
+                        else:
+                            player_combos[combo_key].set_active(0)
 
 
 class LinuxCoopApp(Gtk.Application):

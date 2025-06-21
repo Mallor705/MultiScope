@@ -7,15 +7,21 @@ from ..core.exceptions import ProfileNotFoundError, ExecutableNotFoundError
 from ..core.cache import get_cache
 
 class PlayerInstanceConfig(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     """Configurações específicas para uma instância de jogador."""
-    account_name: Optional[str] = Field(default=None, alias="ACCOUNT_NAME")
-    language: Optional[str] = Field(default=None, alias="LANGUAGE")
-    listen_port: Optional[str] = Field(default=None, alias="LISTEN_PORT")
-    user_steam_id: Optional[str] = Field(default=None, alias="USER_STEAM_ID")
+    ACCOUNT_NAME: Optional[str] = Field(default=None, alias="ACCOUNT_NAME")
+    LANGUAGE: Optional[str] = Field(default=None, alias="LANGUAGE")
+    LISTEN_PORT: Optional[str] = Field(default=None, alias="LISTEN_PORT")
+    USER_STEAM_ID: Optional[str] = Field(default=None, alias="USER_STEAM_ID")
+    PHYSICAL_DEVICE_ID: Optional[str] = Field(default=None, alias="PHYSICAL_DEVICE_ID")
+    MOUSE_EVENT_PATH: Optional[str] = Field(default=None, alias="MOUSE_EVENT_PATH")
+    KEYBOARD_EVENT_PATH: Optional[str] = Field(default=None, alias="KEYBOARD_EVENT_PATH")
+    AUDIO_DEVICE_ID: Optional[str] = Field(default=None, alias="AUDIO_DEVICE_ID")
 
 class SplitscreenConfig(BaseModel):
     """Configuração do modo splitscreen."""
-    orientation: str = "horizontal"
+    orientation: str = Field("horizontal", alias="ORIENTATION")
 
     @validator('orientation')
     def validate_orientation(cls, v):
@@ -28,18 +34,14 @@ class GameProfile(BaseModel):
 
     """Modelo de perfil de jogo, contendo configurações e validações para execução multi-instância."""
     game_name: str = Field(..., alias="GAME_NAME")
-    exe_path: Path = Field(..., alias="EXE_PATH")
+    exe_path: str = Field(..., alias="EXE_PATH")
     proton_version: Optional[str] = Field(default=None, alias="PROTON_VERSION")
     num_players: int = Field(..., alias="NUM_PLAYERS")
     instance_width: int = Field(..., alias="INSTANCE_WIDTH")
     instance_height: int = Field(..., alias="INSTANCE_HEIGHT")
-    player_physical_device_ids: List[str] = Field(default_factory=list, alias="PLAYER_PHYSICAL_DEVICE_IDS")
-    player_mouse_event_paths: List[str] = Field(default_factory=list, alias="PLAYER_MOUSE_EVENT_PATHS")
-    player_keyboard_event_paths: List[str] = Field(default_factory=list, alias="PLAYER_KEYBOARD_EVENT_PATHS")
-    player_audio_device_ids: List[str] = Field(default_factory=list, alias="PLAYER_AUDIO_DEVICE_IDS")
     app_id: Optional[str] = Field(default=None, alias="APP_ID")
     game_args: Optional[str] = Field(default=None, alias="GAME_ARGS")
-    is_native: bool = False
+    is_native: bool = Field(default=False, alias="IS_NATIVE")
     mode: Optional[str] = Field(default=None, alias="MODE")
     splitscreen: Optional[SplitscreenConfig] = Field(default=None, alias="SPLITSCREEN")
     env_vars: Optional[Dict[str, str]] = Field(default=None, alias="ENV_VARS")
@@ -58,12 +60,11 @@ class GameProfile(BaseModel):
     @validator('exe_path')
     def validate_exe_path(cls, v, values):
         """Valida se o caminho do executável existe."""
-        # Se exe_path for uma string (vindo de JSON), converte para Path
         path_v = Path(v)
         cache = get_cache()
         if not cache.check_path_exists(path_v):
             raise ExecutableNotFoundError(f"Game executable not found: {path_v}")
-        return path_v
+        return v # Return as string
 
     @property
     def is_splitscreen_mode(self) -> bool:
@@ -155,17 +156,17 @@ class GameProfile(BaseModel):
         elif num_players == 3:
             if orientation == "horizontal":
                 if instance_num == 1:
-                    # Instância 1 ocupa metade da largura, altura total
-                    return self.instance_width // 2, self.instance_height
-                else:  # Instância 2 ou 3
-                    # As outras duas dividem a outra metade da largura e a altura total
-                    return self.instance_width // 2, self.instance_height // 2
-            else:  # vertical
-                if instance_num == 1:
                     # Instância 1 ocupa largura total, metade da altura
                     return self.instance_width, self.instance_height // 2
                 else:  # Instância 2 ou 3
                     # As outras duas dividem a largura total e a outra metade da altura
+                    return self.instance_width // 2, self.instance_height // 2
+            else:  # vertical
+                if instance_num == 1:
+                    # Instância 1 ocupa metade da largura, altura total
+                    return self.instance_width // 2, self.instance_height
+                else:  # Instância 2 ou 3
+                    # As outras duas dividem a outra metade da largura e a altura total
                     return self.instance_width // 2, self.instance_height // 2
         elif num_players == 4:
             # Para 4 jogadores, cada um ocupa um quarto da tela
@@ -175,6 +176,6 @@ class GameProfile(BaseModel):
             # Comportamento padrão para outros números de jogadores (ex: 5 ou mais)
             # Divide igualmente na orientação especificada
             if orientation == "horizontal":
-                return self.instance_width // num_players, self.instance_height
+                return self.instance_width, self.instance_height // num_players
             else:  # vertical
-                return self.instance_height, self.instance_height // num_players
+                return self.instance_width // num_players, self.instance_height
