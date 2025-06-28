@@ -35,7 +35,7 @@ class GameProfile(BaseModel):
 
     """Modelo de perfil de jogo, contendo configurações e validações para execução multi-instância."""
     game_name: str = Field(..., alias="GAME_NAME")
-    exe_path: Path = Field(..., alias="EXE_PATH")
+    exe_path: Optional[Path] = Field(default=None, alias="EXE_PATH")
     proton_version: Optional[str] = Field(default=None, alias="PROTON_VERSION")
     num_players: int = Field(..., alias="NUM_PLAYERS")
     instance_width: int = Field(..., alias="INSTANCE_WIDTH")
@@ -60,11 +60,16 @@ class GameProfile(BaseModel):
 
     @validator('exe_path')
     def validate_exe_path(cls, v, values):
-        """Valida se o caminho do executável existe."""
+        """Valida se o caminho do executável existe, se fornecido."""
+        if v is None: # Allow None for optional exe_path
+            return v
+        
         path_v = Path(v)
         cache = get_cache()
         if not cache.check_path_exists(path_v):
-            raise ExecutableNotFoundError(f"Game executable not found: {path_v}")
+            # Only raise error if path is not empty and not found
+            if str(path_v) != "":
+                raise ExecutableNotFoundError(f"Game executable not found: {path_v}")
         return path_v # Retorna o objeto Path
 
     @property

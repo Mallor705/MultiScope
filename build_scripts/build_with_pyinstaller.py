@@ -31,6 +31,9 @@ def build_pyinstaller(onefile=True, noconsole=False, extra_args=None):
         "pyinstaller",
         "--name", "linuxcoop",
         "--paths", str(PROJECT_ROOT / "src"),
+        "--hidden-import", "gi.repository.Gtk",
+        "--hidden-import", "cairo",
+        "--collect-all", "gi",
         str(ENTRY_SCRIPT)
     ]
     if onefile:

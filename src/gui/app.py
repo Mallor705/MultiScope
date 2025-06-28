@@ -518,7 +518,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         try:
             dummy_profile = GameProfile(
                 GAME_NAME="Preview",
-                EXE_PATH="linuxcoop.py",
+                EXE_PATH=None,
                 NUM_PLAYERS=num_players,
                 INSTANCE_WIDTH=width,
                 INSTANCE_HEIGHT=height,
