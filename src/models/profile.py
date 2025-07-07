@@ -185,3 +185,11 @@ class GameProfile(BaseModel):
                 return self.instance_width, self.instance_height // num_players
             else:  # vertical
                 return self.instance_width // num_players, self.instance_height
+
+    def save_to_file(self, profile_path: Path):
+        """Salva o perfil de jogo atual em um arquivo JSON."""
+        # Use .model_dump_json() para exportar o modelo Pydantic para JSON string
+        # by_alias=True garante que os campos com 'alias' (ex: GAME_NAME) usem seus aliases
+        # indent=4 para uma saída JSON formatada e legível
+        json_data = self.model_dump_json(by_alias=True, indent=4)
+        profile_path.write_text(json_data, encoding='utf-8')

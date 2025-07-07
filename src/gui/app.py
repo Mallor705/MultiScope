@@ -7,6 +7,7 @@ from ..services.device_manager import DeviceManager
 from ..models.profile import GameProfile, PlayerInstanceConfig, SplitscreenConfig
 from ..services.proton import ProtonService
 from ..core.logger import Logger
+from ..core.config import Config
 from typing import Dict, List
 
 class ProfileEditorWindow(Gtk.ApplicationWindow):
@@ -220,10 +221,19 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         env_vars_vbox.pack_start(add_env_var_button, False, False, 0)
         row += 1 # Increment row for the next element after env vars frame
 
-        # Save Button (moved to general_settings_page, not grid)
+        # Add a horizontal box for Save and Load buttons
+        button_hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        self.general_settings_page.pack_end(button_hbox, False, False, 0)
+
+        # Save Button
         save_button = Gtk.Button(label="Save Profile")
         save_button.connect("clicked", self.on_save_button_clicked)
-        self.general_settings_page.pack_end(save_button, False, False, 0)
+        button_hbox.pack_end(save_button, False, False, 0)
+
+        # Load Button
+        load_button = Gtk.Button(label="Load Profile")
+        load_button.connect("clicked", self.on_load_button_clicked)
+        button_hbox.pack_end(load_button, False, False, 0)
 
     def on_exe_path_button_clicked(self, button):
         dialog = Gtk.FileChooserDialog(
@@ -237,6 +247,41 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         if response == Gtk.ResponseType.OK:
             self.exe_path_entry.set_text(dialog.get_filename())
         
+        dialog.destroy()
+
+    def on_load_button_clicked(self, button):
+        dialog = Gtk.FileChooserDialog(
+            title="Load Game Profile",
+            parent=self,
+            action=Gtk.FileChooserAction.OPEN,
+            buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
+        )
+
+        # Set the current folder to PROFILE_DIR
+        try:
+            Config.PROFILE_DIR.mkdir(parents=True, exist_ok=True)
+            dialog.set_current_folder(str(Config.PROFILE_DIR))
+        except Exception as e:
+            self.logger.warning(f"Could not set initial folder for profile loading: {e}")
+
+        response = dialog.run()
+        if response == Gtk.ResponseType.OK:
+            file_path = Path(dialog.get_filename())
+            try:
+                profile = GameProfile.load_from_file(file_path)
+                self.load_profile_data(profile.model_dump(by_alias=True)) # Use model_dump to convert to dict
+                self.logger.info(f"Profile loaded successfully from {file_path}")
+            except Exception as e:
+                self.logger.error(f"Failed to load profile from {file_path}: {e}")
+                error_dialog = Gtk.MessageDialog(
+                    parent=self,
+                    flags=Gtk.DialogFlags.MODAL,
+                    type=Gtk.MessageType.ERROR,
+                    buttons=Gtk.ButtonsType.OK,
+                    message_format=f"Error loading profile:\n{e}"
+                )
+                error_dialog.run()
+                error_dialog.destroy()
         dialog.destroy()
 
     def _on_add_env_var_clicked(self, button):
@@ -737,7 +782,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
 
     def load_profile_data(self, profile_data):
         self.game_name_entry.set_text(profile_data.get("GAME_NAME", ""))
-        self.exe_path_entry.set_text(profile_data.get("EXE_PATH", ""))
+        self.exe_path_entry.set_text(str(profile_data.get("EXE_PATH", "")))
         self.num_players_spin.set_value(profile_data.get("NUM_PLAYERS", 1))
         
         # Set Proton Version Combo Box
@@ -766,9 +811,13 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         else:
             self.mode_combo.set_active_id("None")
 
-        splitscreen_orientation = profile_data.get("SPLITSCREEN", {}).get("ORIENTATION")
-        if splitscreen_orientation:
-            self.splitscreen_orientation_combo.set_active_id(splitscreen_orientation)
+        splitscreen_data = profile_data.get("SPLITSCREEN")
+        if splitscreen_data:
+            splitscreen_orientation = splitscreen_data.get("ORIENTATION")
+            if splitscreen_orientation:
+                self.splitscreen_orientation_combo.set_active_id(splitscreen_orientation)
+            else:
+                self.splitscreen_orientation_combo.set_active(0) # Default to horizontal or first item
         else:
             self.splitscreen_orientation_combo.set_active(0) # Default to horizontal or first item
 
