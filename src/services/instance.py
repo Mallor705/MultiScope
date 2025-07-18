@@ -62,7 +62,6 @@ class InstanceService:
             # Create directories in batch
             directories = [
                 Config.LOG_DIR,
-                Path.home() / '.config/protonfixes',
                 Config.PREFIX_BASE_DIR
             ]
             for directory in directories:
@@ -630,11 +629,6 @@ class InstanceService:
             '--tmpfs', '/tmp',
             '--cap-add', 'all',
         ]
-
-        # Ensure ProtonFixes config directory is accessible inside bwrap
-        protonfixes_config_dir = Path.home() / '.config' / 'protonfixes'
-        bwrap_cmd.extend(['--bind', str(protonfixes_config_dir), str(protonfixes_config_dir)])
-        self.logger.info(f"Instance {instance_num}: Added bwrap bind for ProtonFixes: {protonfixes_config_dir}")
 
         device_paths_to_bind = self._collect_device_paths(profile, instance_idx, device_info, instance_num)
 
