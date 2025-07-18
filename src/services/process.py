@@ -79,8 +79,16 @@ class ProcessService:
                 cwd=cwd,
                 preexec_fn=os.setsid
             )
-        
+
         self.pids.append(process.pid)
+        try:
+            # Pequeno atraso para permitir que o SO aplique a afinidade da CPU
+            time.sleep(0.1)
+            p = psutil.Process(process.pid)
+            cpu_affinity = p.cpu_affinity()
+            self.logger.info(f"Process {process.pid} CPU affinity: {cpu_affinity}")
+        except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
+            self.logger.warning(f"Could not get CPU affinity for PID {process.pid}: {e}")
         return process.pid
     
     def terminate_all(self) -> None:

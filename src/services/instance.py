@@ -2,6 +2,7 @@ import os
 import time
 import shutil
 from pathlib import Path
+import psutil
 from typing import List, Optional, Dict
 from ..core.config import Config
 from ..core.exceptions import DependencyError
@@ -20,6 +21,7 @@ class InstanceService:
         self.process_service = ProcessService(logger)
         self._dependency_cache: Dict[str, bool] = {}
         self._env_cache: Dict[str, dict] = {}
+        self.cpu_count = psutil.cpu_count(logical=True) # Obter o número de núcleos lógicos da CPU (inclui threads)
 
     def validate_dependencies(self) -> None:
         """Valida se todos os comandos necessários estão disponíveis no sistema."""
@@ -68,12 +70,37 @@ class InstanceService:
 
             instances = self._create_instances(profile, profile_name)
 
+            # Calculate CPU core assignments for each instance
+            num_instances = len(instances)
+            if num_instances == 0:
+                self.logger.info("No instances to launch.")
+                return
+
+            cores_per_instance = self.cpu_count // num_instances
+            remaining_cores = self.cpu_count % num_instances
+            core_assignments = []
+            current_core_start = 0
+
+            for i in range(num_instances):
+                num_cores_for_instance = cores_per_instance
+                if remaining_cores > 0:
+                    num_cores_for_instance += 1
+                    remaining_cores -= 1
+
+                # Build the core string, e.g., "0-3" or "4,5,6"
+                cores_list = []
+                for j in range(num_cores_for_instance):
+                    cores_list.append(str(current_core_start + j))
+                core_assignments.append(",".join(cores_list))
+                current_core_start += num_cores_for_instance
+
             self.logger.info(f"Launching {profile.effective_num_players} instance(s) of '{profile.game_name}'...")
 
             original_game_path = profile.exe_path.parent
 
-            for instance in instances:
-                self._launch_single_instance(instance, profile, proton_path, steam_root, original_game_path)
+            for i, instance in enumerate(instances):
+                cpu_affinity = core_assignments[i]
+                self._launch_single_instance(instance, profile, proton_path, steam_root, original_game_path, cpu_affinity)
                 time.sleep(5)
 
             self.logger.info(f"All {profile.effective_num_players} instances launched")
@@ -358,12 +385,12 @@ class InstanceService:
                  self.logger.error(f"Instance {instance.instance_num}: Symlink {symlinked_exe_path_target} points to {os.readlink(str(symlinked_exe_path_target))}, not {original_exe_path}")
             raise FileNotFoundError(f"Failed to create or verify symlink for executable {original_exe_path} at {symlinked_exe_path_target}")
 
-        self.logger.info(f"Instance {instance.instance_num}: Symlinked executable verified at: {symlinked_exe_path_target}")
+        self.logger.info(f"Instance {instance.instance_num}: Executable symlink verified: {symlinked_exe_path_target}")
 
     def _launch_single_instance(self, instance: GameInstance, profile: GameProfile,
-                              proton_path: Optional[Path], steam_root: Optional[Path], original_game_path: Path) -> None:
-        """Lança uma única instância do jogo."""
-        self.logger.info(f"Preparing instance {instance.instance_num}...")
+                              proton_path: Optional[Path], steam_root: Optional[Path], original_game_path: Path, cpu_affinity: str) -> None:
+        """Lança uma única instância do jogo com afinidade de CPU."""
+        self.logger.info(f"Preparing instance {instance.instance_num} with CPU affinity: {cpu_affinity}...")
 
         if not profile.exe_path:
             self.logger.error(f"Instance {instance.instance_num}: Executable path is missing in profile, cannot launch.")
@@ -380,16 +407,16 @@ class InstanceService:
         instance_idx = instance.instance_num - 1
         device_info = self._validate_input_devices(profile, instance_idx, instance.instance_num)
 
-        env = self._prepare_environment(instance, steam_root, profile, device_info)
-        cmd = self._build_command(profile, proton_path, instance, symlinked_executable_path)
+        env = self._prepare_environment(instance, steam_root, profile, device_info, cpu_affinity)
+        cmd = self._build_command(profile, proton_path, instance, symlinked_executable_path, cpu_affinity)
 
         self.logger.info(f"Launching instance {instance.instance_num} (Log: {instance.log_file})")
         pid = self.process_service.launch_instance(cmd, instance.log_file, env, cwd=symlinked_executable_path.parent)
         instance.pid = pid
         self.logger.info(f"Instance {instance.instance_num} started with PID: {pid}")
 
-    def _prepare_environment(self, instance: GameInstance, steam_root: Optional[Path], profile: Optional[GameProfile] = None, device_info: dict = {}) -> dict:
-        """Prepara as variáveis de ambiente para a instância do jogo, incluindo isolamento de controles e configuração XKB."""
+    def _prepare_environment(self, instance: GameInstance, steam_root: Optional[Path], profile: Optional[GameProfile] = None, device_info: dict = {}, cpu_affinity: str = "") -> dict:
+        """Prepara as variáveis de ambiente para a instância do jogo, incluindo isolamento de controles, configuração XKB e afinidade de CPU para Wine."""
         # Use cache for base environment
         base_env_key = f"base_{profile.is_native if profile else False}_{steam_root}_{profile.app_id if profile else None}"
         if base_env_key not in self._env_cache:
@@ -424,6 +451,9 @@ class InstanceService:
         if not (profile.is_native if profile else False):
             env['STEAM_COMPAT_DATA_PATH'] = str(instance.prefix_dir)
             env['WINEPREFIX'] = str(instance.prefix_dir / 'pfx')
+            # Adicionar WINE_CPU_TOPOLOGY para afinidade de CPU
+            env['WINE_CPU_TOPOLOGY'] = f"{self.cpu_count}:{cpu_affinity}"
+            self.logger.info(f"Instance {instance.instance_num}: Setting WINE_CPU_TOPOLOGY to '{env['WINE_CPU_TOPOLOGY']}'.")
 
         # Adicionar variáveis de ambiente definidas no perfil
         if profile and profile.env_vars:
@@ -464,7 +494,7 @@ class InstanceService:
             return device_from_profile
         return None
 
-    def _build_command(self, profile: GameProfile, proton_path: Optional[Path], instance: GameInstance, symlinked_exe_path: Path) -> List[str]:
+    def _build_command(self, profile: GameProfile, proton_path: Optional[Path], instance: GameInstance, symlinked_exe_path: Path, cpu_affinity: str) -> List[str]:
         """Monta o comando para executar o gamescope e o jogo (nativo ou via Proton), usando bwrap para isolar o controle."""
         instance_idx = instance.instance_num - 1
 
@@ -480,9 +510,11 @@ class InstanceService:
         # Construir comando bwrap com dispositivos
         bwrap_cmd = self._build_bwrap_command(profile, instance_idx, device_info, instance.instance_num)
 
-        final_cmd = bwrap_cmd + base_cmd
+        # Adicionar taskset no início do comando final para garantir afinidade para todo o processo
+        taskset_cmd = ["taskset", "-c", cpu_affinity]
+        final_cmd = taskset_cmd + bwrap_cmd + base_cmd
         final_bwrap_cmd_str = ' '.join(final_cmd)
-        self.logger.info(f"Instance {instance.instance_num}: Full bwrap command: {final_bwrap_cmd_str}")
+        self.logger.info(f"Instance {instance.instance_num}: Full command: {final_bwrap_cmd_str}")
 
         return final_cmd
 
@@ -618,8 +650,8 @@ class InstanceService:
         return bwrap_cmd
 
     def _collect_device_paths(self, profile: GameProfile, instance_idx: int, device_info: dict, instance_num: int) -> List[str]:
-        """Coleta os caminhos dos dispositivos a serem vinculados."""
-        device_paths_to_bind = []
+        """Coleta todos os caminhos de dispositivo necessários para bwrap."""
+        collected_paths = []
 
         # Joysticks
         # Obter config do jogador específico
@@ -630,22 +662,22 @@ class InstanceService:
             if joystick_path_str and joystick_path_str.strip():
                 joystick_path = Path(joystick_path_str)
                 if joystick_path.exists() and joystick_path.is_char_device():
-                    device_paths_to_bind.append(str(joystick_path))
+                    collected_paths.append(str(joystick_path))
                     self.logger.info(f"Instance {instance_num}: Queued joystick '{joystick_path}' for bwrap binding.")
                 else:
                     self.logger.warning(f"Instance {instance_num}: Joystick device '{joystick_path_str}' specified in profile but not found or not a char device. Not binding.")
 
         # Mouses - usa as variáveis já validadas
         if device_info['has_dedicated_mouse']:
-            device_paths_to_bind.append(device_info['mouse_path_str_for_instance'])
+            collected_paths.append(device_info['mouse_path_str_for_instance'])
             self.logger.info(f"Instance {instance_num}: Queued mouse device '{device_info['mouse_path_str_for_instance']}' for bwrap binding.")
 
         # Teclados - usa as variáveis já validadas
         if device_info['has_dedicated_keyboard']:
-            device_paths_to_bind.append(device_info['keyboard_path_str_for_instance'])
+            collected_paths.append(device_info['keyboard_path_str_for_instance'])
             self.logger.info(f"Instance {instance_num}: Queued keyboard device '{device_info['keyboard_path_str_for_instance']}' for bwrap binding.")
 
-        return device_paths_to_bind
+        return collected_paths
 
     def monitor_and_wait(self) -> None:
         """Monitora as instâncias até que todas sejam finalizadas."""
