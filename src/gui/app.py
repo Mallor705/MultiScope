@@ -804,6 +804,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             is_native=is_native_value,
             mode=mode,
             splitscreen=splitscreen_config,
+            player_configs=self._get_player_configs_from_ui(), # Adicione esta linha
         )
 
         self.logger.info(f"DEBUG: Mode value before GameProfile instantiation: {mode}")
@@ -812,7 +813,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             self.logger.info(f"DEBUG: Splitscreen orientation in GameProfile object: {profile_data.splitscreen.orientation}")
 
         profile_dumped = profile_data.model_dump(by_alias=True, exclude_unset=False, exclude_defaults=False, mode='json')
-        self.logger.info(f"DEBUG: Collecting {len(profile_dumped.get('PLAYERS', []))} player configs for saving.")
+        self.logger.info(f"DEBUG: Collecting {len(profile_dumped.get('PLAYERS') or [])} player configs for saving.")
         return profile_dumped
 
     def load_profile_data(self, profile_data):

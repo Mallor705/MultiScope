@@ -146,9 +146,15 @@ class GameProfile(BaseModel):
 
     @property
     def players_to_launch(self) -> List[PlayerInstanceConfig]:
-        """Returns the players that should be launched based on the selection."""
-        if not self.selected_players or not self.player_configs:
-            return self.player_configs or []
+        """Returns the players that should be launched based on the selection.
+        If no specific players are selected (selected_players is None or empty),
+        all available player configurations will be launched.
+        """
+        if not self.player_configs:
+            return []
+
+        if not self.selected_players: # If no specific players are selected, launch all
+            return self.player_configs
 
         # Filters players based on the selected_players list (1-based index)
         return [p for i, p in enumerate(self.player_configs) if (i + 1) in self.selected_players]
