@@ -20,7 +20,7 @@ class PlayerInstanceConfig(BaseModel):
     MOUSE_EVENT_PATH: Optional[str] = Field(default=None, alias="MOUSE_EVENT_PATH")
     KEYBOARD_EVENT_PATH: Optional[str] = Field(default=None, alias="KEYBOARD_EVENT_PATH")
     AUDIO_DEVICE_ID: Optional[str] = Field(default=None, alias="AUDIO_DEVICE_ID")
-    MONITOR_ID: Optional[str] = Field(default=None, alias="MONITOR_ID") # Novo campo para o monitor específico do jogador
+    monitor_id: Optional[str] = Field(default=None, alias="MONITOR_ID") # Novo campo para o monitor específico do jogador
 
 class SplitscreenConfig(BaseModel):
     model_config = ConfigDict(populate_by_name=True)

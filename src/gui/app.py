@@ -12,7 +12,7 @@ from typing import Dict, List, Tuple
 import subprocess
 import shutil
 import cairo # Import cairo here for drawing
-# REMOVED: import sys # Added for Gdk.Display.get_default()
+import sys # Importado para usar sys.executable
 
 class ProfileEditorWindow(Gtk.ApplicationWindow):
     def __init__(self, app):
@@ -608,7 +608,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             return
 
         script_path = Path(__file__).parent.parent.parent / "linuxcoop.py"
-        python_exec = shutil.which("python3") or shutil.which("python")
+        python_exec = sys.executable # Use o interpretador Python atual do ambiente virtual
         if not python_exec:
             self.statusbar.push(0, "Error: Python interpreter not found.")
             dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.OK,
