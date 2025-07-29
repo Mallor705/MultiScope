@@ -74,7 +74,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         self.logger = Logger(name="LinuxCoopGUI", log_dir=Path("./logs")) # Moved logger initialization here
         self.proton_service = ProtonService(self.logger)
 
-        # NEW: Mappings for device names to IDs and vice-versa
+        # Mappings for device names to IDs and vice-versa
         self.device_name_to_id = {"None": None}
         self.device_id_to_name = {None: "None"}
 
@@ -358,7 +358,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         self.play_button.connect("clicked", self.on_play_button_clicked)
         button_hbox.append(self.play_button) # Changed from pack_start
 
-    # NEW: Add _update_play_button_state method
+    # Add _update_play_button_state method
     def _update_play_button_state(self):
         if self.cli_process_pid:
             self.play_button.set_label("⏹️ Stop Gaming")
@@ -703,7 +703,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
                 json.dump(profile_data_dumped, f, indent=2)
             self.statusbar.set_label(f"Profile saved successfully to: {profile_path.name}") # Changed from push
 
-            # NEW: Invalidate the cache for this profile after saving
+            # Invalidate the cache for this profile after saving
             from ..core.cache import get_cache # Import here to ensure it's available
             cache = get_cache()
             cache.invalidate_profile(str(profile_path))
@@ -791,7 +791,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             self.cli_process_pid = None # Reset PID on error
             self._update_play_button_state() # Reset button to "Launch Game"
 
-    # NEW: Add _stop_game method
+    # Add _stop_game method
     def _stop_game(self):
         if not self.cli_process_pid:
             self.statusbar.set_label("No game process to stop.") # Changed from push
@@ -842,7 +842,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         except OSError:
             return False
 
-    # NEW: Add _check_cli_process for monitoring
+    # Add _check_cli_process for monitoring
     def _check_cli_process(self):
         if self.cli_process_pid and not self._is_process_running(self.cli_process_pid):
             self.logger.info(f"Detected CLI process {self.cli_process_pid} has terminated.")
