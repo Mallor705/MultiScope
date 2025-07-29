@@ -859,54 +859,82 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         self.drawing_area.queue_draw()
 
     def on_draw_window_layout(self, widget, cr, width, height):
-        # Gtk4 DrawingArea `draw` signal takes (drawingarea, cairo_context, width, height) as args
-        # In Gtk3, it was (drawingarea, cairo_context) and you'd get width/height from widget.get_allocated_width/height()
-        # The `cr` argument is the cairo context
+        """Main entry point for drawing the window layout preview."""
+        try:
+            # Get configuration from UI
+            layout_settings = self._get_layout_settings()
 
-        # The original code's width/height vars were the instance_width/height_spin values.
-        # I need to get the actual drawing area's size for scaling.
-        drawing_area_width = width # Now directly passed from the signal
-        drawing_area_height = height # Now directly passed from the signal
+            # Validate the data
+            if not self._validate_layout_data(layout_settings):
+                return
 
-        instance_width = self.instance_width_spin.get_value_as_int()
-        instance_height = self.instance_height_spin.get_value_as_int()
-        num_players = self.num_players_spin.get_value_as_int()
-        mode = self.mode_combo.get_active_text()
-        orientation = self.splitscreen_orientation_combo.get_active_text()
+            # Calculate drawing parameters
+            drawing_params = self._calculate_drawing_parameters(width, height, layout_settings)
 
-        # Ensure num_players is at least 1 to prevent ZeroDivisionError
-        if num_players < 1:
-            num_players = 1
+            # Create preview profile
+            profile = self._create_preview_profile(layout_settings)
+            if not profile:
+                return
 
-        if instance_width == 0 or instance_height == 0:
-            return
+            # Setup cairo context
+            cr.set_line_width(2)
 
-        scale_w = drawing_area_width / instance_width
-        scale_h = drawing_area_height / instance_height
+            # Draw the appropriate layout
+            if layout_settings['mode'] == "splitscreen" and layout_settings['num_players'] > 1:
+                self._draw_splitscreen_layout(cr, profile, drawing_params, layout_settings)
+            else:
+                self._draw_fullscreen_layout(cr, profile, drawing_params)
+
+        except Exception as e:
+            self.logger.error(f"Error drawing window layout: {e}")
+
+    def _get_layout_settings(self):
+        """Extract layout settings from UI widgets."""
+        return {
+            'instance_width': self.instance_width_spin.get_value_as_int(),
+            'instance_height': self.instance_height_spin.get_value_as_int(),
+            'num_players': max(1, self.num_players_spin.get_value_as_int()),
+            'mode': self.mode_combo.get_active_text(),
+            'orientation': self.splitscreen_orientation_combo.get_active_text()
+        }
+
+    def _validate_layout_data(self, settings):
+        """Validate layout settings."""
+        return (settings['instance_width'] > 0 and
+                settings['instance_height'] > 0 and
+                settings['num_players'] >= 1)
+
+    def _calculate_drawing_parameters(self, drawing_width, drawing_height, settings):
+        """Calculate scale and offset parameters for drawing."""
+        scale_w = drawing_width / settings['instance_width']
+        scale_h = drawing_height / settings['instance_height']
         scale = min(scale_w, scale_h) * 0.9
 
-        scaled_total_width = instance_width * scale
-        scaled_total_height = instance_height * scale
+        scaled_total_width = settings['instance_width'] * scale
+        scaled_total_height = settings['instance_height'] * scale
 
-        x_offset_display = (drawing_area_width - scaled_total_width) / 2
-        y_offset_display = (drawing_area_height - scaled_total_height) / 2
+        return {
+            'scale': scale,
+            'x_offset': (drawing_width - scaled_total_width) / 2,
+            'y_offset': (drawing_height - scaled_total_height) / 2
+        }
 
+    def _create_preview_profile(self, settings):
+        """Create a dummy profile for preview calculations."""
         try:
-            # Create dummy player configs for the dummy profile to ensure effective_num_players is correct
             dummy_player_configs = []
-            for _ in range(num_players):
+            for _ in range(settings['num_players']):
                 dummy_player_configs.append(PlayerInstanceConfig())
 
-            dummy_profile = GameProfile(
+            return GameProfile(
                 GAME_NAME="Preview",
                 EXE_PATH=None,
-                NUM_PLAYERS=num_players,
-                INSTANCE_WIDTH=instance_width,
-                INSTANCE_HEIGHT=instance_height,
-                MODE=mode,
-                SPLITSCREEN=SplitscreenConfig(orientation=orientation) if mode == "splitscreen" else None,
+                NUM_PLAYERS=settings['num_players'],
+                INSTANCE_WIDTH=settings['instance_width'],
+                INSTANCE_HEIGHT=settings['instance_height'],
+                MODE=settings['mode'],
+                SPLITSCREEN=SplitscreenConfig(orientation=settings['orientation']) if settings['mode'] == "splitscreen" else None,
                 player_configs=dummy_player_configs,
-                # Other player device IDs and native flag are not needed for layout preview
                 PLAYER_PHYSICAL_DEVICE_IDS=[],
                 PLAYER_MOUSE_EVENT_PATHS=[],
                 PLAYER_KEYBOARD_EVENT_PATHS=[],
@@ -914,130 +942,145 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
                 is_native=False,
             )
         except Exception as e:
-            print(f"Error creating dummy profile: {e}")
-            return
+            self.logger.error(f"Error creating preview profile: {e}")
+            return None
 
-        cr.set_line_width(2)
+    def _draw_splitscreen_layout(self, cr, profile, drawing_params, settings):
+        """Draw splitscreen layout for multiple players."""
+        for i in range(settings['num_players']):
+            instance_w, instance_h = profile.get_instance_dimensions(i + 1)
+            draw_w = instance_w * drawing_params['scale']
+            draw_h = instance_h * drawing_params['scale']
 
-        if mode == "splitscreen" and num_players > 1:
-            for i in range(num_players):
-                instance_w, instance_h = dummy_profile.get_instance_dimensions(i + 1) # Unscaled dimensions
-                draw_w = instance_w * scale
-                draw_h = instance_h * scale
+            pos_x, pos_y = self._calculate_player_position(
+                i, settings['num_players'], settings['orientation'],
+                draw_w, draw_h, profile, drawing_params['scale']
+            )
 
-                pos_x, pos_y = 0.0, 0.0 # Initialize positions
+            self._draw_player_window(
+                cr, i + 1, pos_x, pos_y, draw_w, draw_h,
+                drawing_params['x_offset'], drawing_params['y_offset'],
+                profile
+            )
 
-                if num_players == 2:
-                    if orientation == "horizontal":
-                        pos_x = i * draw_w
-                    else: # vertical
-                        pos_y = i * draw_h
-                elif num_players == 3:
-                    # Fetch dimensions for all players in 3-player splitscreen
-                    p1_unscaled_w, p1_unscaled_h = dummy_profile.get_instance_dimensions(1)
-                    p2_unscaled_w, p2_unscaled_h = dummy_profile.get_instance_dimensions(2) # P2 and P3 have same dimensions
+    def _draw_fullscreen_layout(self, cr, profile, drawing_params):
+        """Draw fullscreen layout for single player."""
+        instance_w, instance_h = profile.get_instance_dimensions(1)
+        draw_w = instance_w * drawing_params['scale']
+        draw_h = instance_h * drawing_params['scale']
 
-                    p1_draw_w, p1_draw_h = p1_unscaled_w * scale, p1_unscaled_h * scale
-                    p2_draw_w, p2_draw_h = p2_unscaled_w * scale, p2_unscaled_h * scale
+        self._draw_player_window(
+            cr, 1, 0, 0, draw_w, draw_h,
+            drawing_params['x_offset'], drawing_params['y_offset'],
+            profile
+        )
 
-                    if orientation == "horizontal": # 1 large top, 2 small bottom
-                        if i == 0: # Player 1 (top)
-                            pos_x, pos_y = 0, 0
-                        elif i == 1: # Player 2 (bottom-left)
-                            pos_x, pos_y = 0, p1_draw_h # Offset by P1's height
-                        elif i == 2: # Player 3 (bottom-right)
-                            pos_x, pos_y = p2_draw_w, p1_draw_h # Offset by P2's width and P1's height
-                    else: # vertical: 1 large left, 2 small right
-                        if i == 0: # Player 1 (left)
-                            pos_x, pos_y = 0, 0
-                        elif i == 1: # Player 2 (top-right)
-                            pos_x, pos_y = p1_draw_w, 0 # Offset by P1's width
-                        elif i == 2: # Player 3 (bottom-right)
-                            pos_x, pos_y = p1_draw_w, p2_draw_h # Offset by P1's width and P2's height
-                elif num_players == 4:
-                    # 2x2 grid
-                    row = i // 2
-                    col = i % 2
-                    pos_x = col * draw_w
-                    pos_y = row * draw_h
-                else: # Generic case for more than 4 players, uniform distribution
-                    if orientation == "horizontal": # Stacked vertically
-                        pos_y = i * draw_h
-                    else: # vertical (Side by side)
-                        pos_x = i * draw_w
+    def _calculate_player_position(self, player_index, num_players, orientation, draw_w, draw_h, profile, scale):
+        """Calculate the position for a specific player window."""
+        pos_x, pos_y = 0.0, 0.0
 
-                cr.rectangle(x_offset_display + pos_x, y_offset_display + pos_y, draw_w, draw_h)
-                cr.set_source_rgb(1.0, 1.0, 1.0) # White border
-                cr.stroke()
+        if num_players == 2:
+            if orientation == "horizontal":
+                pos_x = player_index * draw_w
+            else:  # vertical
+                pos_y = player_index * draw_h
+        elif num_players == 3:
+            pos_x, pos_y = self._calculate_three_player_position(
+                player_index, orientation, profile, scale
+            )
+        elif num_players == 4:
+            # 2x2 grid
+            row = player_index // 2
+            col = player_index % 2
+            pos_x = col * draw_w
+            pos_y = row * draw_h
+        else:  # Generic case for more than 4 players
+            if orientation == "horizontal":  # Stacked vertically
+                pos_y = player_index * draw_h
+            else:  # vertical (Side by side)
+                pos_x = player_index * draw_w
 
-                # Draw player number inside the rectangle
-                cr.select_font_face("Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
-                font_size = max(10, min(draw_w, draw_h) // 5)
-                cr.set_font_size(font_size)
-                cr.set_source_rgb(1.0, 1.0, 1.0) # White text
+        return pos_x, pos_y
 
-                text = f"P{i+1}"
-                xbearing, ybearing, width_text, height_text, xadvance, yadvance = cr.text_extents(text)
-                text_x = x_offset_display + pos_x + (draw_w - width_text) / 2
-                text_y = y_offset_display + pos_y + (draw_h + height_text) / 2
-                cr.move_to(text_x, text_y)
-                cr.show_text(text)
+    def _calculate_three_player_position(self, player_index, orientation, profile, scale):
+        """Calculate position for 3-player splitscreen layout."""
+        p1_unscaled_w, p1_unscaled_h = profile.get_instance_dimensions(1)
+        p2_unscaled_w, p2_unscaled_h = profile.get_instance_dimensions(2)
 
-                # Desenha o Monitor ID abaixo do número do jogador
-                monitor_id_text = ""
-                # Use player_configs do dummy_profile para obter o monitor_id
-                if dummy_profile.player_configs and i < len(dummy_profile.player_configs):
-                    player_instance = dummy_profile.player_configs[i]
-                    monitor_id_from_profile = player_instance.monitor_id
-                    if monitor_id_from_profile:
-                        monitor_id_text = self.device_id_to_name.get(monitor_id_from_profile, "None")
+        p1_draw_w, p1_draw_h = p1_unscaled_w * scale, p1_unscaled_h * scale
+        p2_draw_w, p2_draw_h = p2_unscaled_w * scale, p2_unscaled_h * scale
 
-                if monitor_id_text:
-                    cr.set_font_size(font_size * 0.7)
-                    cr.set_source_rgb(0.7, 0.7, 0.7) # Texto cinza para o ID do monitor
-                    xbearing, ybearing, width_text, height_text, xadvance, yadvance = cr.text_extents(monitor_id_text)
-                    text_x = x_offset_display + pos_x + (draw_w - width_text) / 2
-                    text_y = y_offset_display + pos_y + (draw_h + height_text) / 2 + (font_size * 0.8) # Posição abaixo do número do jogador
-                    cr.move_to(text_x, text_y)
-                    cr.show_text(monitor_id_text)
-        else:
-            instance_w, instance_h = dummy_profile.get_instance_dimensions(1)
-            draw_w = instance_w * scale
-            draw_h = instance_h * scale
-            cr.rectangle(x_offset_display, y_offset_display, draw_w, draw_h)
-            cr.set_source_rgb(1.0, 1.0, 1.0) # White border
-            cr.stroke()
+        if orientation == "horizontal":  # 1 large top, 2 small bottom
+            if player_index == 0:  # Player 1 (top)
+                return 0, 0
+            elif player_index == 1:  # Player 2 (bottom-left)
+                return 0, p1_draw_h
+            elif player_index == 2:  # Player 3 (bottom-right)
+                return p2_draw_w, p1_draw_h
+        else:  # vertical: 1 large left, 2 small right
+            if player_index == 0:  # Player 1 (left)
+                return 0, 0
+            elif player_index == 1:  # Player 2 (top-right)
+                return p1_draw_w, 0
+            elif player_index == 2:  # Player 3 (bottom-right)
+                return p1_draw_w, p2_draw_h
 
-            # Draw Player 1 label for single instance
-            cr.select_font_face("Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
-            font_size = max(10, min(draw_w, draw_h) // 5)
+        return 0, 0
+
+    def _draw_player_window(self, cr, player_num, pos_x, pos_y, width, height, x_offset, y_offset, profile):
+        """Draw a single player window with text and monitor info."""
+        # Draw window rectangle
+        cr.rectangle(x_offset + pos_x, y_offset + pos_y, width, height)
+        cr.set_source_rgb(1.0, 1.0, 1.0)  # White border
+        cr.stroke()
+
+        # Draw player text
+        self._draw_player_text(cr, player_num, pos_x, pos_y, width, height, x_offset, y_offset)
+
+        # Draw monitor info
+        self._draw_monitor_info(cr, player_num - 1, pos_x, pos_y, width, height, x_offset, y_offset, profile)
+
+    def _draw_player_text(self, cr, player_num, pos_x, pos_y, width, height, x_offset, y_offset):
+        """Draw player number text."""
+        cr.select_font_face("Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+        font_size = max(10, min(width, height) // 5)
+        cr.set_font_size(font_size)
+        cr.set_source_rgb(1.0, 1.0, 1.0)  # White text
+
+        text = f"P{player_num}"
+        _, _, width_text, height_text, _, _ = cr.text_extents(text)
+        text_x = x_offset + pos_x + (width - width_text) / 2
+        text_y = y_offset + pos_y + (height + height_text) / 2
+        cr.move_to(text_x, text_y)
+        cr.show_text(text)
+
+    def _draw_monitor_info(self, cr, player_index, pos_x, pos_y, width, height, x_offset, y_offset, profile):
+        """Draw monitor ID information below player text."""
+        monitor_id_text = self._get_monitor_text(player_index, profile)
+
+        if monitor_id_text:
+            # Calculate font size relative to player text
+            base_font_size = max(10, min(width, height) // 5)
+            font_size = base_font_size * 0.7
+
             cr.set_font_size(font_size)
-            cr.set_source_rgb(1.0, 1.0, 1.0)
+            cr.set_source_rgb(0.7, 0.7, 0.7)  # Gray text for monitor ID
 
-            text = "P1"
-            xbearing, ybearing, width_text, height_text, xadvance, yadvance = cr.text_extents(text)
-            text_x = x_offset_display + (draw_w - width_text) / 2
-            text_y = y_offset_display + (draw_h + height_text) / 2
+            _, _, width_text, height_text, _, _ = cr.text_extents(monitor_id_text)
+            text_x = x_offset + pos_x + (width - width_text) / 2
+            text_y = y_offset + pos_y + (height + height_text) / 2 + (base_font_size * 0.8)
             cr.move_to(text_x, text_y)
-            cr.show_text(text)
+            cr.show_text(monitor_id_text)
 
-            # Desenha o Monitor ID abaixo do número do jogador para instância única
-            monitor_id_text = ""
-            # Use player_configs do dummy_profile para obter o monitor_id
-            if dummy_profile.player_configs and 0 < len(dummy_profile.player_configs):
-                player_instance = dummy_profile.player_configs[0] # Get first player config
-                monitor_id_from_profile = player_instance.monitor_id
-                if monitor_id_from_profile:
-                    monitor_id_text = self.device_id_to_name.get(monitor_id_from_profile, "None")
-
-            if monitor_id_text:
-                cr.set_font_size(font_size * 0.7)
-                cr.set_source_rgb(0.7, 0.7, 0.7)
-                xbearing, ybearing, width_text, height_text, xadvance, yadvance = cr.text_extents(monitor_id_text)
-                text_x = x_offset_display + (draw_w - width_text) / 2
-                text_y = y_offset_display + (draw_h + height_text) / 2 + (font_size * 0.8)
-                cr.move_to(text_x, text_y)
-                cr.show_text(monitor_id_text)
+    def _get_monitor_text(self, player_index, profile):
+        """Get monitor text for a specific player."""
+        if (profile.player_configs and
+            player_index < len(profile.player_configs)):
+            player_instance = profile.player_configs[player_index]
+            monitor_id_from_profile = player_instance.monitor_id
+            if monitor_id_from_profile:
+                return self.device_id_to_name.get(monitor_id_from_profile, "None")
+        return ""
 
     def get_profile_data(self):
         proton_version = self.proton_version_combo.get_active_text()
