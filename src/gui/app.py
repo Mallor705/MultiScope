@@ -1132,10 +1132,28 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         return profile_dumped
 
     def load_profile_data(self, profile_data):
+        """Main entry point for loading profile data into the UI."""
+        try:
+            # Load different sections of the profile
+            self._load_basic_profile_settings(profile_data)
+            self._load_proton_settings(profile_data)
+            self._load_instance_settings(profile_data)
+            self._load_mode_and_splitscreen_settings(profile_data)
+            self._load_environment_variables(profile_data)
+            self._load_player_configurations(profile_data)
+            self._finalize_profile_loading()
+
+        except Exception as e:
+            self.logger.error(f"Error loading profile data: {e}")
+
+    def _load_basic_profile_settings(self, profile_data):
+        """Load basic profile settings like name, executable path, and player count."""
         self.game_name_entry.set_text(profile_data.get("GAME_NAME", ""))
         self.exe_path_entry.set_text(str(profile_data.get("EXE_PATH", "")))
         self.num_players_spin.set_value(profile_data.get("NUM_PLAYERS", 1))
 
+    def _load_proton_settings(self, profile_data):
+        """Load Proton version settings."""
         proton_version = profile_data.get("PROTON_VERSION")
         if proton_version:
             model = self.proton_version_combo.get_model()
@@ -1148,131 +1166,152 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         else:
             self.proton_version_combo.set_active(0)
 
+    def _load_instance_settings(self, profile_data):
+        """Load instance-specific settings like dimensions and game configuration."""
         self.instance_width_spin.set_value(profile_data.get("INSTANCE_WIDTH", 1920))
         self.instance_height_spin.set_value(profile_data.get("INSTANCE_HEIGHT", 1080))
         self.app_id_entry.set_text(profile_data.get("APP_ID", ""))
         self.game_args_entry.set_text(profile_data.get("GAME_ARGS", ""))
         self.is_native_check.set_active(profile_data.get("IS_NATIVE", False))
 
+    def _load_mode_and_splitscreen_settings(self, profile_data):
+        """Load mode and splitscreen configuration."""
         mode = profile_data.get("MODE")
         if mode:
             self.mode_combo.set_active_id(mode)
         else:
             self.mode_combo.set_active_id("None")
 
-        # Restaurar a visibilidade do splitscreen_orientation_label e splitscreen_orientation_combo com base no modo
+        # Configure splitscreen visibility and orientation
         current_mode = self.mode_combo.get_active_id()
         if current_mode == "splitscreen":
-            self.splitscreen_orientation_label.show()
-            self.splitscreen_orientation_combo.show()
-
-            # Carregar a orientação do splitscreen do perfil
-            splitscreen_data = profile_data.get("SPLITSCREEN")
-            if splitscreen_data and isinstance(splitscreen_data, dict):
-                orientation = splitscreen_data.get("ORIENTATION", "horizontal")
-                self.splitscreen_orientation_combo.set_active_id(orientation)
-            else:
-                # Valor padrão se não houver dados de splitscreen
-                self.splitscreen_orientation_combo.set_active_id("horizontal")
+            self._show_splitscreen_controls()
+            self._load_splitscreen_orientation(profile_data)
         else:
-            self.splitscreen_orientation_label.hide()
-            self.splitscreen_orientation_combo.hide()
+            self._hide_splitscreen_controls()
+
+    def _show_splitscreen_controls(self):
+        """Show splitscreen orientation controls."""
+        self.splitscreen_orientation_label.show()
+        self.splitscreen_orientation_combo.show()
+
+    def _hide_splitscreen_controls(self):
+        """Hide splitscreen orientation controls."""
+        self.splitscreen_orientation_label.hide()
+        self.splitscreen_orientation_combo.hide()
+
+    def _load_splitscreen_orientation(self, profile_data):
+        """Load splitscreen orientation from profile data."""
+        splitscreen_data = profile_data.get("SPLITSCREEN")
+        if splitscreen_data and isinstance(splitscreen_data, dict):
+            orientation = splitscreen_data.get("ORIENTATION", "horizontal")
+            self.splitscreen_orientation_combo.set_active_id(orientation)
+        else:
+            # Default value if no splitscreen data
+            self.splitscreen_orientation_combo.set_active_id("horizontal")
+
+    def _load_environment_variables(self, profile_data):
+        """Load environment variables from profile data."""
+        # Clear existing environment variables
+        self._clear_environment_variables_ui()
 
         env_vars_data = profile_data.get("ENV_VARS", {})
-        # Clear existing env var entries from the ListBox directly.
+        if env_vars_data:
+            self._populate_environment_variables(env_vars_data)
+        else:
+            self._add_default_environment_variables()
+
+    def _clear_environment_variables_ui(self):
+        """Clear existing environment variable entries from UI."""
         while self.env_vars_listbox.get_first_child():
             self.env_vars_listbox.remove(self.env_vars_listbox.get_first_child())
-        self.env_var_entries.clear() # Also clear the Python list of references
-        self.env_vars_listbox.queue_draw() # Force redraw after clearing env vars
+        self.env_var_entries.clear()
+        self.env_vars_listbox.queue_draw()
 
-        if env_vars_data and env_vars_data is not None:
-            for key, value in env_vars_data.items():
-                self._add_env_var_row(key, value)
-        # If no env_vars_data, ensure default rows are present
-        else:
-            self._add_env_var_row("WINEDLLOVERRIDES", "")
-            self._add_env_var_row("MANGOHUD", "1")
+    def _populate_environment_variables(self, env_vars_data):
+        """Populate environment variables from data."""
+        for key, value in env_vars_data.items():
+            self._add_env_var_row(key, value)
 
-        # Load player configurations
-        # In Gtk4, Gtk.Box.get_children() is removed. Remove children one by one.
+    def _add_default_environment_variables(self):
+        """Add default environment variables when none are present."""
+        self._add_env_var_row("WINEDLLOVERRIDES", "")
+        self._add_env_var_row("MANGOHUD", "1")
+
+    def _load_player_configurations(self, profile_data):
+        """Load player configurations from profile data."""
+        # Clear existing player UI
+        self._clear_player_configurations_ui()
+
+        # Get player data and recreate UI
+        players_data = profile_data.get("PLAYERS", []) or []
+        num_players = len(players_data)
+
+        if num_players > 0:
+            self.num_players_spin.set_value(num_players)
+            self._create_player_config_uis(num_players)
+            self._populate_player_configurations(players_data, profile_data)
+
+    def _clear_player_configurations_ui(self):
+        """Clear existing player configuration UI elements."""
         while self.player_config_vbox.get_first_child():
             self.player_config_vbox.remove(self.player_config_vbox.get_first_child())
 
         self.player_frames.clear()
         self.player_device_combos.clear()
         self.player_checkboxes.clear()
-        self.player_config_vbox.queue_draw() # Force redraw after clearing player configs
+        self.player_config_vbox.queue_draw()
 
-        # Re-create player UIs based on loaded data
-        num_players_in_profile = len(profile_data.get("PLAYERS", []) or [])
-        self.num_players_spin.set_value(num_players_in_profile)
-        self._create_player_config_uis(num_players_in_profile) # This recreates the UI elements
+    def _populate_player_configurations(self, players_data, profile_data):
+        """Populate player configurations from data."""
+        selected_players = profile_data.get("selected_players", []) or []
 
-        for i, player_config_data in enumerate(profile_data.get("PLAYERS", []) or []):
-            if i < len(self.player_device_combos): # Ensure we have UI elements for this player
-                player_combos = self.player_device_combos[i]
-                player_checkbox = self.player_checkboxes[i]
+        for i, player_config_data in enumerate(players_data):
+            if i < len(self.player_device_combos):
+                self._load_single_player_configuration(
+                    i, player_config_data, selected_players
+                )
 
-                # Set checkbox state based on selected_players from profile
-                selected_players_from_profile = profile_data.get("selected_players", []) or []
-                if (i + 1) in selected_players_from_profile:
-                    player_checkbox.set_active(True)
-                else:
-                    player_checkbox.set_active(False)
+    def _load_single_player_configuration(self, player_index, player_data, selected_players):
+        """Load configuration for a single player."""
+        player_combos = self.player_device_combos[player_index]
+        player_checkbox = self.player_checkboxes[player_index]
 
-                # Use .get() with a default empty string for text entries to avoid None
-                player_combos["ACCOUNT_NAME"].set_text(player_config_data.get("ACCOUNT_NAME", "") or "")
-                player_combos["LANGUAGE"].set_text(player_config_data.get("LANGUAGE", "") or "")
-                player_combos["LISTEN_PORT"].set_text(player_config_data.get("LISTEN_PORT", "") or "")
-                player_combos["USER_STEAM_ID"].set_text(player_config_data.get("USER_STEAM_ID", "") or "")
+        # Set player selection checkbox
+        player_checkbox.set_active((player_index + 1) in selected_players)
 
-                # Set DropDown selections based on device ID, converting ID back to name
-                # physical_device_id
-                device_id = player_config_data.get("PHYSICAL_DEVICE_ID")
-                device_name = self.device_id_to_name.get(device_id, "None")
-                selected_index = self._get_dropdown_index_for_name(player_combos["PHYSICAL_DEVICE_ID"], device_name)
-                player_combos["PHYSICAL_DEVICE_ID"].set_selected(selected_index)
+        # Load text fields
+        self._load_player_text_fields(player_combos, player_data)
 
-                # mouse_event_path
-                device_id = player_config_data.get("MOUSE_EVENT_PATH")
-                device_name = self.device_id_to_name.get(device_id, "None")
-                selected_index = self._get_dropdown_index_for_name(player_combos["MOUSE_EVENT_PATH"], device_name)
-                player_combos["MOUSE_EVENT_PATH"].set_selected(selected_index)
+        # Load device dropdowns
+        self._load_player_device_settings(player_combos, player_data)
 
-                # keyboard_event_path
-                device_id = player_config_data.get("KEYBOARD_EVENT_PATH")
-                device_name = self.device_id_to_name.get(device_id, "None")
-                selected_index = self._get_dropdown_index_for_name(player_combos["KEYBOARD_EVENT_PATH"], device_name)
-                player_combos["KEYBOARD_EVENT_PATH"].set_selected(selected_index)
+    def _load_player_text_fields(self, player_combos, player_data):
+        """Load text field values for a player."""
+        text_fields = ["ACCOUNT_NAME", "LANGUAGE", "LISTEN_PORT", "USER_STEAM_ID"]
+        for field in text_fields:
+            value = player_data.get(field, "") or ""
+            player_combos[field].set_text(value)
 
-                # audio_device_id
-                device_id = player_config_data.get("AUDIO_DEVICE_ID")
-                device_name = self.device_id_to_name.get(device_id, "None")
-                selected_index = self._get_dropdown_index_for_name(player_combos["AUDIO_DEVICE_ID"], device_name)
-                player_combos["AUDIO_DEVICE_ID"].set_selected(selected_index)
+    def _load_player_device_settings(self, player_combos, player_data):
+        """Load device dropdown settings for a player."""
+        device_fields = [
+            "PHYSICAL_DEVICE_ID", "MOUSE_EVENT_PATH",
+            "KEYBOARD_EVENT_PATH", "AUDIO_DEVICE_ID", "MONITOR_ID"
+        ]
 
-                # MONITOR_ID
-                device_id = player_config_data.get("MONITOR_ID") # Use 'MONITOR_ID' from data, not pydantic field name
-                device_name = self.device_id_to_name.get(device_id, "None")
-                selected_index = self._get_dropdown_index_for_name(player_combos["MONITOR_ID"], device_name)
-                player_combos["MONITOR_ID"].set_selected(selected_index)
+        for field in device_fields:
+            self._set_device_dropdown(player_combos[field], player_data.get(field))
 
-        # Load environment variables
-        # In Gtk4, Gtk.Box.get_children() is removed. Remove children one by one.
-        while self.env_vars_listbox.get_first_child():
-            self.env_vars_listbox.remove(self.env_vars_listbox.get_first_child())
-        self.env_var_entries.clear() # Clear existing entries
+    def _set_device_dropdown(self, dropdown, device_id):
+        """Set a device dropdown to the correct value based on device ID."""
+        device_name = self.device_id_to_name.get(device_id, "None")
+        selected_index = self._get_dropdown_index_for_name(dropdown, device_name)
+        dropdown.set_selected(selected_index)
 
-        env_vars_data = profile_data.get("ENV_VARS", {})
-        if env_vars_data and env_vars_data is not None:
-            for key, value in env_vars_data.items():
-                self._add_env_var_row(key, value)
-        # If no env_vars_data, ensure default rows are present
-        else:
-            self._add_env_var_row("WINEDLLOVERRIDES", "")
-            self._add_env_var_row("MANGOHUD", "1")
-
-        # Atualizar o preview do layout após carregar todos os dados do perfil
+    def _finalize_profile_loading(self):
+        """Finalize profile loading by updating UI elements."""
+        # Update the layout preview after loading all profile data
         self.drawing_area.queue_draw()
 
 
