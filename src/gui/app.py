@@ -81,10 +81,14 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
 
         # Right Pane: Container with Notebook and Fixed Buttons
         right_pane_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        right_pane_vbox.set_vexpand(True)
+        right_pane_vbox.set_hexpand(True)
         self.main_paned.set_end_child(right_pane_vbox)
 
         # Notebook with tabs
         self.notebook = Gtk.Notebook()
+        self.notebook.set_vexpand(True)
+        self.notebook.set_hexpand(True)
         right_pane_vbox.append(self.notebook)
 
         # Fixed buttons section at the bottom of right pane
@@ -171,11 +175,9 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         self.monitoring_timeout_id = None # Para controlar o timeout do monitoramento
 
         # Tab 1: General Settings
-        self.general_settings_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        self.general_settings_page.set_margin_start(10) # Changed from set_border_width
-        self.general_settings_page.set_margin_end(10)   # Changed from set_border_width
-        self.general_settings_page.set_margin_top(10)   # Changed from set_border_width
-        self.general_settings_page.set_margin_bottom(10) # Changed from set_border_width
+        self.general_settings_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        self.general_settings_page.set_vexpand(True)
+        self.general_settings_page.set_hexpand(True)
         self.notebook.append_page(self.general_settings_page, Gtk.Label(label="General Settings"))
 
         # Create a ScrolledWindow for general settings
@@ -187,25 +189,16 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
 
         # Create a container for the general settings content
         self.general_settings_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        self.general_settings_container.set_vexpand(True)
+        self.general_settings_container.set_hexpand(True)
         general_scrolled_window.set_child(self.general_settings_container)
 
-        self.general_settings_grid = Gtk.Grid()
-        self.general_settings_grid.set_column_spacing(10)
-        self.general_settings_grid.set_row_spacing(10)
-        self.general_settings_grid.set_margin_start(10) # Changed from set_border_width
-        self.general_settings_grid.set_margin_end(10)   # Changed from set_border_width
-        self.general_settings_grid.set_margin_top(10)   # Changed from set_border_width
-        self.general_settings_grid.set_margin_bottom(100) # Changed from set_border_width
-        self.general_settings_page.append(self.general_settings_grid) # Changed from pack_start
         self.setup_general_settings() # Call setup_general_settings here
 
         # Tab 2: Player Configurations
-        self.player_configs_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        self.player_configs_page.set_margin_start(10) # Changed from set_border_width
-        self.player_configs_page.set_margin_end(10)   # Changed from set_border_width
-        self.player_configs_page.set_margin_top(10)   # Changed from set_border_width
-        self.player_configs_page.set_margin_bottom(10) # Changed from set_border_width
+        self.player_configs_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self.player_configs_page.set_vexpand(True)
+        self.player_configs_page.set_hexpand(True)
         self.notebook.append_page(self.player_configs_page, Gtk.Label(label="Player Configurations"))
 
         # Create a ScrolledWindow for player configurations
@@ -217,26 +210,27 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
 
         # Create a Viewport for the player configurations content (Gtk.Viewport is deprecated in Gtk4)
         self.player_config_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+        self.player_config_vbox.set_vexpand(True)
+        self.player_config_vbox.set_hexpand(True)
         player_scrolled_window.set_child(self.player_config_vbox) # Changed from player_viewport.add
 
         self.setup_player_configs()
 
         # Tab 3: Window Layout Preview
-        self.window_layout_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        self.window_layout_page.set_margin_start(10) # Changed from set_border_width
-        self.window_layout_page.set_margin_end(10)   # Changed from set_border_width
-        self.window_layout_page.set_margin_top(10)   # Changed from set_border_width
-        self.window_layout_page.set_margin_bottom(10) # Changed from set_border_width
+        self.window_layout_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        self.window_layout_page.set_vexpand(True)
+        self.window_layout_page.set_hexpand(True)
         self.notebook.append_page(self.window_layout_page, Gtk.Label(label="Window Layout Preview"))
 
         # Add a grid for layout settings in the preview tab
         self.preview_settings_grid = Gtk.Grid()
         self.preview_settings_grid.set_column_spacing(10)
         self.preview_settings_grid.set_row_spacing(10)
-        self.preview_settings_grid.set_margin_start(10) # Changed from set_border_width
-        self.preview_settings_grid.set_margin_end(10)   # Changed from set_border_width
-        self.preview_settings_grid.set_margin_top(10)   # Changed from set_border_width
-        self.preview_settings_grid.set_margin_bottom(10) # Changed from set_border_width
+        self.preview_settings_grid.set_margin_start(5) # Changed from set_border_width
+        self.preview_settings_grid.set_margin_end(5)   # Changed from set_border_width
+        self.preview_settings_grid.set_margin_top(5)   # Changed from set_border_width
+        self.preview_settings_grid.set_margin_bottom(5) # Changed from set_border_width
+        self.preview_settings_grid.set_hexpand(False)
         self.window_layout_page.append(self.preview_settings_grid) # Changed from pack_start
 
         # Num Players
@@ -271,6 +265,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         self.drawing_area.set_draw_func(self.on_draw_window_layout) # Changed from connect("draw", ...)
         self.drawing_area.set_hexpand(True) # Ensure drawing area expands horizontally
         self.drawing_area.set_vexpand(True) # Ensure drawing area expands vertically
+        self.drawing_area.set_size_request(200, 200) # Set minimum size for drawing area
         self.window_layout_page.append(self.drawing_area) # Changed from pack_start
 
         # Connect signals for redraw
@@ -302,10 +297,12 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
     def setup_general_settings(self):
         # Use a main VBox for this page to hold frames
         main_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=15)
-        main_vbox.set_margin_start(10)
-        main_vbox.set_margin_end(10)
-        main_vbox.set_margin_top(10)
-        main_vbox.set_margin_bottom(10)
+        main_vbox.set_margin_start(5)
+        main_vbox.set_margin_end(5)
+        main_vbox.set_margin_top(5)
+        main_vbox.set_margin_bottom(5)
+        main_vbox.set_vexpand(True)
+        main_vbox.set_hexpand(True)
         self.general_settings_container.append(main_vbox) # Changed to use scrolled container
 
 
@@ -316,10 +313,10 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         game_details_grid = Gtk.Grid()
         game_details_grid.set_column_spacing(10)
         game_details_grid.set_row_spacing(10)
-        game_details_grid.set_margin_start(10) # Changed from set_border_width
-        game_details_grid.set_margin_end(10)   # Changed from set_border_width
-        game_details_grid.set_margin_top(10)   # Changed from set_border_width
-        game_details_grid.set_margin_bottom(10) # Changed from set_border_width
+        game_details_grid.set_margin_start(5) # Changed from set_border_width
+        game_details_grid.set_margin_end(5)   # Changed from set_border_width
+        game_details_grid.set_margin_top(5)   # Changed from set_border_width
+        game_details_grid.set_margin_bottom(5) # Changed from set_border_width
         game_details_frame.set_child(game_details_grid) # Changed from add
 
         row = 0
@@ -375,10 +372,10 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         proton_options_grid = Gtk.Grid()
         proton_options_grid.set_column_spacing(10)
         proton_options_grid.set_row_spacing(10)
-        proton_options_grid.set_margin_start(10) # Changed from set_border_width
-        proton_options_grid.set_margin_end(10)   # Changed from set_border_width
-        proton_options_grid.set_margin_top(10)   # Changed from set_border_width
-        proton_options_grid.set_margin_bottom(10) # Changed from set_border_width
+        proton_options_grid.set_margin_start(5) # Changed from set_border_width
+        proton_options_grid.set_margin_end(5)   # Changed from set_border_width
+        proton_options_grid.set_margin_top(5)   # Changed from set_border_width
+        proton_options_grid.set_margin_bottom(5) # Changed from set_border_width
         proton_options_frame.set_child(proton_options_grid) # Changed from add
 
         row = 0 # Reset row counter for this grid
@@ -404,10 +401,10 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         main_vbox.append(env_vars_frame) # Changed from pack_start
 
         env_vars_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
-        env_vars_vbox.set_margin_start(10) # Changed from set_border_width
-        env_vars_vbox.set_margin_end(10)   # Changed from set_border_width
-        env_vars_vbox.set_margin_top(10)   # Changed from set_border_width
-        env_vars_vbox.set_margin_bottom(10) # Changed from set_border_width
+        env_vars_vbox.set_margin_start(5) # Changed from set_border_width
+        env_vars_vbox.set_margin_end(5)   # Changed from set_border_width
+        env_vars_vbox.set_margin_top(5)   # Changed from set_border_width
+        env_vars_vbox.set_margin_bottom(5) # Changed from set_border_width
         env_vars_frame.set_child(env_vars_vbox) # Changed from add
 
         self.env_vars_listbox = Gtk.ListBox()
