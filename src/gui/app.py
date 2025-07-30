@@ -195,7 +195,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         self.general_settings_grid.set_margin_start(10) # Changed from set_border_width
         self.general_settings_grid.set_margin_end(10)   # Changed from set_border_width
         self.general_settings_grid.set_margin_top(10)   # Changed from set_border_width
-        self.general_settings_grid.set_margin_bottom(10) # Changed from set_border_width
+        self.general_settings_grid.set_margin_bottom(100) # Changed from set_border_width
         self.general_settings_page.append(self.general_settings_grid) # Changed from pack_start
         self.setup_general_settings() # Call setup_general_settings here
 

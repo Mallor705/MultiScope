@@ -2,7 +2,7 @@
 
 /* Global Animation Settings */
 * {
-    transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Button Interactions */
@@ -10,13 +10,13 @@ button {
     position: relative;
     overflow: hidden;
     transition:
-        all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1),
+        all 0.2s cubic-bezier(0.4, 0, 0.2, 1),
         box-shadow 0.3s ease,
         transform 0.15s ease;
 }
 
 button::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -25,7 +25,9 @@ button::before {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    transition: width 0.3s ease, height 0.3s ease;
+    transition:
+        width 0.3s ease,
+        height 0.3s ease;
     pointer-events: none;
 }
 
@@ -54,7 +56,7 @@ button:active {
 }
 
 .suggested-action::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
@@ -113,7 +115,7 @@ entry:focus {
 }
 
 /* ComboBox and Dropdown Interactions */
-combobox,
+/* combobox,
 dropdown {
     transition:
         all 0.2s ease,
@@ -124,7 +126,7 @@ combobox:hover,
 dropdown:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+} */
 
 /* Frame Animations */
 frame {
@@ -140,8 +142,7 @@ frame:hover {
 
 /* Profile Item Interactions */
 .profile-item {
-    transition:
-        all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform-origin: center;
 }
 
@@ -167,7 +168,7 @@ notebook > header > tabs > tab {
 }
 
 notebook > header > tabs > tab::before {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 50%;
@@ -194,13 +195,12 @@ notebook > header > tabs > tab:hover {
 
 /* ListBox Row Interactions */
 listbox > row {
-    transition:
-        all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
 }
 
 listbox > row::before {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     top: 0;
@@ -310,13 +310,21 @@ scrollbar slider:hover {
 
 /* Shake Animation for Errors */
 @keyframes shake {
-    0%, 100% {
+    0%,
+    100% {
         transform: translateX(0);
     }
-    10%, 30%, 50%, 70%, 90% {
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
         transform: translateX(-2px);
     }
-    20%, 40%, 60%, 80% {
+    20%,
+    40%,
+    60%,
+    80% {
         transform: translateX(2px);
     }
 }
@@ -327,10 +335,15 @@ scrollbar slider:hover {
 
 /* Bounce Animation for Success */
 @keyframes bounce {
-    0%, 20%, 53%, 80%, 100% {
+    0%,
+    20%,
+    53%,
+    80%,
+    100% {
         transform: translateY(0);
     }
-    40%, 43% {
+    40%,
+    43% {
         transform: translateY(-8px);
     }
     70% {
@@ -346,13 +359,13 @@ scrollbar slider:hover {
 }
 
 /* Focus Ring Enhancement */
-*:focus {
+/* *:focus {
     outline: none;
     box-shadow:
         0 0 0 3px rgba(0, 122, 204, 0.15),
         0 0 0 1px rgba(0, 122, 204, 0.4);
     transition: box-shadow 0.2s ease;
-}
+} */
 
 /* Smooth State Transitions */
 .state-transition {
