@@ -49,16 +49,33 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         self.profile_listbox.connect("row-activated", self._on_profile_selected_from_list)
         self.profile_list_scrolled_window.set_child(self.profile_listbox)
 
+        # Buttons container
+        self.buttons_hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        self.buttons_hbox.set_margin_start(8)
+        self.buttons_hbox.set_margin_end(8)
+        self.buttons_hbox.set_margin_bottom(8)
+        self.buttons_hbox.set_margin_top(8)
+        self.sidebar_vbox.append(self.buttons_hbox)
+
         # Add Profile Button
         self.add_profile_button = Gtk.Button(label="🎮 Add New Profile")
-        self.add_profile_button.set_margin_start(8)
-        self.add_profile_button.set_margin_end(8)
-        self.add_profile_button.set_margin_bottom(8)
-        self.add_profile_button.set_margin_top(8)
+        self.add_profile_button.set_hexpand(True)  # Take most of the space
         self.add_profile_button.add_css_class("suggested-action")  # Makes it blue/prominent
         self.add_profile_button.set_tooltip_text("Create a new game profile with default settings")
         self.add_profile_button.connect("clicked", self._on_add_profile_clicked)
-        self.sidebar_vbox.append(self.add_profile_button)
+        self.buttons_hbox.append(self.add_profile_button)
+
+        # Delete Profile Button (initially hidden)
+        self.delete_profile_button = Gtk.Button(label="🗑️")
+        self.delete_profile_button.set_size_request(40, -1)  # Small fixed width
+        self.delete_profile_button.add_css_class("destructive-action")  # Makes it red
+        self.delete_profile_button.set_tooltip_text("Delete selected profile")
+        self.delete_profile_button.connect("clicked", self._on_delete_profile_clicked)
+        self.delete_profile_button.set_visible(False)  # Hidden by default
+        self.buttons_hbox.append(self.delete_profile_button)
+
+        # Track selected profile
+        self.selected_profile_name = None
 
         # Right Pane: Existing Notebook
         self.notebook = Gtk.Notebook()
@@ -1365,6 +1382,10 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             row.set_child(label) # Changed from add
             self.profile_listbox.append(row) # Changed from add
             row.set_sensitive(False) # Make it non-selectable
+
+            # Hide delete button when no profiles
+            self.delete_profile_button.set_visible(False)
+            self.selected_profile_name = None
         else:
             for profile_path in profiles:
                 profile_name_stem = profile_path.stem # Get filename without extension
@@ -1392,6 +1413,10 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             self.logger.warning("Attempted to select a profile without a stored filename property.")
             return
 
+        # Update selected profile and show delete button
+        self.selected_profile_name = profile_name_stem
+        self.delete_profile_button.set_visible(True)
+
         profile_path = Config.PROFILE_DIR / f"{profile_name_stem}.json"
         self.logger.info(f"Loading profile from sidebar: {profile_name_stem}")
 
@@ -1402,16 +1427,15 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             # Switch to General Settings tab after loading
             self.notebook.set_current_page(0)
         except Exception as e:
-            self.logger.error(f"Failed to load profile {profile_name_stem} from list: {e}")
-            self.statusbar.set_label(f"Error loading profile: {e}") # Changed from push
+            self.logger.error(f"Failed to load profile {profile_name_stem}: {e}")
+            # Show error dialog
             error_dialog = Adw.MessageDialog(
-                heading="Error loading profile",
-                body=f"Error loading profile:\n{e}",
-                modal=True,
+                heading="Load Error",
+                body=f"Failed to load profile '{profile_name_stem}':\n{str(e)}"
             )
-            error_dialog.add_response("ok", "Ok")
-            error_dialog.set_response_enabled("ok", True)
+            error_dialog.add_response("ok", "OK")
             error_dialog.set_default_response("ok")
+            error_dialog.set_close_response("ok")
             error_dialog.set_transient_for(self)
             error_dialog.connect("response", lambda d, r: d.close())
             error_dialog.present()
@@ -1419,6 +1443,13 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
     def _on_add_profile_clicked(self, button):
         """Handle add new profile button click."""
         self._create_new_profile()
+
+    def _on_delete_profile_clicked(self, button):
+        """Handle delete profile button click."""
+        if not self.selected_profile_name:
+            return
+
+        self._delete_selected_profile()
 
     def _create_new_profile(self):
         """Create a new profile with default values."""
@@ -1573,6 +1604,10 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             # Select the new profile in the list
             self._select_profile_in_list(profile_name)
 
+            # Update selected profile and show delete button
+            self.selected_profile_name = profile_name
+            self.delete_profile_button.set_visible(True)
+
             # Switch to General Settings tab
             self.notebook.set_current_page(0)
 
@@ -1583,6 +1618,91 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             error_msg = f"❌ Error creating profile '{profile_name}': {e}"
             self.statusbar.set_label(error_msg)
             self.logger.error(error_msg)
+
+    def _delete_selected_profile(self):
+        """Delete the currently selected profile after confirmation."""
+        if not self.selected_profile_name:
+            return
+
+        # Create confirmation dialog
+        dialog = Adw.MessageDialog(
+            heading="Delete Profile",
+            body=f"Are you sure you want to delete the profile '{self.selected_profile_name}'?\n\nThis action cannot be undone.",
+            transient_for=self,
+            modal=True
+        )
+        dialog.add_response("cancel", "Cancel")
+        dialog.add_response("delete", "Delete")
+        dialog.set_response_appearance("delete", Adw.ResponseAppearance.DESTRUCTIVE)
+        dialog.set_default_response("cancel")
+        dialog.set_close_response("cancel")
+
+        def on_response(dialog, response_id):
+            if response_id == "delete":
+                self._confirm_delete_profile()
+            dialog.close()
+
+        dialog.connect("response", on_response)
+        dialog.present()
+
+    def _confirm_delete_profile(self):
+        """Actually delete the profile file and update UI."""
+        try:
+            # Save the name before clearing
+            deleted_name = self.selected_profile_name
+
+            # Delete the profile file
+            profile_path = Config.PROFILE_DIR / f"{self.selected_profile_name}.json"
+            if profile_path.exists():
+                profile_path.unlink()
+                self.logger.info(f"Deleted profile: {self.selected_profile_name}")
+
+            # Clear UI and update
+            self._clear_all_fields()
+            self._populate_profile_list()
+
+            # Hide delete button and clear selection
+            self.delete_profile_button.set_visible(False)
+            self.selected_profile_name = None
+
+            self.statusbar.set_label(f"✅ Profile '{deleted_name}' deleted successfully")
+
+        except Exception as e:
+            error_msg = f"❌ Error deleting profile: {e}"
+            self.statusbar.set_label(error_msg)
+            self.logger.error(error_msg)
+
+    def _clear_all_fields(self):
+        """Clear all form fields to default values."""
+        # Basic settings
+        self.game_name_entry.set_text("")
+        self.exe_path_entry.set_text("")
+        self.num_players_spin.set_value(1)
+        self.instance_width_spin.set_value(1920)
+        self.instance_height_spin.set_value(1080)
+        self.app_id_entry.set_text("")
+        self.game_args_entry.set_text("")
+        self.is_native_check.set_active(False)
+
+        # Mode settings
+        self.mode_combo.set_active_id("None")
+        self.splitscreen_orientation_combo.set_active_id("horizontal")
+        self._hide_splitscreen_controls()
+
+        # Proton version
+        self.proton_version_combo.set_active(0)
+
+        # Clear environment variables
+        self._clear_environment_variables_ui()
+        self._add_default_environment_variables()
+
+        # Clear player configurations
+        self._clear_player_configurations_ui()
+        self.num_players_spin.set_value(1)
+        self._create_player_config_uis(1)
+
+        # Update preview
+        self.drawing_area.queue_draw()
 
     def _select_profile_in_list(self, profile_name_to_select: str):
         current_row = self.profile_listbox.get_first_child()
