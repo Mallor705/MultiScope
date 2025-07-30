@@ -24,13 +24,15 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         super().__init__(application=app, title="Linux Coop Profile Editor")
         self.set_default_size(1200, 700) # Increased default width for side pane
 
-        # Create the main vertical box which will hold the main content (paned) and statusbar
+        # Create the main vertical box which will hold the main content (paned), buttons, and statusbar
         main_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self.set_child(main_vbox) # Changed from self.add(main_vbox)
 
         # Create a horizontal Paned widget for the side menu and main content
         self.main_paned = Gtk.Paned(orientation=Gtk.Orientation.HORIZONTAL)
         main_vbox.append(self.main_paned) # Changed from pack_start
+
+
 
         # Left Pane: Profile List with Add Button
         # Create a vertical container for the sidebar
@@ -77,9 +79,40 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         # Track selected profile
         self.selected_profile_name = None
 
-        # Right Pane: Existing Notebook
+        # Right Pane: Container with Notebook and Fixed Buttons
+        right_pane_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        self.main_paned.set_end_child(right_pane_vbox)
+
+        # Notebook with tabs
         self.notebook = Gtk.Notebook()
-        self.main_paned.set_end_child(self.notebook) # Changed from pack2
+        right_pane_vbox.append(self.notebook)
+
+        # Fixed buttons section at the bottom of right pane
+        button_separator = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL)
+        right_pane_vbox.append(button_separator)
+
+        button_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        button_container.set_halign(Gtk.Align.END) # Align buttons to the right
+        button_container.set_margin_start(10)
+        button_container.set_margin_end(10)
+        button_container.set_margin_top(10)
+        button_container.set_margin_bottom(10)
+        right_pane_vbox.append(button_container)
+
+        # Create the fixed buttons
+        load_button = Gtk.Button(label="Load Profile")
+        load_button.connect("clicked", self.on_load_button_clicked)
+        button_container.append(load_button)
+
+        save_button = Gtk.Button(label="Save Profile")
+        save_button.connect("clicked", self.on_save_button_clicked)
+        button_container.append(save_button)
+
+        # Make play_button an instance variable
+        self.play_button = Gtk.Button(label="▶️ Launch Game")
+        # Connect to a general handler that will decide to launch or stop
+        self.play_button.connect("clicked", self.on_play_button_clicked)
+        button_container.append(self.play_button)
 
         # Initialize configuration widgets early
         self.num_players_spin = Gtk.SpinButton.new_with_range(1, 4, 1)
@@ -373,24 +406,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         add_env_var_button.connect("clicked", self._on_add_env_var_clicked)
         env_vars_vbox.append(add_env_var_button) # Changed from pack_start
 
-        # Buttons at the bottom
-        button_hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-        button_hbox.set_halign(Gtk.Align.END) # Align buttons to the right
-        main_vbox.append(button_hbox) # Changed from pack_end
-
-        load_button = Gtk.Button(label="Load Profile")
-        load_button.connect("clicked", self.on_load_button_clicked)
-        button_hbox.append(load_button) # Changed from pack_start
-
-        save_button = Gtk.Button(label="Save Profile")
-        save_button.connect("clicked", self.on_save_button_clicked)
-        button_hbox.append(save_button) # Changed from pack_start
-
-        # Make play_button an instance variable
-        self.play_button = Gtk.Button(label="▶️ Launch Game") # Changed to instance variable
-        # Connect to a general handler that will decide to launch or stop
-        self.play_button.connect("clicked", self.on_play_button_clicked)
-        button_hbox.append(self.play_button) # Changed from pack_start
+        # Buttons are now fixed at the bottom of the main window, so they're removed from this tab
 
     # Add _update_play_button_state method
     def _update_play_button_state(self):
