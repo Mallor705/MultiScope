@@ -131,7 +131,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         self.mode_combo.append("splitscreen", "splitscreen")
         self.mode_combo.set_active(0) # Default to None
 
-        self.splitscreen_orientation_label = Gtk.Label(label="Splitscreen Orientation:", xalign=0)
+        self.splitscreen_orientation_label = Gtk.Label(label="Orientation:", xalign=0)
         self.splitscreen_orientation_combo = Gtk.ComboBoxText()
         self.splitscreen_orientation_combo.append("horizontal", "horizontal")
         self.splitscreen_orientation_combo.append("vertical", "vertical")
@@ -148,6 +148,15 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         # Mappings for device names to IDs and vice-versa
         self.device_name_to_id = {"None": None}
         self.device_id_to_name = {None: "None"}
+
+        # Create device list mappings for each category
+        self.device_lists = {
+            "joystick": [{"name": "None", "id": None}] + self.detected_input_devices.get("joystick", []),
+            "mouse": [{"name": "None", "id": None}] + self.detected_input_devices.get("mouse", []),
+            "keyboard": [{"name": "None", "id": None}] + self.detected_input_devices.get("keyboard", []),
+            "audio": [{"name": "None", "id": None}] + self.detected_audio_devices,
+            "display": [{"name": "None", "id": None}] + self.detected_display_outputs
+        }
 
         for device_type in ["joystick", "mouse", "keyboard"]:
             for device in self.detected_input_devices.get(device_type, []):
@@ -178,7 +187,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         self.general_settings_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self.general_settings_page.set_vexpand(True)
         self.general_settings_page.set_hexpand(True)
-        self.notebook.append_page(self.general_settings_page, Gtk.Label(label="General Settings"))
+        self.notebook.append_page(self.general_settings_page, Gtk.Label(label="General"))
 
         # Create a ScrolledWindow for general settings
         general_scrolled_window = Gtk.ScrolledWindow()
@@ -199,7 +208,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         self.player_configs_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self.player_configs_page.set_vexpand(True)
         self.player_configs_page.set_hexpand(True)
-        self.notebook.append_page(self.player_configs_page, Gtk.Label(label="Player Configurations"))
+        self.notebook.append_page(self.player_configs_page, Gtk.Label(label="Player Config"))
 
         # Create a ScrolledWindow for player configurations
         player_scrolled_window = Gtk.ScrolledWindow()
@@ -220,7 +229,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         self.window_layout_page = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         self.window_layout_page.set_vexpand(True)
         self.window_layout_page.set_hexpand(True)
-        self.notebook.append_page(self.window_layout_page, Gtk.Label(label="Window Layout Preview"))
+        self.notebook.append_page(self.window_layout_page, Gtk.Label(label="Window Layout"))
 
         # Left side: Settings panel
         settings_panel = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
@@ -249,7 +258,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         self.window_layout_page.append(preview_panel)
 
         # Add a label for the preview area
-        preview_label = Gtk.Label(label="Window Layout Preview")
+        preview_label = Gtk.Label(label="Preview")
         preview_label.set_halign(Gtk.Align.START)
         preview_label.set_margin_bottom(5)
         preview_label.add_css_class("heading")
@@ -366,12 +375,12 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         game_details_grid.attach(exe_path_hbox, 1, row, 1, 1)
         row += 1
 
-        # App ID
-        game_details_grid.attach(Gtk.Label(label="App ID (Steam):", xalign=0), 0, row, 1, 1)
-        self.app_id_entry = Gtk.Entry()
-        self.app_id_entry.set_placeholder_text("Optional (ex: 1621530)")
-        game_details_grid.attach(self.app_id_entry, 1, row, 1, 1)
-        row += 1
+        # # App ID
+        # game_details_grid.attach(Gtk.Label(label="App ID (Steam):", xalign=0), 0, row, 1, 1)
+        # self.app_id_entry = Gtk.Entry()
+        # self.app_id_entry.set_placeholder_text("Optional (ex: 1621530)")
+        # game_details_grid.attach(self.app_id_entry, 1, row, 1, 1)
+        # row += 1
 
         # Game Arguments
         game_details_grid.attach(Gtk.Label(label="Game Arguments:", xalign=0), 0, row, 1, 1)
@@ -388,7 +397,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         row += 1
 
         # Frame 2: Proton & Launch Options
-        proton_options_frame = Gtk.Frame(label="Proton & Launch Options")
+        proton_options_frame = Gtk.Frame(label="Launch Options")
         main_vbox.append(proton_options_frame) # Changed from pack_start
 
         proton_options_grid = Gtk.Grid()
@@ -592,14 +601,27 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
                     value = widget.get_text().strip()
                     config[key] = value if value != "" else None # Convert empty string to None if applicable
                 elif isinstance(widget, Gtk.DropDown): # Gtk.DropDown for device selection
-                    selected_item = widget.get_selected_item()
-                    selected_name = selected_item.get_string() if selected_item else "None"
+                    selected_index = widget.get_selected()
+                    device_type = getattr(widget, 'device_type', None)
 
-                    self.logger.info(f"DEBUG: Player config: Selected name for {key}: '{selected_name}'")
+                    if device_type and device_type in self.device_lists:
+                        device_list = self.device_lists[device_type]
+                        if 0 <= selected_index < len(device_list):
+                            device = device_list[selected_index]
+                            device_id = device["id"]
+                            device_name = device["name"]
+                        else:
+                            device_id = None
+                            device_name = "None"
+                    else:
+                        # Fallback to old method
+                        selected_item = widget.get_selected_item()
+                        selected_name = selected_item.get_string() if selected_item else "None"
+                        device_id = self.device_name_to_id.get(selected_name, None)
+                        device_name = selected_name
 
-                    # Convert name back to ID using the mapping
-                    device_id = self.device_name_to_id.get(selected_name, None)
-                    self.logger.info(f"DEBUG: Player config: Resolved ID for {key} ('{selected_name}'): '{device_id}'")
+                    self.logger.info(f"DEBUG: Player config: Selected name for {key}: '{device_name}' (index: {selected_index})")
+                    self.logger.info(f"DEBUG: Player config: Resolved ID for {key} ('{device_name}'): '{device_id}'")
                     config[key] = device_id
                 else:
                     config[key] = "" # Default empty string for other widget types if any
@@ -644,16 +666,39 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             player_frame.set_child(player_grid) # Changed from add
             player_grid.show() # Explicitly show the grid
 
+            # Create DropDowns with ellipsize to prevent expansion
+            physical_device_dropdown = Gtk.DropDown.new_from_strings(self._create_device_list_store(self.detected_input_devices["joystick"]))
+            physical_device_dropdown.set_size_request(200, -1)
+
+            mouse_device_dropdown = Gtk.DropDown.new_from_strings(self._create_device_list_store(self.detected_input_devices["mouse"]))
+            mouse_device_dropdown.set_size_request(200, -1)
+
+            keyboard_device_dropdown = Gtk.DropDown.new_from_strings(self._create_device_list_store(self.detected_input_devices["keyboard"]))
+            keyboard_device_dropdown.set_size_request(200, -1)
+
+            audio_device_dropdown = Gtk.DropDown.new_from_strings(self._create_device_list_store(self.detected_audio_devices))
+            audio_device_dropdown.set_size_request(200, -1)
+
+            monitor_dropdown = Gtk.DropDown.new_from_strings(self._create_device_list_store(self.detected_display_outputs))
+            monitor_dropdown.set_size_request(200, -1)
+
+            # Store device type mapping for each dropdown
+            physical_device_dropdown.device_type = "joystick"
+            mouse_device_dropdown.device_type = "mouse"
+            keyboard_device_dropdown.device_type = "keyboard"
+            audio_device_dropdown.device_type = "audio"
+            monitor_dropdown.device_type = "display"
+
             player_combos = {
                 "ACCOUNT_NAME": Gtk.Entry(),
                 "LANGUAGE": Gtk.Entry(),
                 "LISTEN_PORT": Gtk.Entry(),
                 "USER_STEAM_ID": Gtk.Entry(),
-                "PHYSICAL_DEVICE_ID": Gtk.DropDown.new_from_strings(self._create_device_list_store(self.detected_input_devices["joystick"])) , # Changed to Gtk.DropDown.new_from_strings
-                "MOUSE_EVENT_PATH": Gtk.DropDown.new_from_strings(self._create_device_list_store(self.detected_input_devices["mouse"])) , # Changed to Gtk.DropDown.new_from_strings
-                "KEYBOARD_EVENT_PATH": Gtk.DropDown.new_from_strings(self._create_device_list_store(self.detected_input_devices["keyboard"])) , # Changed to Gtk.DropDown.new_from_strings
-                "AUDIO_DEVICE_ID": Gtk.DropDown.new_from_strings(self._create_device_list_store(self.detected_audio_devices)) , # Changed to Gtk.DropDown.new_from_strings
-                "MONITOR_ID": Gtk.DropDown.new_from_strings(self._create_device_list_store(self.detected_display_outputs)) , # Changed to Gtk.DropDown.new_from_strings
+                "PHYSICAL_DEVICE_ID": physical_device_dropdown,
+                "MOUSE_EVENT_PATH": mouse_device_dropdown,
+                "KEYBOARD_EVENT_PATH": keyboard_device_dropdown,
+                "AUDIO_DEVICE_ID": audio_device_dropdown,
+                "MONITOR_ID": monitor_dropdown,
             }
             self.player_device_combos.append(player_combos)
 
@@ -666,29 +711,29 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             check_button.show()
             p_row += 1
 
-            player_grid.attach(Gtk.Label(label="Account Name:", xalign=0), 0, p_row, 1, 1)
-            player_combos["ACCOUNT_NAME"].set_placeholder_text(f"Player {i+1}")
-            player_grid.attach(player_combos["ACCOUNT_NAME"], 1, p_row, 1, 1)
-            player_combos["ACCOUNT_NAME"].show()
-            p_row += 1
+            # player_grid.attach(Gtk.Label(label="Account Name:", xalign=0), 0, p_row, 1, 1)
+            # player_combos["ACCOUNT_NAME"].set_placeholder_text(f"Player {i+1}")
+            # player_grid.attach(player_combos["ACCOUNT_NAME"], 1, p_row, 1, 1)
+            # player_combos["ACCOUNT_NAME"].show()
+            # p_row += 1
 
-            player_grid.attach(Gtk.Label(label="Language:", xalign=0), 0, p_row, 1, 1)
-            player_combos["LANGUAGE"].set_placeholder_text("Ex: brazilian, english")
-            player_grid.attach(player_combos["LANGUAGE"], 1, p_row, 1, 1)
-            player_combos["LANGUAGE"].show()
-            p_row += 1
+            # player_grid.attach(Gtk.Label(label="Language:", xalign=0), 0, p_row, 1, 1)
+            # player_combos["LANGUAGE"].set_placeholder_text("Ex: brazilian, english")
+            # player_grid.attach(player_combos["LANGUAGE"], 1, p_row, 1, 1)
+            # player_combos["LANGUAGE"].show()
+            # p_row += 1
 
-            player_grid.attach(Gtk.Label(label="Listen Port (Goldberg):", xalign=0), 0, p_row, 1, 1)
-            player_combos["LISTEN_PORT"].set_placeholder_text("Optional")
-            player_grid.attach(player_combos["LISTEN_PORT"], 1, p_row, 1, 1)
-            player_combos["LISTEN_PORT"].show()
-            p_row += 1
+            # player_grid.attach(Gtk.Label(label="Listen Port (Goldberg):", xalign=0), 0, p_row, 1, 1)
+            # player_combos["LISTEN_PORT"].set_placeholder_text("Optional")
+            # player_grid.attach(player_combos["LISTEN_PORT"], 1, p_row, 1, 1)
+            # player_combos["LISTEN_PORT"].show()
+            # p_row += 1
 
-            player_grid.attach(Gtk.Label(label="User Steam ID:", xalign=0), 0, p_row, 1, 1)
-            player_combos["USER_STEAM_ID"].set_placeholder_text("Optional (ex: 7656119...)")
-            player_grid.attach(player_combos["USER_STEAM_ID"], 1, p_row, 1, 1)
-            player_combos["USER_STEAM_ID"].show()
-            p_row += 1
+            # player_grid.attach(Gtk.Label(label="User Steam ID:", xalign=0), 0, p_row, 1, 1)
+            # player_combos["USER_STEAM_ID"].set_placeholder_text("Optional (ex: 7656119...)")
+            # player_grid.attach(player_combos["USER_STEAM_ID"], 1, p_row, 1, 1)
+            # player_combos["USER_STEAM_ID"].show()
+            # p_row += 1
 
             player_grid.attach(Gtk.Label(label="Joystick Device:", xalign=0), 0, p_row, 1, 1)
             physical_device_id_combo = player_combos["PHYSICAL_DEVICE_ID"]
@@ -722,14 +767,14 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             audio_device_id_combo.show()
             p_row += 1
 
-            # Monitor Selection
-            player_grid.attach(Gtk.Label(label="Monitor:", xalign=0), 0, p_row, 1, 1)
-            monitor_combo = player_combos["MONITOR_ID"]
-            # Removed Gtk.CellRendererText and pack_start/add_attribute for Gtk4 Gtk.DropDown
-            monitor_combo.set_selected(0) # Select "None" by default
-            player_grid.attach(monitor_combo, 1, p_row, 1, 1)
-            monitor_combo.show()
-            p_row += 1
+            # # Monitor Selection
+            # player_grid.attach(Gtk.Label(label="Monitor:", xalign=0), 0, p_row, 1, 1)
+            # monitor_combo = player_combos["MONITOR_ID"]
+            # # Removed Gtk.CellRendererText and pack_start/add_attribute for Gtk4 Gtk.DropDown
+            # monitor_combo.set_selected(0) # Select "None" by default
+            # player_grid.attach(monitor_combo, 1, p_row, 1, 1)
+            # monitor_combo.show()
+            # p_row += 1
 
         # self.player_config_vbox.show_all() # Not needed for Gtk4
         self.logger.info(f"DEBUG: Created {len(self.player_frames)} player config UIs.")
@@ -737,7 +782,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
 
     def on_num_players_changed(self, spin_button):
         num_players = spin_button.get_value_as_int()
-        # self._create_player_config_uis(num_players) # REMOVED: This causes redundant UI recreation
+        self._create_player_config_uis(num_players)
         self.statusbar.set_label(f"Number of players changed to {num_players}.") # Changed from push
 
     def on_mode_changed(self, combo):
@@ -828,8 +873,16 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             self.statusbar.set_label("Error: Profile name empty. Game not launched.") # Changed from push
             return
 
-        script_path = Path(__file__).parent.parent.parent / "linuxcoop.py"
-        python_exec = sys.executable # Use o interpretador Python atual do ambiente virtual
+        # Check if running as PyInstaller bundle
+        if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+            # PyInstaller bundle - use the current executable
+            script_path = Path(sys.executable)
+            python_exec = str(script_path)
+        else:
+            # Normal Python execution
+            script_path = Path(__file__).parent.parent.parent / "linuxcoop.py"
+            python_exec = sys.executable # Use o interpretador Python atual do ambiente virtual
+
         if not python_exec:
             self.statusbar.set_label("Error: Python interpreter not found.") # Changed from push
             dialog = Adw.MessageDialog(
@@ -845,7 +898,12 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             dialog.present()
             return
 
-        command = [python_exec, str(script_path), profile_name]
+        if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+            # PyInstaller bundle - call the executable directly
+            command = [python_exec, profile_name]
+        else:
+            # Normal Python execution
+            command = [python_exec, str(script_path), profile_name]
         self.logger.info(f"Executing command: {' '.join(command)}")
 
         self.play_button.set_sensitive(False)
@@ -1198,7 +1256,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             proton_version=proton_version,
             instance_width=self.instance_width_spin.get_value_as_int(),
             instance_height=self.instance_height_spin.get_value_as_int(),
-            app_id=self.app_id_entry.get_text() or None,
+            # app_id=self.app_id_entry.get_text() or None,
             game_args=self.game_args_entry.get_text(),
             env_vars=self._get_env_vars_from_ui(),
             is_native=is_native_value,
@@ -1229,12 +1287,15 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             self._finalize_profile_loading()
 
         except Exception as e:
+            import traceback
             self.logger.error(f"Error loading profile data: {e}")
+            self.logger.error(f"Detailed error trace: {traceback.format_exc()}")
+            self.statusbar.set_label(f"Error loading profile: {str(e)}")
 
     def _load_basic_profile_settings(self, profile_data):
         """Load basic profile settings like name, executable path, and player count."""
-        self.game_name_entry.set_text(profile_data.get("GAME_NAME", ""))
-        self.exe_path_entry.set_text(str(profile_data.get("EXE_PATH", "")))
+        self.game_name_entry.set_text(str(profile_data.get("GAME_NAME") or ""))
+        self.exe_path_entry.set_text(str(profile_data.get("EXE_PATH") or ""))
         self.num_players_spin.set_value(profile_data.get("NUM_PLAYERS", 1))
 
     def _load_proton_settings(self, profile_data):
@@ -1255,8 +1316,8 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         """Load instance-specific settings like dimensions and game configuration."""
         self.instance_width_spin.set_value(profile_data.get("INSTANCE_WIDTH", 1920))
         self.instance_height_spin.set_value(profile_data.get("INSTANCE_HEIGHT", 1080))
-        self.app_id_entry.set_text(profile_data.get("APP_ID", ""))
-        self.game_args_entry.set_text(profile_data.get("GAME_ARGS", ""))
+        # self.app_id_entry.set_text(str(profile_data.get("APP_ID") or ""))
+        self.game_args_entry.set_text(str(profile_data.get("GAME_ARGS") or ""))
         self.is_native_check.set_active(profile_data.get("IS_NATIVE", False))
 
     def _load_mode_and_splitscreen_settings(self, profile_data):
@@ -1390,9 +1451,22 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
 
     def _set_device_dropdown(self, dropdown, device_id):
         """Set a device dropdown to the correct value based on device ID."""
-        device_name = self.device_id_to_name.get(device_id, "None")
-        selected_index = self._get_dropdown_index_for_name(dropdown, device_name)
-        dropdown.set_selected(selected_index)
+        device_type = getattr(dropdown, 'device_type', None)
+
+        if device_type and device_type in self.device_lists:
+            # Use device_lists for accurate mapping
+            device_list = self.device_lists[device_type]
+            for i, device in enumerate(device_list):
+                if device["id"] == device_id:
+                    dropdown.set_selected(i)
+                    return
+            # If not found, default to "None" (index 0)
+            dropdown.set_selected(0)
+        else:
+            # Fallback to old method
+            device_name = self.device_id_to_name.get(device_id, "None")
+            selected_index = self._get_dropdown_index_for_name(dropdown, device_name)
+            dropdown.set_selected(selected_index)
 
     def _finalize_profile_loading(self):
         """Finalize profile loading by updating UI elements."""
@@ -1412,7 +1486,11 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
     def _create_device_list_store(self, devices: List[Dict[str, str]]) -> List[str]:
         string_list_data = ["None"] # Add "None" as the first option
         for device in devices:
-            string_list_data.append(device["name"])
+            # Truncate long device names with ellipsis
+            device_name = device["name"]
+            if len(device_name) > 22:
+                device_name = device_name[:19] + "..."
+            string_list_data.append(device_name)
         return string_list_data
 
     def _populate_profile_list(self):
@@ -1584,7 +1662,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
                 "NUM_PLAYERS": 2,
                 "INSTANCE_WIDTH": 1920,
                 "INSTANCE_HEIGHT": 1080,
-                "APP_ID": "",
+                # "APP_ID": "",
                 "GAME_ARGS": "",
                 "IS_NATIVE": False,
                 "MODE": "None",
@@ -1709,7 +1787,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         self.num_players_spin.set_value(1)
         self.instance_width_spin.set_value(1920)
         self.instance_height_spin.set_value(1080)
-        self.app_id_entry.set_text("")
+        # self.app_id_entry.set_text("")
         self.game_args_entry.set_text("")
         self.is_native_check.set_active(False)
 

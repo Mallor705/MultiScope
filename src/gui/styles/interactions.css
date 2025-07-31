@@ -1,251 +1,134 @@
-/* Interactions CSS - Modern animations and micro-interactions for Linux-Coop GUI */
+/* Interactions CSS - GTK4 compatible animations for Linux-Coop GUI */
 
 /* Global Animation Settings */
 * {
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+    transition-timing-function: ease;
 }
 
 /* Button Interactions */
 button {
-    position: relative;
-    overflow: hidden;
-    transition:
-        all 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-        box-shadow 0.3s ease,
-        transform 0.15s ease;
-}
-
-button::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition:
-        width 0.3s ease,
-        height 0.3s ease;
-    pointer-events: none;
-}
-
-button:active::before {
-    width: 300px;
-    height: 300px;
+    transition: all 200ms ease;
+    border-radius: 6px;
 }
 
 button:hover {
-    transform: translateY(-1px);
-    box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.15),
-        0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: alpha(currentColor, 0.1);
+    box-shadow: 0 4px 8px alpha(black, 0.15);
 }
 
 button:active {
-    transform: translateY(0) scale(0.98);
-    transition-duration: 0.1s;
+    background-color: alpha(currentColor, 0.2);
+    transition-duration: 100ms;
 }
 
-/* Suggested Action Button Enhancements */
+/* Suggested Action Button */
 .suggested-action {
-    position: relative;
-    background: linear-gradient(135deg, #007acc, #005a9e);
-    box-shadow: 0 2px 8px rgba(0, 122, 204, 0.3);
-}
-
-.suggested-action::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.2),
-        transparent
-    );
-    transition: left 0.5s ease;
-}
-
-.suggested-action:hover::after {
-    left: 100%;
+    background: #3584e4;
+    color: white;
+    box-shadow: 0 2px 4px alpha(black, 0.2);
 }
 
 .suggested-action:hover {
-    background: linear-gradient(135deg, #29b6f6, #007acc);
-    box-shadow:
-        0 8px 25px rgba(0, 122, 204, 0.4),
-        0 4px 10px rgba(0, 122, 204, 0.2);
-    transform: translateY(-2px) scale(1.02);
+    background: #2563eb;
+    box-shadow: 0 4px 8px alpha(black, 0.25);
 }
 
-/* Destructive Button Enhancements */
+.suggested-action:active {
+    background: #1d4ed8;
+}
+
+/* Destructive Button */
 .destructive-action {
-    background: linear-gradient(135deg, #dc3545, #c82333);
-    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    background: #e01b24;
+    color: white;
+    box-shadow: 0 2px 4px alpha(black, 0.2);
 }
 
 .destructive-action:hover {
-    background: linear-gradient(135deg, #e74c3c, #dc3545);
-    box-shadow:
-        0 8px 25px rgba(220, 53, 69, 0.4),
-        0 4px 10px rgba(220, 53, 69, 0.2);
-    transform: translateY(-2px) scale(1.02);
+    background: #dc2626;
+    box-shadow: 0 4px 8px alpha(black, 0.25);
 }
 
-/* Entry Field Interactions */
+.destructive-action:active {
+    background: #b91c1c;
+}
+
+/* Entry Fields */
 entry {
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        background-color 0.2s ease;
+    transition: all 200ms ease;
+    border-radius: 6px;
 }
 
 entry:focus {
-    transform: scale(1.01);
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        background-color 0.2s ease,
-        transform 0.2s ease;
+    border-color: #3584e4;
+    box-shadow: 0 0 0 2px alpha(#3584e4, 0.2);
 }
 
-/* ComboBox and Dropdown Interactions */
-combobox,
-dropdown {
-    transition:
-        all 0.2s ease,
-        box-shadow 0.3s ease;
+/* ComboBox */
+combobox {
+    transition: all 200ms ease;
 }
 
-combobox:hover,
-dropdown:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+combobox:hover {
+    background-color: alpha(currentColor, 0.05);
 }
 
-/* Frame Animations */
+/* Frames */
 frame {
-    transition:
-        box-shadow 0.3s ease,
-        transform 0.2s ease;
+    transition: all 200ms ease;
+    border-radius: 8px;
 }
 
 frame:hover {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
+    box-shadow: 0 2px 8px alpha(black, 0.1);
 }
 
-/* Profile Item Interactions */
-.profile-item {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-origin: center;
-}
-
-.profile-item:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow:
-        0 12px 30px rgba(0, 0, 0, 0.15),
-        0 6px 15px rgba(0, 0, 0, 0.1);
-}
-
-.profile-item:active {
-    transform: translateY(-2px) scale(1.01);
-    transition-duration: 0.1s;
-}
-
-/* Notebook Tab Interactions */
+/* Notebook Tabs */
 notebook > header > tabs > tab {
-    transition:
-        all 0.2s ease,
-        box-shadow 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-notebook > header > tabs > tab::before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #007acc, transparent);
-    transition: all 0.3s ease;
-    transform: translateX(-50%);
-}
-
-notebook > header > tabs > tab:hover::before {
-    width: 80%;
-}
-
-notebook > header > tabs > tab:checked::before {
-    width: 100%;
-    background: linear-gradient(90deg, #007acc, #29b6f6, #007acc);
+    transition: all 200ms ease;
+    border-radius: 6px 6px 0 0;
 }
 
 notebook > header > tabs > tab:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: alpha(currentColor, 0.05);
 }
 
-/* ListBox Row Interactions */
+notebook > header > tabs > tab:checked {
+    background-color: alpha(#3584e4, 0.1);
+    border-bottom: 2px solid #3584e4;
+}
+
+/* ListBox Rows */
 listbox > row {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-}
-
-listbox > row::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 0;
-    height: 100%;
-    background: linear-gradient(90deg, #007acc, transparent);
-    transition: width 0.3s ease;
-    border-radius: 4px 0 0 4px;
-}
-
-listbox > row:hover::before {
-    width: 4px;
-}
-
-listbox > row:selected::before {
-    width: 6px;
-    background: linear-gradient(90deg, #29b6f6, #007acc);
+    transition: all 200ms ease;
+    border-radius: 6px;
 }
 
 listbox > row:hover {
-    transform: translateX(4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: alpha(currentColor, 0.05);
 }
 
-/* Scrollbar Interactions */
+listbox > row:selected {
+    background-color: alpha(#3584e4, 0.1);
+    border-left: 3px solid #3584e4;
+}
+
+/* Scrollbars */
 scrollbar {
-    transition: opacity 0.3s ease;
-}
-
-scrollbar:hover {
-    opacity: 1;
+    transition: opacity 300ms ease;
 }
 
 scrollbar slider {
-    transition:
-        all 0.2s ease,
-        box-shadow 0.3s ease;
+    transition: all 200ms ease;
+    border-radius: 4px;
 }
 
 scrollbar slider:hover {
-    transform: scale(1.1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    background-color: alpha(currentColor, 0.3);
 }
 
-/* Spinner/Loading Animation */
+/* Animations */
 @keyframes spin {
     from {
         transform: rotate(0deg);
@@ -255,15 +138,10 @@ scrollbar slider:hover {
     }
 }
 
-.loading-spinner {
-    animation: spin 1s linear infinite;
-}
-
-/* Fade In Animation */
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(10px);
     }
     to {
         opacity: 1;
@@ -271,15 +149,10 @@ scrollbar slider:hover {
     }
 }
 
-.fade-in {
-    animation: fadeIn 0.5s ease forwards;
-}
-
-/* Slide In Animation */
-@keyframes slideInLeft {
+@keyframes slideIn {
     from {
         opacity: 0;
-        transform: translateX(-30px);
+        transform: translateX(-20px);
     }
     to {
         opacity: 1;
@@ -287,148 +160,65 @@ scrollbar slider:hover {
     }
 }
 
-.slide-in-left {
-    animation: slideInLeft 0.4s ease forwards;
-}
-
-/* Pulse Animation for Important Elements */
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(0, 122, 204, 0.4);
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(0, 122, 204, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(0, 122, 204, 0);
-    }
-}
-
-.pulse {
-    animation: pulse 2s infinite;
-}
-
-/* Shake Animation for Errors */
 @keyframes shake {
     0%,
     100% {
         transform: translateX(0);
     }
-    10%,
-    30%,
-    50%,
-    70%,
-    90% {
+    25%,
+    75% {
         transform: translateX(-2px);
     }
-    20%,
-    40%,
-    60%,
-    80% {
+    50% {
         transform: translateX(2px);
     }
 }
 
+/* Animation Classes */
+.loading-spinner {
+    animation: spin 1s linear infinite;
+}
+
+.fade-in {
+    animation: fadeIn 300ms ease forwards;
+}
+
+.slide-in {
+    animation: slideIn 300ms ease forwards;
+}
+
 .shake {
-    animation: shake 0.5s ease-in-out;
+    animation: shake 400ms ease-in-out;
 }
 
-/* Bounce Animation for Success */
-@keyframes bounce {
-    0%,
-    20%,
-    53%,
-    80%,
-    100% {
-        transform: translateY(0);
-    }
-    40%,
-    43% {
-        transform: translateY(-8px);
-    }
-    70% {
-        transform: translateY(-4px);
-    }
-    90% {
-        transform: translateY(-2px);
-    }
-}
-
-.bounce {
-    animation: bounce 1s ease;
-}
-
-/* Focus Ring Enhancement */
-/* *:focus {
-    outline: none;
-    box-shadow:
-        0 0 0 3px rgba(0, 122, 204, 0.15),
-        0 0 0 1px rgba(0, 122, 204, 0.4);
-    transition: box-shadow 0.2s ease;
-    border-radius: 6px;
-    margin: -6px;
-} */
-
-/* Smooth State Transitions */
-.state-transition {
-    transition:
-        background-color 0.3s ease,
-        color 0.3s ease,
-        border-color 0.3s ease,
-        box-shadow 0.3s ease,
-        transform 0.2s ease;
-}
-
-/* Micro-interaction for Checkboxes */
+/* Checkboxes */
 checkbutton {
-    transition: transform 0.1s ease;
+    transition: all 200ms ease;
 }
 
-checkbutton:active {
-    transform: scale(0.95);
+checkbutton:hover {
+    background-color: alpha(currentColor, 0.05);
 }
 
 checkbutton:checked {
-    transform: scale(1.05);
-    transition: transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    background-color: #3584e4;
+    color: white;
 }
 
-/* Progress Bar Animation */
-@keyframes progress {
-    0% {
-        width: 0%;
-    }
-    100% {
-        width: var(--progress-value, 0%);
-    }
+/* Headers */
+.heading {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: alpha(currentColor, 0.9);
 }
 
-.progress-bar {
-    animation: progress 1s ease-out forwards;
+/* Dim Labels */
+.dim-label {
+    opacity: 0.7;
+    font-size: 0.9em;
 }
 
-/* Glow Effect for Active Elements */
-.glow {
-    box-shadow:
-        0 0 5px rgba(0, 122, 204, 0.3),
-        0 0 10px rgba(0, 122, 204, 0.2),
-        0 0 15px rgba(0, 122, 204, 0.1);
-}
-
-/* Smooth Layout Shifts */
-.layout-shift {
-    transition:
-        width 0.3s ease,
-        height 0.3s ease,
-        margin 0.3s ease,
-        padding 0.3s ease;
-}
-
-/* Reduced Motion for Accessibility */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.02ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.02ms !important;
-    }
+/* Simple utility classes */
+.state-transition {
+    transition: all 200ms ease;
 }

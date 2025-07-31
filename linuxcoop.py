@@ -10,8 +10,29 @@ def main():
         # If no arguments are provided, open the GUI by default
         run_gui()
         return # Exit after launching GUI
-    
+
     command = args[0]
+
+    # Handle help and version commands
+    if command in ["--help", "-h", "help"]:
+        print("Linux-Coop - Run Windows games in local cooperative mode on Linux")
+        print("")
+        print("Usage:")
+        print("  linux-coop                    # Open GUI")
+        print("  linux-coop gui                # Open GUI")
+        print("  linux-coop <profile_name>     # Run profile in CLI mode")
+        print("  linux-coop edit <profile_name> # Edit profile")
+        print("  linux-coop --help             # Show this help")
+        print("  linux-coop --version          # Show version")
+        print("")
+        print("Examples:")
+        print("  linux-coop                    # Open GUI")
+        print("  linux-coop Palworld           # Run Palworld profile")
+        print("  linux-coop edit Palworld      # Edit Palworld profile")
+        return
+    elif command in ["--version", "-v", "version"]:
+        print("Linux-Coop v2.0.0")
+        return
 
     if command == "gui":
         if len(args) > 1:

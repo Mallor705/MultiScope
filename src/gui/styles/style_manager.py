@@ -6,6 +6,7 @@ following SOLID principles for maintainable and modular styling.
 """
 
 import logging
+import sys
 from pathlib import Path
 from typing import List, Optional
 from gi.repository import Gtk, Gdk, Adw
@@ -40,7 +41,15 @@ class StyleManager:
 
         # Validate styles directory
         if not self._styles_dir.exists():
-            raise StyleManagerError(f"Styles directory not found: {self._styles_dir}")
+            self.logger.warning(f"Styles directory not found: {self._styles_dir}")
+            # In frozen executables, try to create a fallback
+            if getattr(sys, 'frozen', False):
+                self.logger.info("Running in frozen mode, attempting fallback CSS loading")
+                self._use_fallback_styles = True
+            else:
+                raise StyleManagerError(f"Styles directory not found: {self._styles_dir}")
+        else:
+            self._use_fallback_styles = False
 
         # Connect to Adwaita style manager for automatic theme switching
         try:
@@ -52,7 +61,13 @@ class StyleManager:
     @staticmethod
     def _get_default_styles_dir() -> Path:
         """Get the default styles directory path."""
-        return Path(__file__).parent
+        # Check if running as PyInstaller bundle
+        if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+            # PyInstaller bundle - use _MEIPASS directory
+            return Path(sys._MEIPASS) / 'src' / 'gui' / 'styles'
+        else:
+            # Normal Python execution
+            return Path(__file__).parent
 
     def load_default_styles(self) -> None:
         """
@@ -91,7 +106,13 @@ class StyleManager:
         css_path = self._styles_dir / filename
 
         if not css_path.exists():
-            raise StyleManagerError(f"CSS file not found: {css_path}")
+            if self._use_fallback_styles and getattr(sys, 'frozen', False):
+                # Try to load from embedded resources in frozen executable
+                self.logger.warning(f"CSS file not found: {css_path}, using fallback styles")
+                self._load_fallback_css(filename)
+                return
+            else:
+                raise StyleManagerError(f"CSS file not found: {css_path}")
 
         try:
             css_provider = Gtk.CssProvider()
@@ -312,6 +333,20 @@ class StyleManager:
         except Exception as e:
             self.logger.error(f"Error loading theme-specific styles: {e}")
 
+    def _load_fallback_css(self, filename: str) -> None:
+        """Load minimal fallback CSS when resources are not available."""
+        fallback_css = """
+        /* Minimal fallback styles for Linux-Coop */
+        .suggested-action { background: #3584e4; color: white; }
+        .destructive-action { background: #e01b24; color: white; }
+        .heading { font-weight: bold; font-size: 1.2em; }
+        .dim-label { opacity: 0.7; }
+        """
+        try:
+            self.load_css_from_string(fallback_css, f"fallback-{filename}")
+        except StyleManagerError as e:
+            self.logger.error(f"Failed to load fallback CSS: {e}")
+
 
 # Singleton instance for global access
 _style_manager_instance: Optional[StyleManager] = None
@@ -336,5 +371,9 @@ def initialize_styles() -> None:
 
     This function should be called once during application startup.
     """
-    style_manager = get_style_manager()
-    style_manager.load_default_styles()
+    try:
+        style_manager = get_style_manager()
+        style_manager.load_default_styles()
+    except StyleManagerError as e:
+        # In case of style loading errors, continue without styles
+        logging.getLogger(__name__).warning(f"Failed to initialize styles: {e}")
