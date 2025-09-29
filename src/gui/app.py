@@ -19,14 +19,16 @@ import cairo # Import cairo here for drawing
 import sys # Import sys for executable path
 from gi.repository import GLib # Import GLib for timeout_add
 
-class ProfileEditorWindow(Gtk.ApplicationWindow):
+
+
+class ProfileEditorWindow(Adw.ApplicationWindow):
     def __init__(self, app):
         super().__init__(application=app, title="Linux Coop Profile Editor")
         self.set_default_size(1200, 700) # Increased default width for side pane
 
         # Create the main vertical box which will hold the main content (paned), buttons, and statusbar
         main_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        self.set_child(main_vbox) # Changed from self.add(main_vbox)
+        self.set_content(main_vbox) # Changed from self.add(main_vbox)
 
         # Create a horizontal Paned widget for the side menu and main content
         self.main_paned = Gtk.Paned(orientation=Gtk.Orientation.HORIZONTAL)
@@ -808,12 +810,12 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
         selected_players_indices = [i + 1 for i, cb in enumerate(self.player_checkboxes) if cb.get_active()]
         profile_data_dumped['selected_players'] = selected_players_indices
 
-        # Use existing profile name if we're editing, otherwise use game name field
+        # Use existing profile name if we're editing, otherwise normalize the game name
         if hasattr(self, 'selected_profile_name') and self.selected_profile_name:
             profile_name = self.selected_profile_name
         else:
-            profile_name = self.game_name_entry.get_text().replace(" ", "_").lower()
-            if not profile_name:
+            game_name = self.game_name_entry.get_text().strip()
+            if not game_name:
                 dialog = Adw.MessageDialog(
                     heading="Save Error",
                     body="Game name cannot be empty.",
@@ -827,6 +829,7 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
                 dialog.present()
                 self.statusbar.set_label("Error: Game name is empty.") # Changed from push
                 return
+            profile_name = game_name.replace(" ", "_").lower()
 
         profile_dir = Config.PROFILE_DIR
         profile_dir.mkdir(parents=True, exist_ok=True)
@@ -1640,8 +1643,9 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             self.statusbar.set_label("❌ Profile name too long (max 50 characters)")
             return False
 
-        # Check if already exists
-        profile_path = Config.PROFILE_DIR / f"{profile_name}.json"
+        # Check if already exists using normalized filename
+        safe_filename = profile_name.replace(" ", "_").lower()
+        profile_path = Config.PROFILE_DIR / f"{safe_filename}.json"
         if profile_path.exists():
             self.statusbar.set_label(f"❌ Profile '{profile_name}' already exists")
             return False
@@ -1654,8 +1658,11 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             # Ensure profile directory exists
             Config.PROFILE_DIR.mkdir(parents=True, exist_ok=True)
 
-            # Create profile path
-            profile_path = Config.PROFILE_DIR / f"{profile_name}.json"
+            # Normalize the profile name for the filename but keep original for display
+            safe_filename = profile_name.replace(" ", "_").lower()
+
+            # Create profile path with normalized filename
+            profile_path = Config.PROFILE_DIR / f"{safe_filename}.json"
 
             # Profile validation is now done in _validate_profile_name
 
@@ -1712,11 +1719,11 @@ class ProfileEditorWindow(Gtk.ApplicationWindow):
             # Load the new profile
             self.load_profile_data(default_profile_data)
 
-            # Select the new profile in the list
-            self._select_profile_in_list(profile_name)
+            # Select the new profile in the list using the safe filename
+            self._select_profile_in_list(safe_filename)
 
-            # Update selected profile and show delete button
-            self.selected_profile_name = profile_name
+            # Update selected profile and show delete button using the safe filename
+            self.selected_profile_name = safe_filename
             self.delete_profile_button.set_visible(True)
 
             # Switch to General Settings tab
