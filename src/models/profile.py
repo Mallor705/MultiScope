@@ -56,6 +56,8 @@ class GameProfile(BaseModel):
     # New field for player configurations, using "PLAYERS" alias for JSON
     player_configs: Optional[List[PlayerInstanceConfig]] = Field(default=None, alias="PLAYERS")
     selected_players: Optional[List[int]] = Field(default=None, alias="selected_players") # Readded for GUI selection
+    apply_dxvk_vkd3d: bool = Field(default=True, alias="APPLY_DXVK_VKD3D")
+    winetricks_verbs: Optional[List[str]] = Field(default=None, alias="WINETRICKS_VERBS")
 
     @validator('game_name')
     def sanitize_game_name_for_paths(cls, v):

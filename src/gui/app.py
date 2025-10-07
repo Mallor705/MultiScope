@@ -445,6 +445,22 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         proton_options_grid.attach(self.disable_bwrap_check, 1, row, 1, 1)
         row += 1
 
+        # Apply DXVK/VKD3D Checkbox
+        proton_options_grid.attach(Gtk.Label(label="Apply DXVK/VKD3D:", xalign=0), 0, row, 1, 1)
+        self.apply_dxvk_vkd3d_check = Gtk.CheckButton()
+        self.apply_dxvk_vkd3d_check.set_active(True)
+        self.apply_dxvk_vkd3d_check.set_tooltip_text("Automatically install and configure DXVK/VKD3D for this prefix")
+        proton_options_grid.attach(self.apply_dxvk_vkd3d_check, 1, row, 1, 1)
+        row += 1
+
+        # Winetricks Verbs
+        proton_options_grid.attach(Gtk.Label(label="Winetricks Verbs:", xalign=0), 0, row, 1, 1)
+        self.winetricks_verbs_entry = Gtk.Entry()
+        self.winetricks_verbs_entry.set_placeholder_text("Optional (e.g., vcrun2019 dotnet48)")
+        self.winetricks_verbs_entry.set_tooltip_text("Enter Winetricks verbs separated by spaces")
+        proton_options_grid.attach(self.winetricks_verbs_entry, 1, row, 1, 1)
+        row += 1
+
         # Environment Variables
         env_vars_frame = Gtk.Frame(label="Custom Environment Variables")
         main_vbox.append(env_vars_frame) # Changed from pack_start
@@ -819,7 +835,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             self.statusbar.set_label("Splitscreen mode deactivated.") # Changed from push
 
     def on_save_button_clicked(self, button):
-        self.statusbar.set_label("Saving profile...") # Changed from push
+        self.statusbar.set_label("Saving profile...")
         profile_data_dumped = self.get_profile_data()
 
         # Collect selected players based on checkbox states
@@ -833,17 +849,14 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             game_name = self.game_name_entry.get_text().strip()
             if not game_name:
                 dialog = Adw.MessageDialog(
-                    heading="Save Error",
-                    body="Game name cannot be empty.",
-                    modal=True,
+                    heading="Save Error", body="Game name cannot be empty.", modal=True,
                 )
                 dialog.add_response("ok", "Ok")
-                dialog.set_response_enabled("ok", True)
                 dialog.set_default_response("ok")
                 dialog.set_transient_for(self)
                 dialog.connect("response", lambda d, r: d.close())
                 dialog.present()
-                self.statusbar.set_label("Error: Game name is empty.") # Changed from push
+                self.statusbar.set_label("Error: Game name is empty.")
                 return
             profile_name = game_name.replace(" ", "_").lower()
 
@@ -853,11 +866,11 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
 
         try:
             with open(profile_path, "w", encoding="utf-8") as f:
-                json.dump(profile_data_dumped, f, indent=2)
-            self.statusbar.set_label(f"Profile saved successfully to: {profile_path.name}") # Changed from push
+                json.dump(profile_data_dumped, f, indent=4)
+            self.statusbar.set_label(f"Profile saved successfully to: {profile_path.name}")
 
             # Invalidate the cache for this profile after saving
-            from ..core.cache import get_cache # Import here to ensure it's available
+            from ..core.cache import get_cache
             cache = get_cache()
             cache.invalidate_profile(str(profile_path))
 
@@ -865,18 +878,15 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             reloaded_profile = GameProfile.load_from_file(profile_path)
             self.load_profile_data(reloaded_profile.model_dump(by_alias=True))
 
-            self._populate_profile_list() # Refresh the profile list after saving
-            self._select_profile_in_list(profile_name) # Select the newly saved/updated profile
+            self._populate_profile_list()
+            self._select_profile_in_list(profile_name)
         except Exception as e:
             self.logger.error(f"Failed to save profile to {profile_path}: {e}")
-            self.statusbar.set_label(f"Error saving profile: {e}") # Changed from push
+            self.statusbar.set_label(f"Error saving profile: {e}")
             error_dialog = Adw.MessageDialog(
-                heading="Error saving profile",
-                body=f"Error saving profile:\n{e}",
-                modal=True,
+                heading="Error saving profile", body=f"Error saving profile:\n{e}", modal=True,
             )
             error_dialog.add_response("ok", "Ok")
-            error_dialog.set_response_enabled("ok", True)
             error_dialog.set_default_response("ok")
             error_dialog.set_transient_for(self)
             error_dialog.connect("response", lambda d, r: d.close())
@@ -1278,6 +1288,9 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
 
         mode = self.mode_combo.get_active_text()
 
+        winetricks_text = self.winetricks_verbs_entry.get_text().strip()
+        winetricks_verbs = winetricks_text.split() if winetricks_text else None
+
         profile_data = GameProfile(
             game_name=self.game_name_entry.get_text(),
             exe_path=self.exe_path_entry.get_text(),
@@ -1291,6 +1304,8 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             is_native=is_native_value,
             use_gamescope=self.use_gamescope_check.get_active(),
             disable_bwrap=self.disable_bwrap_check.get_active(),
+            apply_dxvk_vkd3d=self.apply_dxvk_vkd3d_check.get_active(),
+            winetricks_verbs=winetricks_verbs,
             mode=mode,
             splitscreen=splitscreen_config,
             player_configs=player_configs_data, # Use the already collected data
@@ -1347,6 +1362,14 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         
         # Load disable_bwrap setting
         self.disable_bwrap_check.set_active(profile_data.get("DISABLE_BWRAP", False))
+
+        # Load DXVK/VKD3D and Winetricks settings
+        self.apply_dxvk_vkd3d_check.set_active(profile_data.get("APPLY_DXVK_VKD3D", True))
+        winetricks_verbs = profile_data.get("WINETRICKS_VERBS")
+        if winetricks_verbs and isinstance(winetricks_verbs, list):
+            self.winetricks_verbs_entry.set_text(" ".join(winetricks_verbs))
+        else:
+            self.winetricks_verbs_entry.set_text("")
 
     def _load_instance_settings(self, profile_data):
         """Load instance-specific settings like dimensions and game configuration."""
@@ -1736,7 +1759,9 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
                 "ENV_VARS": {
                     "WINEDLLOVERRIDES": "",
                     "MANGOHUD": "1"
-                }
+                },
+                "APPLY_DXVK_VKD3D": True,
+                "WINETRICKS_VERBS": None
             }
 
             # Save the profile

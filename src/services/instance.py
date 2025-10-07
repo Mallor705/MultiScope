@@ -11,6 +11,7 @@ from ..models.profile import GameProfile, PlayerInstanceConfig
 from ..models.instance import GameInstance
 from .proton import ProtonService
 from .process import ProcessService
+from .dependency_manager import DependencyManager
 
 class InstanceService:
     """Service responsible for managing game instances, including dependency validation, creation, launching, and monitoring."""
@@ -81,7 +82,7 @@ class InstanceService:
             for directory in directories:
                 directory.mkdir(parents=True, exist_ok=True)
 
-            instances = self._create_instances(profile, profile_name)
+            instances = self._create_instances(profile, profile_name, proton_path, steam_root)
 
             # Calculate CPU core assignments for each instance
             num_instances = len(instances)
@@ -107,7 +108,7 @@ class InstanceService:
                 core_assignments.append(",".join(cores_list))
                 current_core_start += num_cores_for_instance
 
-            self.logger.info(f"Launching {profile.effective_num_players} instance(s) of '{profile.game_name}'...")
+            self.logger.info(f"Launching {profile.effective_num_players()} instance(s) of '{profile.game_name}'...")
 
             original_game_path = profile.exe_path.parent
 
@@ -120,9 +121,15 @@ class InstanceService:
             self.logger.info(f"PIDs: {self.process_service.pids}")
             self.logger.info("Press CTRL+C to terminate all instances")
 
-    def _create_instances(self, profile: GameProfile, profile_name: str) -> List[GameInstance]:
+    def _create_instances(self, profile: GameProfile, profile_name: str, proton_path: Optional[Path], steam_root: Optional[Path]) -> List[GameInstance]:
         """Creates instance models for each player."""
         instances = []
+
+        if not profile.is_native and proton_path and steam_root:
+            dependency_manager = DependencyManager(self.logger, proton_path, steam_root)
+        else:
+            dependency_manager = None
+
         # Iterates over the complete list of player configurations with its index
         for i, player_config in enumerate(profile.player_configs):
             instance_num = i + 1
@@ -139,6 +146,17 @@ class InstanceService:
             log_file = Config.LOG_DIR / f"{profile.game_name}_instance_{instance_num}.log"
             prefix_dir.mkdir(parents=True, exist_ok=True)
             (prefix_dir / "pfx").mkdir(exist_ok=True)
+
+            if dependency_manager:
+                # Initialize the prefix first. This is a crucial, one-time setup.
+                dependency_manager.initialize_prefix(prefix_dir)
+
+                # Now, apply dependencies if configured
+                if profile.apply_dxvk_vkd3d:
+                    dependency_manager.apply_dxvk_vkd3d(prefix_dir)
+                if profile.winetricks_verbs:
+                    dependency_manager.apply_winetricks(prefix_dir, profile.winetricks_verbs)
+
             instance = GameInstance(
                 instance_num=instance_num,
                 profile_name=profile.game_name,  # Use sanitized name
