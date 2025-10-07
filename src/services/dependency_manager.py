@@ -91,8 +91,8 @@ class DependencyManager:
         """
         self.logger.info(f"Applying DXVK/VKD3D to prefix: {prefix_path}")
 
-        system32_path = prefix_path / "pfx/system32"
-        syswow64_path = prefix_path / "pfx/syswow64"
+        system32_path = prefix_path / "pfx" / "drive_c" / "windows" / "system32"
+        syswow64_path = prefix_path / "pfx" / "drive_c" / "windows" / "syswow64"
 
         dll_sources = {
             "dxvk": self._get_dll_paths("dxvk"),
