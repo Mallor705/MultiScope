@@ -445,6 +445,22 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         proton_options_grid.attach(self.disable_bwrap_check, 1, row, 1, 1)
         row += 1
 
+        # Apply DXVK/VKD3D Checkbox
+        proton_options_grid.attach(Gtk.Label(label="Apply DXVK/VKD3D:", xalign=0), 0, row, 1, 1)
+        self.apply_dxvk_vkd3d_check = Gtk.CheckButton()
+        self.apply_dxvk_vkd3d_check.set_active(True)
+        self.apply_dxvk_vkd3d_check.set_tooltip_text("Automatically install and configure DXVK/VKD3D for this prefix")
+        proton_options_grid.attach(self.apply_dxvk_vkd3d_check, 1, row, 1, 1)
+        row += 1
+
+        # Winetricks Verbs
+        proton_options_grid.attach(Gtk.Label(label="Winetricks Verbs:", xalign=0), 0, row, 1, 1)
+        self.winetricks_verbs_entry = Gtk.Entry()
+        self.winetricks_verbs_entry.set_placeholder_text("Optional (e.g., vcrun2019 dotnet48)")
+        self.winetricks_verbs_entry.set_tooltip_text("Enter Winetricks verbs separated by spaces")
+        proton_options_grid.attach(self.winetricks_verbs_entry, 1, row, 1, 1)
+        row += 1
+
         # Environment Variables
         env_vars_frame = Gtk.Frame(label="Custom Environment Variables")
         main_vbox.append(env_vars_frame) # Changed from pack_start
@@ -1272,6 +1288,9 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
 
         mode = self.mode_combo.get_active_text()
 
+        winetricks_text = self.winetricks_verbs_entry.get_text().strip()
+        winetricks_verbs = winetricks_text.split() if winetricks_text else None
+
         profile_data = GameProfile(
             game_name=self.game_name_entry.get_text(),
             exe_path=self.exe_path_entry.get_text(),
@@ -1285,6 +1304,8 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             is_native=is_native_value,
             use_gamescope=self.use_gamescope_check.get_active(),
             disable_bwrap=self.disable_bwrap_check.get_active(),
+            apply_dxvk_vkd3d=self.apply_dxvk_vkd3d_check.get_active(),
+            winetricks_verbs=winetricks_verbs,
             mode=mode,
             splitscreen=splitscreen_config,
             player_configs=player_configs_data, # Use the already collected data
@@ -1341,6 +1362,14 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         
         # Load disable_bwrap setting
         self.disable_bwrap_check.set_active(profile_data.get("DISABLE_BWRAP", False))
+
+        # Load DXVK/VKD3D and Winetricks settings
+        self.apply_dxvk_vkd3d_check.set_active(profile_data.get("APPLY_DXVK_VKD3D", True))
+        winetricks_verbs = profile_data.get("WINETRICKS_VERBS")
+        if winetricks_verbs and isinstance(winetricks_verbs, list):
+            self.winetricks_verbs_entry.set_text(" ".join(winetricks_verbs))
+        else:
+            self.winetricks_verbs_entry.set_text("")
 
     def _load_instance_settings(self, profile_data):
         """Load instance-specific settings like dimensions and game configuration."""
