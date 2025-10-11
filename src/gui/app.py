@@ -401,13 +401,13 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         game_details_grid.attach(self.is_native_check, 1, row, 1, 1)
         row += 1
 
-        # Use Gamescope Checkbox
-        game_details_grid.attach(Gtk.Label(label="Use Gamescope?", xalign=0), 0, row, 1, 1)
-        self.use_gamescope_check = Gtk.CheckButton()
-        self.use_gamescope_check.set_active(True) # Default to using gamescope
-        self.use_gamescope_check.set_tooltip_text("Enable/disable Gamescope for this profile")
-        game_details_grid.attach(self.use_gamescope_check, 1, row, 1, 1)
-        row += 1
+        # # Use Gamescope Checkbox
+        # game_details_grid.attach(Gtk.Label(label="Use Gamescope", xalign=0), 0, row, 1, 1)
+        # self.use_gamescope_check = Gtk.CheckButton()
+        # self.use_gamescope_check.set_active(True) # Default to using gamescope
+        # self.use_gamescope_check.set_tooltip_text("Enable/disable Gamescope for this profile")
+        # game_details_grid.attach(self.use_gamescope_check, 1, row, 1, 1)
+        # row += 1
 
         # Frame 2: Proton & Launch Options
         proton_options_frame = Gtk.Frame(label="Launch Options")
@@ -440,13 +440,13 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         proton_options_grid.attach(self.proton_version_combo, 1, row, 1, 1)
         row += 1
 
-        # Disable bwrap option (CLI only)
-        proton_options_grid.attach(Gtk.Label(label="Disable bwrap (CLI only):", xalign=0), 0, row, 1, 1)
-        self.disable_bwrap_check = Gtk.CheckButton()
-        self.disable_bwrap_check.set_active(False)
-        self.disable_bwrap_check.set_tooltip_text("Disable bwrap isolation when launching via CLI (not recommended)")
-        proton_options_grid.attach(self.disable_bwrap_check, 1, row, 1, 1)
-        row += 1
+        # # Disable Bubblewrap Checkbox
+        # proton_options_grid.attach(Gtk.Label(label="Disable Bubblewrap:", xalign=0), 0, row, 1, 1)
+        # self.disable_bwrap_check = Gtk.CheckButton()
+        # self.disable_bwrap_check.set_active(False)
+        # self.disable_bwrap_check.set_tooltip_text("Disable bwrap isolation when launching via CLI (not recommended)")
+        # proton_options_grid.attach(self.disable_bwrap_check, 1, row, 1, 1)
+        # row += 1
 
         # Apply DXVK/VKD3D Checkbox
         proton_options_grid.attach(Gtk.Label(label="Apply DXVK/VKD3D:", xalign=0), 0, row, 1, 1)
@@ -1731,6 +1731,8 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
                 "MODE": "None",
                 "SPLITSCREEN": None,
                 "PROTON_VERSION": None,
+                "USE_GAMESCOPE": True,
+                "DISABLE_BWRAP": False,
                 "PLAYERS": [
                     {
                         "ACCOUNT_NAME": "Player1",
