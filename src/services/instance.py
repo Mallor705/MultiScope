@@ -135,14 +135,20 @@ class InstanceService:
             (prefix_dir / "pfx").mkdir(exist_ok=True)
 
             if dependency_manager:
-                # Initialize the prefix first. This is a crucial, one-time setup.
-                dependency_manager.initialize_prefix(prefix_dir)
+                # Only initialize the prefix if we intend to modify it with DXVK or Winetricks.
+                # Otherwise, we let Proton/Wine create it on the first actual game launch.
+                if profile.apply_dxvk_vkd3d or profile.winetricks_verbs:
+                    self.logger.info(f"Instance {instance_num}: DXVK/VKD3D or Winetricks verbs configured. Initializing prefix before launch.")
+                    # Initialize the prefix first. This is a crucial, one-time setup.
+                    dependency_manager.initialize_prefix(prefix_dir)
 
-                # Now, apply dependencies if configured
-                if profile.apply_dxvk_vkd3d:
-                    dependency_manager.apply_dxvk_vkd3d(prefix_dir)
-                if profile.winetricks_verbs:
-                    dependency_manager.apply_winetricks(prefix_dir, profile.winetricks_verbs)
+                    # Now, apply dependencies if configured
+                    if profile.apply_dxvk_vkd3d:
+                        dependency_manager.apply_dxvk_vkd3d(prefix_dir)
+                    if profile.winetricks_verbs:
+                        dependency_manager.apply_winetricks(prefix_dir, profile.winetricks_verbs)
+                else:
+                    self.logger.info(f"Instance {instance_num}: No prefix modifications required. Skipping explicit initialization.")
 
             instance = GameInstance(
                 instance_num=instance_num,
