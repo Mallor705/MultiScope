@@ -11,7 +11,9 @@ class GameInstance(BaseModel):
     prefix_dir: Path
     log_file: Path
     pid: Optional[int] = None
+    gamescope_pid: Optional[int] = None
     player_config: Optional[PlayerInstanceConfig] = None
+    is_native: bool = False
     
     def __init__(self, **data):
         """Initializes the game instance with the provided data."""

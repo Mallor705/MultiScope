@@ -32,14 +32,14 @@ class LinuxCoopCLI:
         """Configures signal handlers to ensure cleanup upon exit."""
         def signal_handler(signum, frame):
             self.logger.info("Received interrupt signal. Terminating instances...")
-            if self._instance_service is not None:
-                self._instance_service.terminate_all()
+            # Use the property to ensure InstanceService is initialized
+            self.instance_service.terminate_all()
             raise TerminateCLI()
 
         signal.signal(signal.SIGINT, signal_handler)
         signal.signal(signal.SIGTERM, signal_handler)
 
-    def run(self, profile_name: str, edit_mode: bool = False):
+    def run(self, profile_name: str, edit_mode: bool = False, parent_pid: Optional[int] = None):
         """Main execution flow of the CLI."""
         if not profile_name or not profile_name.strip():
             self.logger.error("The profile name cannot be empty.")
@@ -69,13 +69,15 @@ class LinuxCoopCLI:
 
             # Pass the sanitized game_name from the profile to ensure consistency
             self.instance_service.launch_instances(profile, profile.game_name)
-            self.instance_service.monitor_and_wait()
+            # Pass the parent_pid to the monitoring loop
+            self.instance_service.monitor_and_wait(parent_pid)
             self.logger.info("Script completed")
         except LinuxCoopError as e:
             self.logger.error(str(e))
             raise TerminateCLI()
         except Exception as e:
             self.logger.error(f"Unexpected error: {e}")
+            self.instance_service.terminate_all() # Ensure cleanup on unexpected error
             raise TerminateCLI()
 
     def _batch_validate(self, profile_name: str):
@@ -116,10 +118,10 @@ class LinuxCoopCLI:
         except Exception as e:
             self.logger.error(f"An unexpected error occurred while trying to open the profile: {e}")
 
-def main(profile_name, edit_mode=False):
+def main(profile_name: str, edit_mode: bool = False, parent_pid: Optional[int] = None):
     """Launches game instances using the specified profile or edits it."""
     cli = LinuxCoopCLI()
     try:
-        cli.run(profile_name, edit_mode)
+        cli.run(profile_name, edit_mode=edit_mode, parent_pid=parent_pid)
     except TerminateCLI:
         pass

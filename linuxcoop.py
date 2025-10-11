@@ -8,52 +8,40 @@ def main():
     # Run comprehensive migration at startup for all legacy paths (profiles and prefixes)
     Config.migrate_legacy_paths()
 
-    args = sys.argv[1:] # Get arguments excluding the script name
+    args = sys.argv[1:]
+    parent_pid = None
+
+    # Simple manual parsing for --parent-pid
+    if "--parent-pid" in args:
+        try:
+            pid_index = args.index("--parent-pid") + 1
+            if pid_index < len(args):
+                parent_pid = int(args[pid_index])
+                # Remove the flag and its value from args list
+                args.pop(pid_index - 1)
+                args.pop(pid_index - 1)
+            else:
+                print("Error: --parent-pid flag requires a value.", file=sys.stderr)
+                sys.exit(1)
+        except (ValueError, IndexError):
+            print("Error: Invalid value for --parent-pid.", file=sys.stderr)
+            sys.exit(1)
 
     if not args:
-        # If no arguments are provided, open the GUI by default
         run_gui()
-        return # Exit after launching GUI
+        return
 
     command = args[0]
 
-    # Handle help and version commands
-    if command in ["--help", "-h", "help"]:
-        print("Linux-Coop - Run Windows games in local cooperative mode on Linux")
-        print("")
-        print("Usage:")
-        print("  linux-coop                    # Open GUI")
-        print("  linux-coop gui                # Open GUI")
-        print("  linux-coop <profile_name>     # Run profile in CLI mode")
-        print("  linux-coop edit <profile_name> # Edit profile")
-        print("  linux-coop --help             # Show this help")
-        print("  linux-coop --version          # Show version")
-        print("")
-        print("Examples:")
-        print("  linux-coop                    # Open GUI")
-        print("  linux-coop Palworld           # Run Palworld profile")
-        print("  linux-coop edit Palworld      # Edit Palworld profile")
-        return
-    elif command in ["--version", "-v", "version"]:
-        print("Linux-Coop v2.0.0")
-        return
-
     if command == "gui":
-        if len(args) > 1:
-            print("Error: The 'gui' command does not accept additional arguments.", file=sys.stderr)
-            sys.exit(1)
         run_gui()
     elif command == "edit":
         if len(args) < 2:
-            print("Error: The 'edit' command requires the profile name. Usage: linuxcoop.py edit <PROFILE_NAME>", file=sys.stderr)
+            print("Error: 'edit' command requires a profile name.", file=sys.stderr)
             sys.exit(1)
-        profile_name = args[1]
-        cli_main(profile_name, edit_mode=True) # Pass a flag to indicate edit mode
+        cli_main(args[1], edit_mode=True)
     else:
-        # Assume it's a profile name for CLI mode
-        if len(args) > 1:
-            print(f"Warning: Additional arguments ignored for profile '{command}'.", file=sys.stderr)
-        cli_main(command)
+        cli_main(command, parent_pid=parent_pid)
 
 if __name__ == "__main__":
     main()

@@ -327,6 +327,9 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         self._update_play_button_state() # Set initial button state
         self._populate_profile_list() # Populate the side profile list on startup
 
+        # Connect the close request to our custom handler
+        self.connect("close-request", self._on_close_request)
+
     def setup_general_settings(self):
         # Use a main VBox for this page to hold frames
         main_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=15)
@@ -933,6 +936,11 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         if getattr(self, 'disable_bwrap_check', None) and self.disable_bwrap_check.get_active():
             command.append("--no-bwrap")
             self.logger.info("Disabling bwrap as requested by user")
+
+        # Pass the GUI's PID to the CLI process for monitoring
+        gui_pid = os.getpid()
+        command.extend(["--parent-pid", str(gui_pid)])
+        self.logger.info(f"Passing parent PID {gui_pid} to CLI process.")
         
         self.logger.info(f"Executing command: {' '.join(command)}")
 
@@ -1877,6 +1885,30 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
                 break
             current_row = current_row.get_next_sibling()
 
+    def _on_close_request(self, window):
+        """Handles the window close request."""
+        if self.cli_process_pid:
+            self.logger.info("Close requested, but game is running. Stopping game first.")
+            self.statusbar.set_label("Game is running. Stopping instances before closing...")
+            self._stop_game()
+
+            # We can't immediately close because _stop_game is asynchronous in its effect.
+            # We need to wait until the process is confirmed dead.
+            # We can use a timeout to check for process termination.
+            def check_if_can_close():
+                if not self._is_process_running(self.cli_process_pid):
+                    self.logger.info("Game has been stopped. Now closing the window.")
+                    self.close() # Now we can close for real
+                    return GLib.SOURCE_REMOVE # Stop the timeout
+                return GLib.SOURCE_CONTINUE # Continue checking
+
+            GLib.timeout_add(500, check_if_can_close)
+
+            return True # Prevent the default close handler from running
+
+        self.logger.info("No game running. Closing window.")
+        return False # Allow the default close handler to run
+
 class LinuxCoopApp(Adw.Application):
     def __init__(self):
         super().__init__(application_id="org.linuxcoop.app")
@@ -1890,6 +1922,23 @@ class LinuxCoopApp(Adw.Application):
 
         # Initialize styles using the professional StyleManager
         self._initialize_application_styles()
+
+        # Set up a signal handler for SIGUSR1 to allow the child process to close the GUI
+        GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, signal.SIGUSR1, self._handle_shutdown_signal, "SIGUSR1")
+        # Set up a signal handler for SIGTERM to allow the system to close the GUI gracefully
+        GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, signal.SIGTERM, self._handle_shutdown_signal, "SIGTERM")
+
+    def _handle_shutdown_signal(self, signal_name):
+        """Signal handler for SIGUSR1 or SIGTERM. Closes the main window."""
+        self.logger.info(f"Received {signal_name}, closing the main window gracefully.")
+        # Get the active window and close it. `self.quit()` is another option.
+        window = self.get_active_window()
+        if window:
+            window.close() # This will trigger the _on_close_request logic
+        else:
+            # If there's no window, just quit the app
+            self.quit()
+        return True # Keep the signal handler active
 
     def _configure_adwaita_style(self):
         """Configure Adwaita style manager to follow system theme preference"""

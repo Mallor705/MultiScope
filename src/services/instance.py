@@ -21,7 +21,9 @@ class InstanceService:
         self.logger = logger
         self.proton_service = ProtonService(logger)
         self.pids: List[int] = []
+        self.managed_instances: List[GameInstance] = []
         self.cpu_count = psutil.cpu_count(logical=True)
+        self.proton_path: Optional[Path] = None
 
     def validate_dependencies(self) -> None:
         """Validates if all necessary commands are available on the system."""
@@ -52,10 +54,12 @@ class InstanceService:
                 self.logger.warning("⚠️  bwrap is disabled for this profile. Input device isolation will NOT work!")
 
             if profile.is_native:
-                proton_path = None
+                self.proton_path = None
                 steam_root = None
             else:
-                proton_path, steam_root = self.proton_service.find_proton_path(profile.proton_version or "Experimental")
+                self.proton_path, steam_root = self.proton_service.find_proton_path(profile.proton_version or "Experimental")
+
+            proton_path = self.proton_path # Use local variable for the rest of the function
 
             # Create directories in batch
             directories = [
@@ -145,9 +149,11 @@ class InstanceService:
                 profile_name=profile.game_name,  # Use sanitized name
                 prefix_dir=prefix_dir,
                 log_file=log_file,
-                player_config=player_config
+                player_config=player_config,
+                is_native=profile.is_native
             )
             instances.append(instance)
+        self.managed_instances = instances
         return instances
 
     def _create_game_directory_symlink_structure(self, instance: GameInstance, original_game_path: Path, original_exe_path: Path, profile: GameProfile) -> Path:
@@ -247,7 +253,8 @@ class InstanceService:
                     stderr=subprocess.STDOUT,
                     # The env is now passed to the sandboxed process via bwrap's --setenv.
                     # The bwrap process itself runs with the default environment.
-                    cwd=symlinked_executable_path.parent
+                    cwd=symlinked_executable_path.parent,
+                    preexec_fn=os.setpgrp
                 )
             pid = process.pid
             self.pids.append(pid)
@@ -537,27 +544,100 @@ class InstanceService:
         self.pids = alive_pids
         return len(alive_pids) > 0
 
-    def monitor_and_wait(self) -> None:
-        """Monitors instances until all are terminated."""
-        while self._is_any_process_running():
-            time.sleep(5)
+    def monitor_and_wait(self, parent_pid: Optional[int] = None) -> None:
+        """
+        Monitors game instances and, optionally, a parent process (the GUI).
+        It triggers a full cleanup if either a game instance terminates unexpectedly
+        or the parent process disappears.
+        """
+        if parent_pid:
+            self.logger.info(f"CLI process is monitoring parent GUI with PID: {parent_pid}")
 
-        self.logger.info("All instances have terminated")
+        try:
+            while True:
+                # 1. Check if the parent GUI process is still alive
+                if parent_pid and not psutil.pid_exists(parent_pid):
+                    self.logger.warning(f"Parent GUI process (PID {parent_pid}) terminated. Shutting down all instances.")
+                    break  # Exit the loop to trigger final termination
+
+                # 2. Check if any game instances have terminated
+                if not self._is_any_process_running():
+                    self.logger.info("All game instances have terminated.")
+                    if parent_pid:
+                        self.logger.info(f"Notifying parent GUI (PID {parent_pid}) to close.")
+                        try:
+                            os.kill(parent_pid, signal.SIGUSR1)
+                        except ProcessLookupError:
+                            self.logger.warning(f"Parent GUI (PID {parent_pid}) not found. Cannot send close signal.")
+                        except Exception as e:
+                            self.logger.error(f"Failed to send SIGUSR1 to parent GUI (PID {parent_pid}): {e}")
+                    break  # Exit if no instances are left
+
+                time.sleep(2)  # Poll every 2 seconds
+        finally:
+            self.logger.info("Monitoring loop finished. Performing final cleanup...")
+            # We no longer need to call terminate_all() here if the parent is closing us,
+            # but it's good practice to keep it for robustness in case this loop exits for other reasons.
+            self.terminate_all()
+            self.logger.info("All instances have been terminated and cleaned up.")
 
     def terminate_all(self) -> None:
-        """Terminates all game instances managed by the service by killing the bwrap process."""
-        if not self.pids:
-            return
+        """Terminates all managed game instances, process groups, and associated wineserver processes."""
+        self.logger.info("Starting termination of all instances...")
 
-        self.logger.info(f"Terminating PIDs by sending SIGKILL: {self.pids}")
-        for pid in self.pids:
-            try:
-                # Forcefully kill the process. For bwrap, this kills the sandbox and everything inside.
-                os.kill(pid, signal.SIGKILL)
-                self.logger.info(f"Sent SIGKILL to PID {pid}")
-            except ProcessLookupError:
-                self.logger.info(f"PID {pid} not found, likely already terminated.")
-            except Exception as e:
-                self.logger.error(f"Failed to kill PID {pid}: {e}")
+        # Terminate main process groups first
+        if self.pids:
+            self.logger.info(f"Terminating process groups for PIDs: {self.pids}")
+            for pid in self.pids:
+                try:
+                    # Use os.killpg to terminate the entire process group
+                    os.killpg(pid, signal.SIGKILL)
+                    self.logger.info(f"Sent SIGKILL to process group of PID {pid}")
+                except ProcessLookupError:
+                    self.logger.info(f"Process group for PID {pid} not found, likely already terminated.")
+                except Exception as e:
+                    self.logger.error(f"Failed to kill process group for PID {pid}: {e}")
+        else:
+            self.logger.info("No PIDs to terminate.")
 
-        self.pids = [] # Clear the list after attempting termination
+        # Gracefully stop the wineserver for each non-native instance
+        if self.managed_instances:
+            self.logger.info(f"Stopping wineserver for {len(self.managed_instances)} instance(s).")
+
+            wineserver_executable = None
+            if self.proton_path:
+                proton_bin_dir = self.proton_path.parent
+                wineserver_executable = shutil.which('wineserver', path=str(proton_bin_dir))
+
+            if not wineserver_executable:
+                self.logger.warning("Could not find 'wineserver' executable in Proton directory. Falling back to system 'wineserver'. This may not work as expected.")
+                wineserver_executable = 'wineserver' # Fallback
+
+            for instance in self.managed_instances:
+                if not instance.is_native:
+                    wine_prefix_path = instance.prefix_dir / 'pfx'
+                    if wine_prefix_path.is_dir():
+                        try:
+                            self.logger.info(f"Attempting to stop wineserver for prefix: {wine_prefix_path}")
+                            env = os.environ.copy()
+                            env['WINEPREFIX'] = str(wine_prefix_path)
+
+                            result = subprocess.run(
+                                [wineserver_executable, "-k"],
+                                env=env, check=False, capture_output=True, text=True, errors='replace'
+                            )
+                            if result.returncode == 0:
+                                self.logger.info(f"Successfully sent 'wineserver -k' for prefix: {wine_prefix_path}")
+                            else:
+                                self.logger.warning(f"'wineserver -k' for prefix {wine_prefix_path} exited with code {result.returncode}. stderr: {result.stderr}")
+                        except FileNotFoundError:
+                            self.logger.warning(f"'{wineserver_executable}' command not found. Cannot stop wineserver for prefix: {wine_prefix_path}")
+                        except Exception as e:
+                            self.logger.error(f"Failed to stop wineserver for prefix {wine_prefix_path}: {e}")
+        else:
+            self.logger.info("No managed instances to clean up wineservers for.")
+
+        # Clear internal state
+        self.pids = []
+        self.managed_instances = []
+        self.logger.info("Instance termination and cleanup complete.")
