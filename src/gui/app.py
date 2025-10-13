@@ -22,7 +22,21 @@ from gi.repository import GLib # Import GLib for timeout_add
 
 
 class ProfileEditorWindow(Adw.ApplicationWindow):
+    """
+    The main window for the Proton-Coop Profile Editor application.
+
+    This class builds and manages the entire graphical user interface, including
+    the profile list, configuration tabs (General, Player Config, Layout),
+    and all associated widgets and logic for creating, loading, saving,
+    and launching game profiles.
+    """
     def __init__(self, app):
+        """
+        Initializes the main application window.
+
+        Args:
+            app (LinuxCoopApp): The parent Adw.Application instance.
+        """
         super().__init__(application=app, title="Linux Coop Profile Editor")
         self.set_default_size(1200, 700) # Increased default width for side pane
 
@@ -331,6 +345,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         self.connect("close-request", self._on_close_request)
 
     def setup_general_settings(self):
+        """Sets up the widgets for the 'General' settings tab."""
         # Use a main VBox for this page to hold frames
         main_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=15)
         main_vbox.set_margin_start(5)
@@ -489,8 +504,8 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
 
         # Buttons are now fixed at the bottom of the main window, so they're removed from this tab
 
-    # Add _update_play_button_state method
     def _update_play_button_state(self):
+        """Updates the label and style of the main launch button based on game state."""
         if self.cli_process_pid:
             self.play_button.set_label("⏹️ Stop Gaming")
             self.play_button.set_css_classes(["destructive-action"]) # Gtk4 CSS class
@@ -500,6 +515,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         self.play_button.set_sensitive(True) # Ensure button is always sensitive initially
 
     def on_exe_path_button_clicked(self, button):
+        """Handles the 'Browse...' button click to select a game executable."""
         dialog = Gtk.FileChooserDialog(
             title="Select Game Executable",
             action=Gtk.FileChooserAction.OPEN
@@ -517,6 +533,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         dialog.present()
 
     def _on_exe_path_dialog_response(self, dialog, response):
+        """Handles the response from the file chooser dialog for the executable path."""
         if response == Gtk.ResponseType.OK:
             file = dialog.get_file()
             if file:
@@ -525,6 +542,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         self.statusbar.set_label("Executable path selected.") # Changed from push
 
     def on_load_button_clicked(self, button):
+        """Handles the 'Load Profile' button click."""
         dialog = Gtk.FileChooserDialog(
             title="Load Game Profile",
             action=Gtk.FileChooserAction.OPEN
@@ -551,6 +569,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         dialog.present()
 
     def _on_load_dialog_response(self, dialog, response):
+        """Handles the response from the file chooser dialog for loading a profile."""
         if response == Gtk.ResponseType.OK:
             file = dialog.get_file()
             if file:
@@ -580,10 +599,12 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         dialog.destroy()
 
     def _on_add_env_var_clicked(self, button):
+        """Handles the 'Add Variable' button click for environment variables."""
         self._add_env_var_row()
         self.statusbar.set_label("Environment variable added.") # Changed from push
 
     def _add_env_var_row(self, key="", value=""):
+        """Adds a new row to the environment variables listbox."""
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 
         key_entry = Gtk.Entry()
@@ -613,11 +634,13 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         self.env_var_entries.append((key_entry, value_entry, list_box_row))
 
     def _remove_env_var_row(self, button, row, key_entry, value_entry):
+        """Removes a row from the environment variables listbox."""
         self.env_vars_listbox.remove(row)
         self.env_var_entries.remove((key_entry, value_entry, row))
         self.statusbar.set_label("Environment variable removed.") # Changed from push
 
     def _get_env_vars_from_ui(self) -> Dict[str, str]:
+        """Gets the environment variables from the UI."""
         env_vars = {}
         for row_data in self.env_var_entries:
             key = row_data[0].get_text().strip()
@@ -627,6 +650,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         return env_vars
 
     def _get_player_configs_from_ui(self) -> List[Dict[str, Any]]:
+        """Gets the player configurations from the UI."""
         player_configs_data = []
         for i, (is_enabled_checkbox, player_widgets) in enumerate(zip(self.player_checkboxes, self.player_device_combos)):
             config = {}
@@ -667,12 +691,14 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         return player_configs_data
 
     def setup_player_configs(self):
+        """Sets up the initial player configuration UI."""
         self.player_frames = []
         self.player_device_combos = []
 
         self._create_player_config_uis(self.num_players_spin.get_value_as_int())
 
     def _create_player_config_uis(self, num_players: int):
+        """Creates or recreates the UI for the specified number of players."""
         for frame in self.player_frames:
             frame.unparent() # Changed from destroy()
         self.player_frames.clear()
@@ -818,11 +844,13 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         self.player_config_vbox.queue_draw() # Force redraw after creating UIs
 
     def on_num_players_changed(self, spin_button):
+        """Handles the 'Number of Players' spin button value change."""
         num_players = spin_button.get_value_as_int()
         self._create_player_config_uis(num_players)
         self.statusbar.set_label(f"Number of players changed to {num_players}.") # Changed from push
 
     def on_mode_changed(self, combo):
+        """Handles the 'Mode' combo box change."""
         mode = combo.get_active_text()
         if mode == "splitscreen":
             self.splitscreen_orientation_label.show()
@@ -838,6 +866,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             self.statusbar.set_label("Splitscreen mode deactivated.") # Changed from push
 
     def on_save_button_clicked(self, button):
+        """Handles the 'Save Profile' button click."""
         self.statusbar.set_label("Saving profile...")
         profile_data_dumped = self.get_profile_data()
 
@@ -887,6 +916,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             error_dialog.present()
 
     def on_play_button_clicked(self, widget):
+        """Handles clicks on the 'Launch Game' / 'Stop Game' button."""
         if self.cli_process_pid:
             self._stop_game()
             return
@@ -972,8 +1002,8 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             self.cli_process_pid = None # Reset PID on error
             self._update_play_button_state() # Reset button to "Launch Game"
 
-    # Add _stop_game method
     def _stop_game(self):
+        """Terminates the running game process group."""
         if not self.cli_process_pid:
             self.statusbar.set_label("No game process to stop.") # Changed from push
             return
@@ -1013,8 +1043,8 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         self.statusbar.set_label("Game stopped.") # Changed from push
         self._update_play_button_state() # Reset button to "Launch Game"
 
-    # Helper to check if a process is running
     def _is_process_running(self, pid):
+        """Checks if a process with the given PID is running."""
         if pid is None:
             return False
         try:
@@ -1023,8 +1053,8 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         except OSError:
             return False
 
-    # Add _check_cli_process for monitoring
     def _check_cli_process(self):
+        """Periodically checks if the launched CLI process is still running."""
         if self.cli_process_pid and not self._is_process_running(self.cli_process_pid):
             self.logger.info(f"Detected CLI process {self.cli_process_pid} has terminated.")
             self.cli_process_pid = None
@@ -1037,10 +1067,11 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         return True # Continue monitoring
 
     def on_layout_setting_changed(self, widget):
+        """Handles changes to any of the layout settings."""
         self.drawing_area.queue_draw()
 
     def on_draw_window_layout(self, widget, cr, width, height):
-        """Main entry point for drawing the window layout preview."""
+        """Draws the window layout preview."""
         try:
             # Get configuration from UI
             layout_settings = self._get_layout_settings()
@@ -1070,7 +1101,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             self.logger.error(f"Error drawing window layout: {e}")
 
     def _get_layout_settings(self):
-        """Extract layout settings from UI widgets."""
+        """Extracts layout settings from the UI widgets."""
         return {
             'instance_width': self.instance_width_spin.get_value_as_int(),
             'instance_height': self.instance_height_spin.get_value_as_int(),
@@ -1080,13 +1111,13 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         }
 
     def _validate_layout_data(self, settings):
-        """Validate layout settings."""
+        """Validates the layout settings."""
         return (settings['instance_width'] > 0 and
                 settings['instance_height'] > 0 and
                 settings['num_players'] >= 1)
 
     def _calculate_drawing_parameters(self, drawing_width, drawing_height, settings):
-        """Calculate scale and offset parameters for drawing."""
+        """Calculates the scale and offset for the drawing area."""
         scale_w = drawing_width / settings['instance_width']
         scale_h = drawing_height / settings['instance_height']
         scale = min(scale_w, scale_h) * 0.9
@@ -1101,7 +1132,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         }
 
     def _create_preview_profile(self, settings):
-        """Create a dummy profile for preview calculations."""
+        """Creates a dummy GameProfile for the layout preview."""
         try:
             dummy_player_configs = []
             for _ in range(settings['num_players']):
@@ -1127,7 +1158,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             return None
 
     def _draw_splitscreen_layout(self, cr, profile, drawing_params, settings):
-        """Draw splitscreen layout for multiple players."""
+        """Draws the splitscreen layout."""
         for i in range(settings['num_players']):
             instance_w, instance_h = profile.get_instance_dimensions(i + 1)
             draw_w = instance_w * drawing_params['scale']
@@ -1145,7 +1176,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             )
 
     def _draw_fullscreen_layout(self, cr, profile, drawing_params):
-        """Draw fullscreen layout for single player."""
+        """Draws the fullscreen layout."""
         instance_w, instance_h = profile.get_instance_dimensions(1)
         draw_w = instance_w * drawing_params['scale']
         draw_h = instance_h * drawing_params['scale']
@@ -1157,7 +1188,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         )
 
     def _calculate_player_position(self, player_index, num_players, orientation, draw_w, draw_h, profile, scale):
-        """Calculate the position for a specific player window."""
+        """Calculates the position of a player's window in the preview."""
         pos_x, pos_y = 0.0, 0.0
 
         if num_players == 2:
@@ -1184,7 +1215,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         return pos_x, pos_y
 
     def _calculate_three_player_position(self, player_index, orientation, profile, scale):
-        """Calculate position for 3-player splitscreen layout."""
+        """Calculates the position for a 3-player splitscreen layout."""
         p1_unscaled_w, p1_unscaled_h = profile.get_instance_dimensions(1)
         p2_unscaled_w, p2_unscaled_h = profile.get_instance_dimensions(2)
 
@@ -1209,7 +1240,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         return 0, 0
 
     def _draw_player_window(self, cr, player_num, pos_x, pos_y, width, height, x_offset, y_offset, profile):
-        """Draw a single player window with text and monitor info."""
+        """Draws a single player window in the preview."""
         # Draw window rectangle
         cr.rectangle(x_offset + pos_x, y_offset + pos_y, width, height)
         cr.set_source_rgb(1.0, 1.0, 1.0)  # White border
@@ -1222,7 +1253,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         self._draw_monitor_info(cr, player_num - 1, pos_x, pos_y, width, height, x_offset, y_offset, profile)
 
     def _draw_player_text(self, cr, player_num, pos_x, pos_y, width, height, x_offset, y_offset):
-        """Draw player number text."""
+        """Draws the player number text in the preview."""
         cr.select_font_face("Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
         font_size = max(10, min(width, height) // 5)
         cr.set_font_size(font_size)
@@ -1236,7 +1267,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         cr.show_text(text)
 
     def _draw_monitor_info(self, cr, player_index, pos_x, pos_y, width, height, x_offset, y_offset, profile):
-        """Draw monitor ID information below player text."""
+        """Draws the monitor ID in the preview."""
         monitor_id_text = self._get_monitor_text(player_index, profile)
 
         if monitor_id_text:
@@ -1254,7 +1285,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             cr.show_text(monitor_id_text)
 
     def _get_monitor_text(self, player_index, profile):
-        """Get monitor text for a specific player."""
+        """Gets the monitor text for a player."""
         if (profile.player_configs and
             player_index < len(profile.player_configs)):
             player_instance = profile.player_configs[player_index]
@@ -1264,6 +1295,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         return ""
 
     def get_profile_data(self):
+        """Gets the profile data from the UI."""
         proton_version = self.proton_version_combo.get_active_text()
         if proton_version == "None (Use Steam default)" or not proton_version:
             proton_version = None
@@ -1322,7 +1354,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         return profile_dumped
 
     def load_profile_data(self, profile_data):
-        """Main entry point for loading profile data into the UI."""
+        """Loads profile data into the UI."""
         try:
             # Load different sections of the profile
             self._load_basic_profile_settings(profile_data)
@@ -1340,13 +1372,13 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             self.statusbar.set_label(f"Error loading profile: {str(e)}")
 
     def _load_basic_profile_settings(self, profile_data):
-        """Load basic profile settings like name, executable path, and player count."""
+        """Loads the basic profile settings into the UI."""
         self.game_name_entry.set_text(str(profile_data.get("GAME_NAME") or ""))
         self.exe_path_entry.set_text(str(profile_data.get("EXE_PATH") or ""))
         self.num_players_spin.set_value(profile_data.get("NUM_PLAYERS", 1))
 
     def _load_proton_settings(self, profile_data):
-        """Load Proton version settings."""
+        """Loads the Proton settings into the UI."""
         proton_version = profile_data.get("PROTON_VERSION")
         if proton_version:
             model = self.proton_version_combo.get_model()
@@ -1371,7 +1403,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             self.winetricks_verbs_entry.set_text("")
 
     def _load_instance_settings(self, profile_data):
-        """Load instance-specific settings like dimensions and game configuration."""
+        """Loads the instance settings into the UI."""
         self.instance_width_spin.set_value(profile_data.get("INSTANCE_WIDTH", 1920))
         self.instance_height_spin.set_value(profile_data.get("INSTANCE_HEIGHT", 1080))
         self.app_id_entry.set_text(str(profile_data.get("APP_ID") or ""))
@@ -1380,7 +1412,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         # self.use_gamescope_check.set_active(profile_data.get("USE_GAMESCOPE", True))
 
     def _load_mode_and_splitscreen_settings(self, profile_data):
-        """Load mode and splitscreen configuration."""
+        """Loads the mode and splitscreen settings into the UI."""
         mode = profile_data.get("MODE")
         if mode:
             self.mode_combo.set_active_id(mode)
@@ -1396,17 +1428,17 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             self._hide_splitscreen_controls()
 
     def _show_splitscreen_controls(self):
-        """Show splitscreen orientation controls."""
+        """Shows the splitscreen controls."""
         self.splitscreen_orientation_label.show()
         self.splitscreen_orientation_combo.show()
 
     def _hide_splitscreen_controls(self):
-        """Hide splitscreen orientation controls."""
+        """Hides the splitscreen controls."""
         self.splitscreen_orientation_label.hide()
         self.splitscreen_orientation_combo.hide()
 
     def _load_splitscreen_orientation(self, profile_data):
-        """Load splitscreen orientation from profile data."""
+        """Loads the splitscreen orientation into the UI."""
         splitscreen_data = profile_data.get("SPLITSCREEN")
         if splitscreen_data and isinstance(splitscreen_data, dict):
             orientation = splitscreen_data.get("ORIENTATION", "horizontal")
@@ -1416,7 +1448,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             self.splitscreen_orientation_combo.set_active_id("horizontal")
 
     def _load_environment_variables(self, profile_data):
-        """Load environment variables from profile data."""
+        """Loads the environment variables into the UI."""
         # Clear existing environment variables
         self._clear_environment_variables_ui()
 
@@ -1427,24 +1459,24 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             self._add_default_environment_variables()
 
     def _clear_environment_variables_ui(self):
-        """Clear existing environment variable entries from UI."""
+        """Clears the environment variables from the UI."""
         while self.env_vars_listbox.get_first_child():
             self.env_vars_listbox.remove(self.env_vars_listbox.get_first_child())
         self.env_var_entries.clear()
         self.env_vars_listbox.queue_draw()
 
     def _populate_environment_variables(self, env_vars_data):
-        """Populate environment variables from data."""
+        """Populates the environment variables in the UI."""
         for key, value in env_vars_data.items():
             self._add_env_var_row(key, value)
 
     def _add_default_environment_variables(self):
-        """Add default environment variables when none are present."""
+        """Adds the default environment variables to the UI."""
         self._add_env_var_row("WINEDLLOVERRIDES", "")
         self._add_env_var_row("MANGOHUD", "1")
 
     def _load_player_configurations(self, profile_data):
-        """Load player configurations from profile data."""
+        """Loads the player configurations into the UI."""
         # Clear existing player UI
         self._clear_player_configurations_ui()
 
@@ -1458,7 +1490,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             self._populate_player_configurations(players_data, profile_data)
 
     def _clear_player_configurations_ui(self):
-        """Clear existing player configuration UI elements."""
+        """Clears the player configurations from the UI."""
         while self.player_config_vbox.get_first_child():
             self.player_config_vbox.remove(self.player_config_vbox.get_first_child())
 
@@ -1468,7 +1500,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         self.player_config_vbox.queue_draw()
 
     def _populate_player_configurations(self, players_data, profile_data):
-        """Populate player configurations from data."""
+        """Populates the player configurations in the UI."""
         selected_players = profile_data.get("selected_players", []) or []
 
         for i, player_config_data in enumerate(players_data):
@@ -1478,7 +1510,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
                 )
 
     def _load_single_player_configuration(self, player_index, player_data, selected_players):
-        """Load configuration for a single player."""
+        """Loads a single player's configuration into the UI."""
         player_combos = self.player_device_combos[player_index]
         player_checkbox = self.player_checkboxes[player_index]
 
@@ -1492,14 +1524,14 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         self._load_player_device_settings(player_combos, player_data)
 
     def _load_player_text_fields(self, player_combos, player_data):
-        """Load text field values for a player."""
+        """Loads the text fields for a player's configuration."""
         text_fields = ["ACCOUNT_NAME", "LANGUAGE", "LISTEN_PORT", "USER_STEAM_ID"]
         for field in text_fields:
             value = player_data.get(field, "") or ""
             player_combos[field].set_text(value)
 
     def _load_player_device_settings(self, player_combos, player_data):
-        """Load device dropdown settings for a player."""
+        """Loads the device settings for a player's configuration."""
         device_fields = [
             "PHYSICAL_DEVICE_ID", "MOUSE_EVENT_PATH",
             "KEYBOARD_EVENT_PATH", "AUDIO_DEVICE_ID", "MONITOR_ID"
@@ -1509,7 +1541,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             self._set_device_dropdown(player_combos[field], player_data.get(field))
 
     def _set_device_dropdown(self, dropdown, device_id):
-        """Set a device dropdown to the correct value based on device ID."""
+        """Sets the selected item in a device dropdown."""
         device_type = getattr(dropdown, 'device_type', None)
 
         if device_type and device_type in self.device_lists:
@@ -1528,12 +1560,13 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             dropdown.set_selected(selected_index)
 
     def _finalize_profile_loading(self):
-        """Finalize profile loading by updating UI elements."""
+        """Finalizes the profile loading process."""
         # Update the layout preview after loading all profile data
         self.drawing_area.queue_draw()
 
 
     def _get_dropdown_index_for_name(self, dropdown: Gtk.DropDown, name: str) -> int:
+        """Gets the index of an item in a dropdown by its name."""
         model = dropdown.get_model()
         if model:
             for i in range(model.get_n_items()):
@@ -1543,6 +1576,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         return 0 # Default to first item (e.g., "None") if not found or model is empty
 
     def _create_device_list_store(self, devices: List[Dict[str, str]]) -> List[str]:
+        """Creates a list of strings for a device dropdown."""
         string_list_data = ["None"] # Add "None" as the first option
         for device in devices:
             # Truncate long device names with ellipsis
@@ -1553,7 +1587,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         return string_list_data
 
     def _populate_profile_list(self):
-        """Populates the ListBox with available game profiles, displaying GAME_NAME."""
+        """Populates the profile listbox with available profiles."""
         # In Gtk4, Gtk.ListBox.get_children() is removed. Remove rows one by one.
         while self.profile_listbox.get_first_child():
             self.profile_listbox.remove(self.profile_listbox.get_first_child())
@@ -1595,7 +1629,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         # self.profile_listbox.show_all() # Not needed for Gtk4
 
     def _on_profile_selected_from_list(self, listbox, row):
-        """Handles selection of a profile from the sidebar list, using stored filename."""
+        """Handles the selection of a profile from the listbox."""
         profile_name_stem = row.get_child().get_name() # Get the filename stem from the label's name property
         if not profile_name_stem:
             self.logger.warning("Attempted to select a profile without a stored filename property.")
@@ -1629,18 +1663,18 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             error_dialog.present()
 
     def _on_add_profile_clicked(self, button):
-        """Handle add new profile button click."""
+        """Handles the 'Add New Profile' button click."""
         self._create_new_profile()
 
     def _on_delete_profile_clicked(self, button):
-        """Handle delete profile button click."""
+        """Handles the 'Delete Profile' button click."""
         if not self.selected_profile_name:
             return
 
         self._delete_selected_profile()
 
     def _create_new_profile(self):
-        """Create a new profile with default values."""
+        """Creates a new profile."""
         # Create dialog to get profile name
         dialog = Adw.MessageDialog(
             heading="New Profile",
@@ -1682,7 +1716,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         entry.grab_focus()  # Focus on entry when dialog opens
 
     def _validate_profile_name(self, profile_name):
-        """Validate the profile name and show error if invalid."""
+        """Validates a profile name."""
         # Check for invalid characters
         invalid_chars = ['<', '>', ':', '"', '|', '?', '*', '/', '\\']
         for char in invalid_chars:
@@ -1705,7 +1739,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         return True
 
     def _create_profile_with_name(self, profile_name):
-        """Create a new profile file with the given name."""
+        """Creates a new profile with the given name."""
         try:
             # Ensure profile directory exists
             Config.PROFILE_DIR.mkdir(parents=True, exist_ok=True)
@@ -1792,7 +1826,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             self.logger.error(error_msg)
 
     def _delete_selected_profile(self):
-        """Delete the currently selected profile after confirmation."""
+        """Deletes the selected profile."""
         if not self.selected_profile_name:
             return
 
@@ -1818,7 +1852,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         dialog.present()
 
     def _confirm_delete_profile(self):
-        """Actually delete the profile file and update UI."""
+        """Confirms the deletion of a profile."""
         try:
             # Save the name before clearing
             deleted_name = self.selected_profile_name
@@ -1845,7 +1879,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
             self.logger.error(error_msg)
 
     def _clear_all_fields(self):
-        """Clear all form fields to default values."""
+        """Clears all the fields in the UI."""
         # Basic settings
         self.game_name_entry.set_text("")
         self.exe_path_entry.set_text("")
@@ -1877,6 +1911,7 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         self.drawing_area.queue_draw()
 
     def _select_profile_in_list(self, profile_name_to_select: str):
+        """Selects a profile in the listbox."""
         current_row = self.profile_listbox.get_first_child()
         while current_row:
             # Check if the row is a valid Gtk.ListBoxRow and its child (label) has the correct name
@@ -1910,7 +1945,15 @@ class ProfileEditorWindow(Adw.ApplicationWindow):
         return False # Allow the default close handler to run
 
 class LinuxCoopApp(Adw.Application):
+    """
+    The main application class, inheriting from Adw.Application.
+
+    This class is the entry point for the GUI. It handles application
+    initialization, activation, styling, and signal handling for graceful
+    shutdown.
+    """
     def __init__(self):
+        """Initializes the Adwaita application."""
         super().__init__(application_id="org.protoncoop.app")
         self.connect("activate", self.on_activate)
 
@@ -1941,7 +1984,7 @@ class LinuxCoopApp(Adw.Application):
         return True # Keep the signal handler active
 
     def _configure_adwaita_style(self):
-        """Configure Adwaita style manager to follow system theme preference"""
+        """Configures the Adwaita style manager to follow the system theme."""
         try:
             style_manager = Adw.StyleManager.get_default()
             # Use PREFER_DARK to automatically follow system theme preference
@@ -1962,7 +2005,7 @@ class LinuxCoopApp(Adw.Application):
             self.logger.warning(f"Could not configure Adwaita style manager: {e}")
 
     def _on_theme_changed(self, style_manager, param):
-        """Handle system theme changes"""
+        """Handles system theme changes."""
         try:
             is_dark = style_manager.get_dark()
             theme_name = "dark" if is_dark else "light"
@@ -1979,7 +2022,7 @@ class LinuxCoopApp(Adw.Application):
             self.logger.warning(f"Error handling theme change: {e}")
 
     def _update_window_for_theme(self, is_dark: bool):
-        """Update window-specific styling based on theme"""
+        """Updates the window styling based on the theme."""
         try:
             # Force refresh of all widgets to apply new theme
             self.queue_draw()
@@ -1992,7 +2035,7 @@ class LinuxCoopApp(Adw.Application):
             self.logger.warning(f"Error updating window for theme: {e}")
 
     def _initialize_application_styles(self):
-        """Initialize application styles using the StyleManager"""
+        """Initializes custom application-wide CSS styles."""
         try:
             initialize_styles()
             self.logger = Logger(name="LinuxCoopGUI", log_dir=Path("./logs"))
@@ -2004,7 +2047,7 @@ class LinuxCoopApp(Adw.Application):
             self._apply_fallback_styles()
 
     def _apply_fallback_styles(self):
-        """Apply minimal fallback styles if StyleManager fails"""
+        """Applies minimal fallback styles if the StyleManager fails."""
         try:
             style_manager = get_style_manager()
             fallback_css = """
@@ -2018,10 +2061,19 @@ class LinuxCoopApp(Adw.Application):
             self.logger.error(f"Even fallback styles failed: {e}")
 
     def on_activate(self, app):
+        """
+        Called when the application is activated.
+
+        This method creates and presents the main `ProfileEditorWindow`.
+
+        Args:
+            app (LinuxCoopApp): The application instance.
+        """
         window = ProfileEditorWindow(app)
         window.present() # Changed from show_all() or show()
 
 def run_gui():
+    """The main entry point function to start the GUI application."""
     app = LinuxCoopApp()
     app.run(None)
 

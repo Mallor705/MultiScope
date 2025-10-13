@@ -5,6 +5,13 @@ from src.gui.app import run_gui
 from src.core.config import Config
 
 def main():
+    """
+    The main entry point for the Proton-Coop application.
+
+    This function parses command-line arguments to determine whether to launch
+    the GUI, run the CLI to launch a game profile, or edit a profile. It also
+    handles the `--parent-pid` argument for monitoring by a parent process.
+    """
     # Run comprehensive migration at startup for all legacy paths (profiles and prefixes)
     Config.migrate_legacy_paths()
 

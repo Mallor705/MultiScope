@@ -1,19 +1,35 @@
 class LinuxCoopError(Exception):
-    """Base exception for Proton-Coop"""
+    """
+    Base exception for all custom errors raised by the Proton-Coop application.
+
+    Catching this exception allows for handling of all application-specific
+    errors.
+    """
     pass
 
 class ProfileNotFoundError(LinuxCoopError):
-    """Profile file not found"""
+    """
+    Raised when a specified game profile `.json` file cannot be found.
+    """
     pass
 
 class ProtonNotFoundError(LinuxCoopError):
-    """Proton version not found"""
+    """
+    Raised when a specified Proton version cannot be located in the standard
+    Steam library paths.
+    """
     pass
 
 class DependencyError(LinuxCoopError):
-    """Required dependency not found"""
+    """
+    Raised when a required external dependency (e.g., `bwrap`, `gamescope`)
+    is not found on the system's PATH.
+    """
     pass
 
 class ExecutableNotFoundError(LinuxCoopError):
-    """Game executable not found"""
+    """
+    Raised when the game executable specified in a profile does not exist at
+    the configured path.
+    """
     pass

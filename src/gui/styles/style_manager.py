@@ -1,19 +1,13 @@
-"""
-StyleManager - Professional CSS management for Proton-Coop GUI
-
-This module provides a centralized way to manage and apply CSS styles
-following SOLID principles for maintainable and modular styling.
-"""
-
 import logging
 import sys
 from pathlib import Path
 from typing import List, Optional
-from gi.repository import Gtk, Gdk, Adw
+
+from gi.repository import Adw, Gdk, Gtk
 
 
 class StyleManagerError(Exception):
-    """Custom exception for StyleManager errors"""
+    """Custom exception for errors raised by the StyleManager."""
     pass
 
 
@@ -21,17 +15,23 @@ class StyleManager:
     """
     Manages CSS styling for the Proton-Coop GUI application.
 
-    This class follows the Single Responsibility Principle by handling
-    only CSS-related operations and the Dependency Inversion Principle
-    by depending on abstractions (file paths) rather than concrete implementations.
+    This class handles loading, applying, and managing CSS stylesheets.
+    It supports loading from files and strings, handling theme changes
+    automatically, and providing fallbacks for frozen executables.
     """
 
     def __init__(self, styles_dir: Optional[Path] = None):
         """
-        Initialize the StyleManager.
+        Initializes the StyleManager.
 
         Args:
-            styles_dir: Path to the styles directory. If None, uses default location.
+            styles_dir (Optional[Path]): The path to the styles directory.
+                If None, it defaults to the 'styles' directory alongside this
+                script or within the PyInstaller bundle.
+
+        Raises:
+            StyleManagerError: If the styles directory cannot be found and
+                               no fallback is possible.
         """
         self.logger = logging.getLogger(__name__)
         self._styles_dir = styles_dir or self._get_default_styles_dir()
@@ -39,176 +39,113 @@ class StyleManager:
         self._applied_styles: List[str] = []
         self._theme_provider: Optional[Gtk.CssProvider] = None
 
-        # Validate styles directory
         if not self._styles_dir.exists():
             self.logger.warning(f"Styles directory not found: {self._styles_dir}")
-            # In frozen executables, try to create a fallback
             if getattr(sys, 'frozen', False):
-                self.logger.info("Running in frozen mode, attempting fallback CSS loading")
                 self._use_fallback_styles = True
             else:
                 raise StyleManagerError(f"Styles directory not found: {self._styles_dir}")
         else:
             self._use_fallback_styles = False
 
-        # Connect to Adwaita style manager for automatic theme switching
         try:
             adw_style_manager = Adw.StyleManager.get_default()
             adw_style_manager.connect("notify::dark", self._on_system_theme_changed)
         except Exception as e:
-            self.logger.warning(f"Could not connect to Adwaita StyleManager for theme detection: {e}")
+            self.logger.warning(f"Could not connect to Adwaita StyleManager: {e}")
 
     @staticmethod
     def _get_default_styles_dir() -> Path:
-        """Get the default styles directory path."""
-        # Check if running as PyInstaller bundle
+        """Determines the default directory for styles."""
         if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-            # PyInstaller bundle - use _MEIPASS directory
             return Path(sys._MEIPASS) / 'src' / 'gui' / 'styles'
-        else:
-            # Normal Python execution
-            return Path(__file__).parent
+        return Path(__file__).parent
 
     def load_default_styles(self) -> None:
         """
-        Load all default CSS files in the correct order.
+        Loads all default CSS files in a predefined order.
 
-        The order ensures that base styles are applied first,
-        followed by components, layout, and theme styles.
+        This ensures a consistent styling cascade, with base styles applied
+        first, followed by component, layout, and interaction styles.
         """
-        default_styles = [
-            'base.css',
-            'components.css',
-            'layout.css',
-            'theme.css',
-            'interactions.css' # New: for modern UI/UX animations and micro-interactions
-        ]
-
+        default_styles = ['base.css', 'components.css', 'layout.css', 'interactions.css']
         for style_file in default_styles:
             try:
                 self.load_css_file(style_file)
             except StyleManagerError as e:
                 self.logger.warning(f"Failed to load default style {style_file}: {e}")
-
-        # Load theme-specific CSS based on current system theme
         self._load_theme_specific_styles()
 
     def load_css_file(self, filename: str) -> None:
         """
-        Load a CSS file and apply it to the application.
+        Loads a CSS file from the styles directory and applies it globally.
 
         Args:
-            filename: Name of the CSS file to load
+            filename (str): The name of the CSS file to load.
 
         Raises:
-            StyleManagerError: If the file cannot be loaded or applied
+            StyleManagerError: If the file cannot be found, loaded, or applied.
         """
         css_path = self._styles_dir / filename
-
         if not css_path.exists():
-            if self._use_fallback_styles and getattr(sys, 'frozen', False):
-                # Try to load from embedded resources in frozen executable
-                self.logger.warning(f"CSS file not found: {css_path}, using fallback styles")
+            if self._use_fallback_styles:
+                self.logger.warning(f"CSS file not found: {css_path}. Using fallback.")
                 self._load_fallback_css(filename)
                 return
-            else:
-                raise StyleManagerError(f"CSS file not found: {css_path}")
+            raise StyleManagerError(f"CSS file not found: {css_path}")
 
         try:
             css_provider = Gtk.CssProvider()
             css_provider.load_from_path(str(css_path))
-
             display = Gdk.Display.get_default()
-            if display is None:
-                raise StyleManagerError("No default display available")
+            if not display:
+                raise StyleManagerError("No default GDK display available.")
 
             Gtk.StyleContext.add_provider_for_display(
-                display,
-                css_provider,
-                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+                display, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
             )
-
             self._providers.append(css_provider)
             self._applied_styles.append(filename)
-
             self.logger.info(f"Successfully loaded CSS file: {filename}")
-
         except Exception as e:
             raise StyleManagerError(f"Failed to load CSS file {filename}: {e}") from e
 
     def load_css_from_string(self, css_content: str, identifier: str = "custom") -> None:
         """
-        Load CSS from a string and apply it to the application.
+        Loads CSS from a string and applies it globally.
 
         Args:
-            css_content: CSS content as string
-            identifier: Identifier for this CSS content (for logging/tracking)
+            css_content (str): The CSS rules to apply.
+            identifier (str): A name to identify this style block.
 
         Raises:
-            StyleManagerError: If the CSS cannot be loaded or applied
+            StyleManagerError: If the CSS string is invalid or cannot be applied.
         """
         try:
             css_provider = Gtk.CssProvider()
             css_provider.load_from_data(css_content.encode('utf-8'))
-
             display = Gdk.Display.get_default()
-            if display is None:
-                raise StyleManagerError("No default display available")
+            if not display:
+                raise StyleManagerError("No default GDK display available.")
 
             Gtk.StyleContext.add_provider_for_display(
-                display,
-                css_provider,
-                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+                display, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
             )
-
             self._providers.append(css_provider)
             self._applied_styles.append(identifier)
-
             self.logger.info(f"Successfully loaded CSS from string: {identifier}")
-
         except Exception as e:
             raise StyleManagerError(f"Failed to load CSS from string {identifier}: {e}") from e
 
-    def apply_theme_variant(self, variant: str = "light") -> None:
-        """
-        Apply a specific theme variant.
-
-        Args:
-            variant: Theme variant ("light" or "dark")
-        """
-        if variant not in ["light", "dark"]:
-            self.logger.warning(f"Unknown theme variant: {variant}. Using 'light'.")
-            variant = "light"
-
-        # This could be extended to load variant-specific CSS files
-        theme_css = f"theme-{variant}.css"
-        theme_path = self._styles_dir / theme_css
-
-        if theme_path.exists():
-            try:
-                self.load_css_file(theme_css)
-                self.logger.info(f"Applied theme variant: {variant}")
-            except StyleManagerError as e:
-                self.logger.warning(f"Failed to apply theme variant {variant}: {e}")
-        else:
-            self.logger.debug(f"Theme variant file not found: {theme_css}")
-
     def reload_styles(self) -> None:
         """
-        Reload all previously applied styles.
+        Reloads all previously applied styles from their original sources.
 
-        This method clears all current providers and reapplies styles,
-        useful for development or dynamic theme switching.
+        This is useful for live-editing styles during development.
         """
         self.logger.info("Reloading all styles...")
-
-        # Store applied styles before clearing
         styles_to_reload = self._applied_styles.copy()
-
-        # Clear current providers
         self.clear_styles()
-
-        # Reload styles
         for style in styles_to_reload:
             if style.endswith('.css'):
                 try:
@@ -217,130 +154,53 @@ class StyleManager:
                     self.logger.error(f"Failed to reload style {style}: {e}")
 
     def clear_styles(self) -> None:
-        """Remove all applied CSS providers."""
+        """Removes all CSS providers managed by this instance."""
         display = Gdk.Display.get_default()
-        if display is None:
-            self.logger.warning("No default display available for clearing styles")
+        if not display:
             return
-
         for provider in self._providers:
             Gtk.StyleContext.remove_provider_for_display(display, provider)
-
         self._providers.clear()
         self._applied_styles.clear()
-        self.logger.info("Cleared all applied styles")
-
-    def get_applied_styles(self) -> List[str]:
-        """
-        Get a list of currently applied style identifiers.
-
-        Returns:
-            List of applied style identifiers
-        """
-        return self._applied_styles.copy()
-
-    def has_style(self, identifier: str) -> bool:
-        """
-        Check if a specific style is currently applied.
-
-        Args:
-            identifier: Style identifier to check
-
-        Returns:
-            True if the style is applied, False otherwise
-        """
-        return identifier in self._applied_styles
-
-    def get_styles_directory(self) -> Path:
-        """
-        Get the current styles directory path.
-
-        Returns:
-            Path to the styles directory
-        """
-        return self._styles_dir
-
-    def set_styles_directory(self, new_dir: Path) -> None:
-        """
-        Set a new styles directory.
-
-        Args:
-            new_dir: New path to the styles directory
-
-        Raises:
-            StyleManagerError: If the directory doesn't exist
-        """
-        if not new_dir.exists():
-            raise StyleManagerError(f"Styles directory not found: {new_dir}")
-
-        self._styles_dir = new_dir
-        self.logger.info(f"Styles directory changed to: {new_dir}")
+        self.logger.info("Cleared all applied styles.")
 
     def _on_system_theme_changed(self, style_manager, param):
-        """Handle system theme changes automatically"""
-        try:
-            is_dark = style_manager.get_dark()
-            theme_name = "dark" if is_dark else "light"
-            self.logger.info(f"System theme changed to: {theme_name}")
-
-            # Reload theme-specific styles
-            self._load_theme_specific_styles()
-        except Exception as e:
-            self.logger.error(f"Error handling system theme change: {e}")
+        """Callback for when the system's dark/light theme preference changes."""
+        is_dark = style_manager.get_dark()
+        self.logger.info(f"System theme changed to: {'dark' if is_dark else 'light'}")
+        self._load_theme_specific_styles()
 
     def _load_theme_specific_styles(self):
-        """Load CSS file specific to current system theme"""
-        try:
-            # Remove existing theme provider if it exists
-            if self._theme_provider:
-                display = Gdk.Display.get_default()
-                if display:
-                    Gtk.StyleContext.remove_provider_for_display(display, self._theme_provider)
-                self._theme_provider = None
+        """Loads a theme-specific CSS file (e.g., theme-dark.css) if available."""
+        if self._theme_provider:
+            display = Gdk.Display.get_default()
+            if display:
+                Gtk.StyleContext.remove_provider_for_display(display, self._theme_provider)
+            self._theme_provider = None
 
-            # Detect current theme
-            adw_style_manager = Adw.StyleManager.get_default()
-            is_dark = adw_style_manager.get_dark()
-
-            if is_dark:
-                theme_file = "theme-dark.css"
-                theme_path = self._styles_dir / theme_file
-
-                if theme_path.exists():
-                    try:
-                        self._theme_provider = Gtk.CssProvider()
-                        self._theme_provider.load_from_path(str(theme_path))
-
-                        display = Gdk.Display.get_default()
-                        if display:
-                            Gtk.StyleContext.add_provider_for_display(
-                                display,
-                                self._theme_provider,
-                                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION + 1  # Higher priority than base styles
-                            )
-
-                            self.logger.info(f"Applied dark theme styling")
-                            self._applied_styles.append(f"theme-dark")
-                        else:
-                            self.logger.warning("No default display available for dark theme")
-                    except Exception as e:
-                        self.logger.error(f"Failed to load dark theme CSS: {e}")
-                else:
-                    self.logger.debug("Dark theme CSS not found, using default styling")
-            else:
-                self.logger.info("Applied light theme styling")
-
-        except Exception as e:
-            self.logger.error(f"Error loading theme-specific styles: {e}")
+        adw_style_manager = Adw.StyleManager.get_default()
+        if adw_style_manager.get_dark():
+            theme_file = "theme-dark.css"
+            theme_path = self._styles_dir / theme_file
+            if theme_path.exists():
+                try:
+                    provider = Gtk.CssProvider()
+                    provider.load_from_path(str(theme_path))
+                    display = Gdk.Display.get_default()
+                    if display:
+                        Gtk.StyleContext.add_provider_for_display(
+                            display, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION + 1
+                        )
+                        self._theme_provider = provider
+                        self.logger.info("Applied dark theme styling.")
+                except Exception as e:
+                    self.logger.error(f"Failed to load dark theme CSS: {e}")
 
     def _load_fallback_css(self, filename: str) -> None:
-        """Load minimal fallback CSS when resources are not available."""
+        """Loads a minimal, hardcoded CSS as a fallback."""
         fallback_css = """
-        /* Minimal fallback styles for Proton-Coop */
         .suggested-action { background: #3584e4; color: white; }
         .destructive-action { background: #e01b24; color: white; }
-        .heading { font-weight: bold; font-size: 1.2em; }
-        .dim-label { opacity: 0.7; }
         """
         try:
             self.load_css_from_string(fallback_css, f"fallback-{filename}")
@@ -348,16 +208,15 @@ class StyleManager:
             self.logger.error(f"Failed to load fallback CSS: {e}")
 
 
-# Singleton instance for global access
 _style_manager_instance: Optional[StyleManager] = None
 
 
 def get_style_manager() -> StyleManager:
     """
-    Get the global StyleManager instance.
+    Provides access to the global singleton instance of the StyleManager.
 
     Returns:
-        Global StyleManager instance
+        StyleManager: The singleton StyleManager instance.
     """
     global _style_manager_instance
     if _style_manager_instance is None:
@@ -367,7 +226,7 @@ def get_style_manager() -> StyleManager:
 
 def initialize_styles() -> None:
     """
-    Initialize the global style manager with default styles.
+    Initializes the global style manager and loads the default styles.
 
     This function should be called once during application startup.
     """
@@ -375,5 +234,4 @@ def initialize_styles() -> None:
         style_manager = get_style_manager()
         style_manager.load_default_styles()
     except StyleManagerError as e:
-        # In case of style loading errors, continue without styles
         logging.getLogger(__name__).warning(f"Failed to initialize styles: {e}")

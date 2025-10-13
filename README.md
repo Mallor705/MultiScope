@@ -1,237 +1,161 @@
 # Proton-Coop
 
-🌍 **Available Languages:**
-[Português](docs/README.pt.md) | [English](README.md) | [Español](docs/README.es.md) | [Français](docs/README.fr.md)
+![Proton-Coop Banner](httpshttps://github.com/Mallor705/Proton-Coop/assets/80993074/399081e7-295e-4c55-b040-02d242407559)
 
-# Proton-Coop
+**Proton-Coop** is a powerful tool for Linux that enables local co-op for PC games that don't natively support it. It works by running multiple instances of a game simultaneously, each sandboxed with its own Proton prefix, controller, and display settings. This allows you to play games with separate saves and configurations on the same machine, as if you were on different computers.
 
-![Proton-Coop Banner](https://github.com/Mallor705/Proton-Coop/assets/80993074/399081e7-295e-4c55-b040-02d242407559)
+## 🚀 Key Features
 
-Allows playing Windows titles in local cooperative mode on Linux, running multiple instances of the same game via Proton and Gamescope, with independent profiles and controller support.
+- **Multi-Instance Gaming:** Launch multiple instances of a game simultaneously.
+- **GUI Profile Editor:** An intuitive graphical interface to create, manage, and launch game profiles.
+- **Complete Isolation:** Each instance runs in its own sandbox (`bwrap`) with a separate Wine prefix, ensuring no conflicts with saves or configurations.
+- **Device Management:** Assign specific keyboards, mice, and controllers to each game instance for a true local co-op feel.
+- **Display & Audio Control:** Run each instance on a specific monitor and direct audio to a specific output device.
+- **Flexible Launch Options:**
+    - Choose any installed Proton version (including GE-Proton and others).
+    - Apply DXVK/VKD3D and run custom Winetricks verbs per profile.
+    - Set custom environment variables.
+- **Splitscreen & Fullscreen Modes:**
+    - **Fullscreen:** Each instance runs on a separate monitor.
+    - **Splitscreen:** Automatically arrange multiple instances on a single monitor, with horizontal or vertical layouts.
+- **CLI and GUI:** Use the powerful command-line interface for scripting and automation, or the user-friendly GUI for easy profile management.
 
-## Key Features
+## 📋 Prerequisites
 
-- **Advanced Local Co-op:** Run up to two instances of the same game simultaneously for a seamless local cooperative experience.
-- **Isolated Game Profiles:** Maintain independent saves and configurations for each game through customizable profiles.
-- **Execution Flexibility:** Supports selecting any `.exe` executable and various Proton versions, including GE-Proton.
-- **Customizable Resolution:** Adjust the resolution for each game instance individually.
-- **Simplified Debugging:** Automatic log generation to facilitate problem identification and correction.
-- **Controller Mapping:** Configure specific physical controllers for each player.
-- **Broad Compatibility:** Supports multiple games through the profile system.
+Before you begin, ensure you have the following installed on your system:
 
-## Project Status
+- **Steam:** Required for managing and finding Proton versions.
+- **Proton:** At least one version of Proton (e.g., Proton Experimental, GE-Proton) must be installed through Steam.
+- **Gamescope:** For window management and performance optimization.
+- **Bubblewrap (`bwrap`):** For sandboxing and process isolation.
+- **Python 3.8+** and `pip`.
+- **PyGObject & Adwaita:** For the graphical user interface. On Debian/Ubuntu, you can install these with:
+  ```bash
+  sudo apt-get install python3-gi python3-gi-cairo gir1.2-gtk-4.0 gir1.2-adw-1
+  ```
 
-- **Core Functionality:** Games open in separate instances with independent saves.
-- **Performance:** Optimized performance for a fluid gaming experience.
-- **Proton Management:** Fully selectable Proton version, including GE-Proton support.
-- **Organization:** Dedicated profiles for each game.
-
-### Known Issues
-
-- **Controller Recognition:** In some cases, controllers may not be recognized (priority for correction).
-- **Window Arrangement:** Instances may open on the same monitor, requiring manual movement.
-
-## System Prerequisites
-
-To ensure the correct functioning of Proton-Coop, the following prerequisites are essential:
-
-- **Steam:** Must be installed and configured on your system.
-- **Proton:** Install Proton (or GE-Proton) via Steam.
-- **Gamescope:** Install Gamescope by following the [official instructions](https://github.com/ValveSoftware/gamescope).
-- **Bubblewrap (`bwrap`):** Essential tool for process isolation.
-- **Device Permissions:** Ensure access permissions to control devices in `/dev/input/by-id/`.
-- **Linux Utilities:** Bash and basic Linux system utilities.
-- **Python 3.8+:** The project requires Python version 3.8 or higher.
-
-## Installation
+## 📦 Installation
 
 1.  **Clone the repository:**
     ```bash
     git clone https://github.com/Mallor705/Proton-Coop.git
     cd Proton-Coop
     ```
-2.  **Install dependencies:**
+2.  **Install Python dependencies:**
     ```bash
     pip install -r requirements.txt
     ```
+3.  **Run the application:**
+    - To start the GUI:
+      ```bash
+      ./protoncoop.py
+      ```
+    - To use the CLI:
+      ```bash
+      ./protoncoop.py <profile_name>
+      ```
 
-    Alternatively, if you are developing or prefer an editable installation:
+## 🎮 How to Use
 
+### Using the GUI (Recommended)
+
+The easiest way to get started is with the graphical user interface.
+
+1.  **Launch the GUI:**
     ```bash
-    pip install -e .
+    ./protoncoop.py
     ```
+2.  **Add a New Profile:** Click the "Add New Profile" button and give your profile a name.
+3.  **Configure the Profile:**
+    - **General Tab:** Fill in the game name, path to the executable, and Proton version.
+    - **Player Config Tab:** Adjust the number of players and assign specific keyboards, mice, and controllers to each player.
+    - **Window Layout Tab:** Configure the resolution and choose between fullscreen (one instance per monitor) or splitscreen mode.
+4.  **Save and Launch:** Click "Save Profile" and then "Launch Game".
 
-## How to Use
+### Using the CLI
 
-### 1. Create a Game Profile
+For advanced users and automation, the CLI provides full control.
 
-Create a JSON file in the `profiles/` folder with a descriptive name (e.g., `MyGame.json`).
+1.  **Create a Profile:** You can create a profile using the GUI first, or manually create a `.json` file in `~/.config/proton-coop/profiles/`.
+2.  **Launch a Profile:**
+    ```bash
+    ./protoncoop.py <profile_name>
+    ```
+    (Replace `<profile_name>` with the filename of your profile, without the `.json` extension).
+3.  **Edit a Profile:**
+    ```bash
+    ./protoncoop.py edit <profile_name>
+    ```
+    This will open the profile JSON file in your default text editor.
 
-**Example Content for Horizontal Splitscreen:**
+### Example `profile.json`
 
-```json
-{
-  "game_name": "GAME",
-  "exe_path": ".steam/Steam/steamapps/common/GAME/game.exe",
-  "players": [
-    {
-      "account_name": "Player1",
-      "language": "brazilian",
-      "listen_port": "",
-      "user_steam_id": "76561190000000001"
-    },
-    {
-      "account_name": "Player2",
-      "language": "brazilian",
-      "listen_port": "",
-      "user_steam_id": "76561190000000002"
-    }
-  ],
-  "proton_version": "GE-Proton10-4",
-  "instance_width": 1920,
-  "instance_height": 1080,
-  "player_physical_device_ids": [
-    "",
-    ""
-  ],
-  "player_mouse_event_paths": [
-    "",
-    ""
-  ],
-  "player_keyboard_event_paths": [
-    "",
-    ""
-  ],
-  "app_id": "12345678",
-  "game_args": "",
-  "use_goldberg_emu": false,
-  "env_vars": {
-    "WINEDLLOVERRIDES": "",
-    "MANGOHUD": "1"
-  },
-  "is_native": false,
-  "mode": "splitscreen",
-  "splitscreen": {
-    "orientation": "horizontal",
-    "instances": 2
-  }
-}
-```
-
-**Example Content for Vertical Splitscreen:**
+Here is an example of what a profile file looks like. You can use this as a template for manual creation.
 
 ```json
 {
-  "game_name": "GAME",
-  "exe_path": ".steam/Steam/steamapps/common/GAME/game.exe",
-  "players": [
-    {
-      "account_name": "Player1",
-      "language": "brazilian",
-      "listen_port": "",
-      "user_steam_id": "76561190000000001"
+    "GAME_NAME": "Stardew Valley",
+    "EXE_PATH": "/home/user/.steam/steam/steamapps/common/Stardew Valley/Stardew Valley.exe",
+    "PROTON_VERSION": "GE-Proton8-25",
+    "NUM_PLAYERS": 2,
+    "INSTANCE_WIDTH": 1920,
+    "INSTANCE_HEIGHT": 1080,
+    "APP_ID": "413150",
+    "GAME_ARGS": "",
+    "IS_NATIVE": false,
+    "MODE": "splitscreen",
+    "SPLITSCREEN": {
+        "ORIENTATION": "horizontal"
     },
-    {
-      "account_name": "Player2",
-      "language": "brazilian",
-      "listen_port": "",
-      "user_steam_id": "76561190000000002"
-    }
-  ],
-  "proton_version": "GE-Proton10-4",
-  "instance_width": 1920,
-  "instance_height": 1080,
-  "player_physical_device_ids": [
-    "/dev/input/by-id/...",
-    "/dev/input/by-id/..."
-  ],
-  "player_mouse_event_paths": [
-    "/dev/input/by-id/...",
-    "/dev/input/by-id/..."
-  ],
-  "player_keyboard_event_paths": [
-    "/dev/input/by-id/...",
-    "/dev/input/by-id/..."
-  ],
-
-  "player_audio_device_ids": [
-    "",
-    ""
-  ],
-
-
-  "app_id": "12345678",
-  "game_args": "",
-  "use_goldberg_emu": false,
-  "env_vars": {
-    "WINEDLLOVERRIDES": "",
-    "MANGOHUD": "1"
-  },
-  "is_native": false,
-  "mode": "splitscreen",
-  "splitscreen": {
-    "orientation": "vertical",
-    "instances": 2
-  }
+    "ENV_VARS": {
+        "MANGOHUD": "1"
+    },
+    "PLAYERS": [
+        {
+            "ACCOUNT_NAME": null,
+            "LANGUAGE": null,
+            "LISTEN_PORT": null,
+            "USER_STEAM_ID": null,
+            "PHYSICAL_DEVICE_ID": "/dev/input/by-id/usb-Sony_Interactive_Entertainment_Wireless_Controller-if03-event-joystick",
+            "MOUSE_EVENT_PATH": null,
+            "KEYBOARD_EVENT_PATH": null,
+            "AUDIO_DEVICE_ID": "alsa_output.pci-0000_0b_00.4.analog-stereo",
+            "MONITOR_ID": null
+        },
+        {
+            "ACCOUNT_NAME": null,
+            "LANGUAGE": null,
+            "LISTEN_PORT": null,
+            "USER_STEAM_ID": null,
+            "PHYSICAL_DEVICE_ID": null,
+            "MOUSE_EVENT_PATH": "/dev/input/by-id/usb-Logitech_USB_Receiver-if02-event-mouse",
+            "KEYBOARD_EVENT_PATH": "/dev/input/by-id/usb-Logitech_USB_Receiver-event-kbd",
+            "AUDIO_DEVICE_ID": null,
+            "MONITOR_ID": null
+        }
+    ],
+    "selected_players": [],
+    "APPLY_DXVK_VKD3D": true,
+    "WINETRICKS_VERBS": null
 }
 ```
 
-### 2. Run the Main Script
+## 🛠️ Project Structure
 
-From the project root, execute the command, replacing `<profile_name>` with the name of your profile JSON file (without the `.json` extension):
+The project is organized into the following directories:
 
-```bash
-python ./protoncoop.py <profile_name>
-# Or, if installed via setuptools:
-proton-coop <profile_name>
-```
+-   `src/`: The main source code for the application.
+    -   `cli/`: Command-line interface logic.
+    -   `core/`: Core components like configuration, logging, and custom exceptions.
+    -   `gui/`: The GTK4/Adwaita graphical user interface.
+    -   `models/`: Pydantic data models for profiles and instances.
+    -   `services/`: Business logic for managing instances, devices, and dependencies.
+-   `docs/`: Documentation files.
 
-Upon execution, the script will:
+## 🤝 Contributing
 
-- Validate all necessary dependencies.
-- Load the specified game profile.
-- Create separate Proton prefixes for each game instance.
-- Launch both game windows via Gamescope.
-- Generate detailed logs in `~/.local/share/proton-coop/logs/` for debugging.
+Contributions are welcome! If you'd like to contribute, please feel free to fork the repository, make your changes, and open a pull request.
 
-### 3. Controller Mapping
+## 📄 License
 
-- Controllers are configured in the profile file or in specific files within `controller_config/`.
-- To avoid conflicts, controller blacklists (e.g., `Player1_Controller_Blacklist`) are automatically generated.
-- **Important:** Connect all your physical controllers before starting the script.
-
-## Testing the Installation
-
-To verify that the prerequisites are correctly installed, run the following commands:
-
-```bash
-gamescope --version
-bwrap --version
-```
-
-## Tips and Troubleshooting
-
--   **Controllers not recognized:** Check permissions in `/dev/input/by-id/` and confirm that device IDs are correct in your profile file.
--   **Proton not found:** Ensure that the Proton version name in your profile exactly matches the installation name in Steam.
--   **Instances on the same monitor:** Game instances may open on the same monitor. To move and organize them, you can use the following keyboard shortcuts. **Note that shortcuts may vary depending on your Linux desktop environment and personalized settings:**
-      *   `Super + W` (or `Ctrl + F9` / `Ctrl + F10`): Displays an overview of all workspaces and open windows (Activities/Overview), similar to hovering the mouse in the top-left corner.
-      *   `Super + Arrows (↑ ↓ ← →)`: Moves and snaps the active window to one side of the screen.
-      *   `Super + PgDn`: Minimizes the active window.
-      *   `Super + PgUp`: Maximizes the active window.
-      *   `Alt + Tab`: Switches between open windows of different applications.
-      *   `Super + D`: Minimizes all windows and shows the desktop.
--   **Debugging logs:** Consult the `~/.local/share/proton-coop/logs/` directory for detailed information about errors and script behavior.
-
-## Important Notes
-
--   Tested and optimized with Palworld, but may be compatible with other games (might require adjustments in the profile file).
--   Currently, the script only supports a two-player setup.
--   For games that do not natively support multiple instances, additional solutions such as sandboxes or separate Steam accounts might be necessary.
-
-## Contribution
-
-Contributions are welcome! Feel free to open issues or pull requests.
-
-## License
-
-This project is distributed under the MIT license. Consult the `LICENSE` file in the repository for more details.
+This project is distributed under the MIT License. See the `LICENSE` file for more details.

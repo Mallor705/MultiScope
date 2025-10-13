@@ -37,7 +37,7 @@ class InstanceService:
     def launch_instances(self, profile: GameProfile, profile_name: str) -> None:
             """Launches all game instances according to the provided profile."""
             if not profile.exe_path:
-                self.logger.error(f"Executable path is not configured for profile '{profile_name}'. Cannot launch.")
+                self.logger.errgor(f"Executable path is not configured for profile '{profile_name}'. Cannot launch.")
                 return
 
             # # Validate gamescope if needed
