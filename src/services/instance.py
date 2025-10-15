@@ -525,6 +525,7 @@ exec {gamescope_cmd_str} -- env LD_PRELOAD="$LD_PRELOAD_BAK" {proton_cmd_str}
         """Builds the bwrap command, including device bindings and environment variables."""
         bwrap_cmd = [
             'bwrap',
+            '--die-with-parent',
             '--dev-bind', '/', '/',
             '--proc', '/proc',
             '--tmpfs', '/tmp',
