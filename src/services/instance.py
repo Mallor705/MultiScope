@@ -3,6 +3,8 @@ import time
 import shutil
 import signal
 import subprocess
+import shlex
+import stat
 from pathlib import Path
 import psutil
 from typing import List, Optional, Dict
@@ -228,6 +230,39 @@ class InstanceService:
         else:
             self.logger.info(f"Instance {instance.instance_num}: Verified executable (not a symlink): {symlinked_exe_path_target}")
 
+    def _create_launcher_script(self, instance: GameInstance, gamescope_cmd: List[str], proton_cmd: List[str]) -> Path:
+        """Creates a launcher script to work around the Gamescope+LD_PRELOAD conflict."""
+        script_path = instance.prefix_dir / "protoncoop_launcher.sh"
+        self.logger.info(f"Instance {instance.instance_num}: Creating Gamescope launcher script at {script_path}")
+
+        # Use shlex.join to ensure all arguments are correctly quoted
+        gamescope_cmd_str = shlex.join(gamescope_cmd)
+        proton_cmd_str = shlex.join(proton_cmd)
+
+        script_content = f"""#!/bin/bash
+# This script is a workaround for the conflict between Gamescope's Steam integration
+# and the Steam Overlay library (gameoverlayrenderer.so) injected via LD_PRELOAD.
+# It runs Gamescope in a clean environment and re-applies LD_PRELOAD only for the game process.
+
+# Backup the original LD_PRELOAD from the bwrap environment
+export LD_PRELOAD_BAK="$LD_PRELOAD"
+# Unset it for the Gamescope process
+unset LD_PRELOAD
+
+# Execute Gamescope, and inside it, execute the game command with the original LD_PRELOAD restored.
+# The 'exec' command replaces the script process with the gamescope process.
+exec {gamescope_cmd_str} -- env LD_PRELOAD="$LD_PRELOAD_BAK" {proton_cmd_str}
+"""
+        # Write the script content to the file
+        script_path.write_text(script_content)
+
+        # Make the script executable (add +x permission for owner, group, and others)
+        st = os.stat(script_path)
+        os.chmod(script_path, st.st_mode | stat.S_IEXEC | stat.S_IXGRP | stat.S_IXOTH)
+
+        self.logger.info(f"Instance {instance.instance_num}: Launcher script created and made executable.")
+        return script_path
+
     def _launch_single_instance(self, instance: GameInstance, profile: GameProfile,
                               proton_path: Optional[Path], steam_root: Optional[Path], original_game_path: Path, cpu_affinity: str) -> None:
         """Launches a single game instance with CPU affinity."""
@@ -355,32 +390,30 @@ class InstanceService:
         # Validate input devices
         device_info = self._validate_input_devices(profile, instance_idx, instance.instance_num)
 
-        # # Build Gamescope command only if enabled (If Checkbox Active)
-        # if profile.use_gamescope:
-        #     gamescope_cmd = self._build_gamescope_command(profile, device_info['should_add_grab_flags'], instance.instance_num)
-        # else:
-        #     gamescope_cmd = []
-        #     self.logger.info(f"Instance {instance.instance_num}: Gamescope is disabled for this profile.")
-
         # Build Gamescope command
         gamescope_cmd = self._build_gamescope_command(profile, device_info['should_add_grab_flags'], instance.instance_num)
 
-        # Build base game command
-        base_cmd = self._build_base_game_command(profile, proton_path, symlinked_exe_path, gamescope_cmd, instance.instance_num)
+        # The LD_PRELOAD conflict only happens when using Gamescope with Proton and a Steam AppID.
+        use_launcher_script = bool(gamescope_cmd and not profile.is_native and profile.app_id)
 
-        # # Build bwrap command with devices, only if not disabled (If Checkbox Active)
-        # if profile.disable_bwrap:
-        #     bwrap_cmd = []
-        #     self.logger.info(f"Instance {instance.instance_num}: bwrap is disabled for this profile.")
-        # else:
-        #     bwrap_cmd = self._build_bwrap_command(profile, instance_idx, device_info, instance.instance_num, env)
+        if use_launcher_script:
+            self.logger.info(f"Instance {instance.instance_num}: Using Gamescope with Proton and AppID. Applying launcher script workaround.")
+            # Build the game command without the Gamescope prefix
+            proton_cmd = self._build_base_game_command(profile, proton_path, symlinked_exe_path, [], instance.instance_num)
+            # Create the script that wraps both commands
+            launcher_script_path = self._create_launcher_script(instance, gamescope_cmd, proton_cmd)
+            base_cmd = [str(launcher_script_path)]
+        else:
+            # Build base game command normally
+            base_cmd = self._build_base_game_command(profile, proton_path, symlinked_exe_path, gamescope_cmd, instance.instance_num)
 
         # Build bwrap command with devices
         bwrap_cmd = self._build_bwrap_command(profile, instance_idx, device_info, instance.instance_num, env)
 
         # Command without taskset for CPU affinity, to mirror user's script
         final_cmd = bwrap_cmd + base_cmd
-        final_bwrap_cmd_str = ' '.join(final_cmd)
+        # Use shlex.join for safer logging of the command
+        final_bwrap_cmd_str = shlex.join(final_cmd)
         self.logger.info(f"Instance {instance.instance_num}: Full command: {final_bwrap_cmd_str}")
 
         return final_cmd
