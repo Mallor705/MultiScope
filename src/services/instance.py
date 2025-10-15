@@ -393,19 +393,17 @@ exec {gamescope_cmd_str} -- env LD_PRELOAD="$LD_PRELOAD_BAK" {proton_cmd_str}
         # Build Gamescope command
         gamescope_cmd = self._build_gamescope_command(profile, device_info['should_add_grab_flags'], instance.instance_num)
 
-        # The LD_PRELOAD conflict only happens when using Gamescope with Proton and a Steam AppID.
-        use_launcher_script = bool(gamescope_cmd and not profile.is_native and profile.app_id)
-
-        if use_launcher_script:
-            self.logger.info(f"Instance {instance.instance_num}: Using Gamescope with Proton and AppID. Applying launcher script workaround.")
+        # If gamescope is used, always use the launcher script for consistency and to avoid LD_PRELOAD conflicts.
+        if gamescope_cmd:
+            self.logger.info(f"Instance {instance.instance_num}: Using Gamescope. Applying launcher script for robust execution.")
             # Build the game command without the Gamescope prefix
-            proton_cmd = self._build_base_game_command(profile, proton_path, symlinked_exe_path, [], instance.instance_num)
+            game_cmd_without_gamescope = self._build_base_game_command(profile, proton_path, symlinked_exe_path, [], instance.instance_num)
             # Create the script that wraps both commands
-            launcher_script_path = self._create_launcher_script(instance, gamescope_cmd, proton_cmd)
+            launcher_script_path = self._create_launcher_script(instance, gamescope_cmd, game_cmd_without_gamescope)
             base_cmd = [str(launcher_script_path)]
         else:
-            # Build base game command normally
-            base_cmd = self._build_base_game_command(profile, proton_path, symlinked_exe_path, gamescope_cmd, instance.instance_num)
+            # Build base game command normally (without gamescope)
+            base_cmd = self._build_base_game_command(profile, proton_path, symlinked_exe_path, [], instance.instance_num)
 
         # Build bwrap command with devices
         bwrap_cmd = self._build_bwrap_command(profile, instance_idx, device_info, instance.instance_num, env)
@@ -527,7 +525,6 @@ exec {gamescope_cmd_str} -- env LD_PRELOAD="$LD_PRELOAD_BAK" {proton_cmd_str}
         """Builds the bwrap command, including device bindings and environment variables."""
         bwrap_cmd = [
             'bwrap',
-            '--die-with-parent',
             '--dev-bind', '/', '/',
             '--proc', '/proc',
             '--tmpfs', '/tmp',
