@@ -230,39 +230,6 @@ class InstanceService:
         else:
             self.logger.info(f"Instance {instance.instance_num}: Verified executable (not a symlink): {symlinked_exe_path_target}")
 
-    def _create_launcher_script(self, instance: GameInstance, gamescope_cmd: List[str], proton_cmd: List[str]) -> Path:
-        """Creates a launcher script to work around the Gamescope+LD_PRELOAD conflict."""
-        script_path = instance.prefix_dir / "protoncoop_launcher.sh"
-        self.logger.info(f"Instance {instance.instance_num}: Creating Gamescope launcher script at {script_path}")
-
-        # Use shlex.join to ensure all arguments are correctly quoted
-        gamescope_cmd_str = shlex.join(gamescope_cmd)
-        proton_cmd_str = shlex.join(proton_cmd)
-
-        script_content = f"""#!/bin/bash
-# This script is a workaround for the conflict between Gamescope's Steam integration
-# and the Steam Overlay library (gameoverlayrenderer.so) injected via LD_PRELOAD.
-# It runs Gamescope in a clean environment and re-applies LD_PRELOAD only for the game process.
-
-# Backup the original LD_PRELOAD from the bwrap environment
-export LD_PRELOAD_BAK="$LD_PRELOAD"
-# Unset it for the Gamescope process
-unset LD_PRELOAD
-
-# Execute Gamescope, and inside it, execute the game command with the original LD_PRELOAD restored.
-# The 'exec' command replaces the script process with the gamescope process.
-exec {gamescope_cmd_str} -- env LD_PRELOAD="$LD_PRELOAD_BAK" {proton_cmd_str}
-"""
-        # Write the script content to the file
-        script_path.write_text(script_content)
-
-        # Make the script executable (add +x permission for owner, group, and others)
-        st = os.stat(script_path)
-        os.chmod(script_path, st.st_mode | stat.S_IEXEC | stat.S_IXGRP | stat.S_IXOTH)
-
-        self.logger.info(f"Instance {instance.instance_num}: Launcher script created and made executable.")
-        return script_path
-
     def _launch_single_instance(self, instance: GameInstance, profile: GameProfile,
                               proton_path: Optional[Path], steam_root: Optional[Path], original_game_path: Path, cpu_affinity: str) -> None:
         """Launches a single game instance with CPU affinity."""
@@ -284,7 +251,7 @@ exec {gamescope_cmd_str} -- env LD_PRELOAD="$LD_PRELOAD_BAK" {proton_cmd_str}
         device_info = self._validate_input_devices(profile, instance_idx, instance.instance_num)
 
         env = self._prepare_environment(instance, steam_root, proton_path, profile, device_info)
-        cmd = self._build_command(profile, proton_path, instance, symlinked_executable_path, cpu_affinity, env)
+        cmd = self._build_command(profile, proton_path, instance, symlinked_executable_path, cpu_affinity)
 
         self.logger.info(f"Launching instance {instance.instance_num} (Log: {instance.log_file})")
         try:
@@ -293,8 +260,7 @@ exec {gamescope_cmd_str} -- env LD_PRELOAD="$LD_PRELOAD_BAK" {proton_cmd_str}
                     cmd,
                     stdout=log,
                     stderr=subprocess.STDOUT,
-                    # The env is now passed to the sandboxed process via bwrap's --setenv.
-                    # The bwrap process itself runs with the default environment.
+                    env=env,
                     cwd=symlinked_executable_path.parent,
                     preexec_fn=os.setpgrp
                 )
@@ -342,6 +308,12 @@ exec {gamescope_cmd_str} -- env LD_PRELOAD="$LD_PRELOAD_BAK" {proton_cmd_str}
             # by disabling Proton's network namespacing.
             env['PV_NET_SHARE'] = "1"
 
+        # --- Gamescope WSI ---
+        # This is critical for preventing system crashes and graphical glitches.
+        # It forces Gamescope to use its own Wayland-based WSI, avoiding conflicts
+        # with Proton's Vulkan environment.
+        env['ENABLE_GAMESCOPE_WSI'] = "1"
+
         # --- Add environment variables defined in the profile ---
         if profile and profile.env_vars:
             for key, value in profile.env_vars.items():
@@ -383,36 +355,31 @@ exec {gamescope_cmd_str} -- env LD_PRELOAD="$LD_PRELOAD_BAK" {proton_cmd_str}
             return device_from_profile
         return None
 
-    def _build_command(self, profile: GameProfile, proton_path: Optional[Path], instance: GameInstance, symlinked_exe_path: Path, cpu_affinity: str, env: Dict[str, str]) -> List[str]:
-        """Builds the command to run gamescope and the game (native or via Proton), using bwrap to isolate the control."""
+    def _build_command(self, profile: GameProfile, proton_path: Optional[Path], instance: GameInstance, symlinked_exe_path: Path, cpu_affinity: str) -> List[str]:
+        """
+        Builds the final command array in the correct order:
+        [gamescope?] -> [bwrap] -> [proton/native]
+        """
         instance_idx = instance.instance_num - 1
 
-        # Validate input devices
+        # 1. Validate input devices to determine flags for bwrap and gamescope
         device_info = self._validate_input_devices(profile, instance_idx, instance.instance_num)
 
-        # Build Gamescope command
+        # 2. Build the innermost game command (Proton or native)
+        game_cmd = self._build_base_game_command(profile, proton_path, symlinked_exe_path, instance.instance_num)
+
+        # 3. Build the bwrap command, which will wrap the game command
+        bwrap_cmd = self._build_bwrap_command(profile, instance_idx, device_info, instance.instance_num)
+
+        # 4. Prepend bwrap to the game command
+        final_cmd = bwrap_cmd + game_cmd
+
+        # 5. Build the Gamescope command and prepend it to the bwrap+game command
         gamescope_cmd = self._build_gamescope_command(profile, device_info['should_add_grab_flags'], instance.instance_num)
+        # Add the '--' separator before the command Gamescope will run
+        final_cmd = gamescope_cmd + ['--'] + final_cmd
 
-        # If gamescope is used, always use the launcher script for consistency and to avoid LD_PRELOAD conflicts.
-        if gamescope_cmd:
-            self.logger.info(f"Instance {instance.instance_num}: Using Gamescope. Applying launcher script for robust execution.")
-            # Build the game command without the Gamescope prefix
-            game_cmd_without_gamescope = self._build_base_game_command(profile, proton_path, symlinked_exe_path, [], instance.instance_num)
-            # Create the script that wraps both commands
-            launcher_script_path = self._create_launcher_script(instance, gamescope_cmd, game_cmd_without_gamescope)
-            base_cmd = [str(launcher_script_path)]
-        else:
-            # Build base game command normally (without gamescope)
-            base_cmd = self._build_base_game_command(profile, proton_path, symlinked_exe_path, [], instance.instance_num)
-
-        # Build bwrap command with devices
-        bwrap_cmd = self._build_bwrap_command(profile, instance_idx, device_info, instance.instance_num, env)
-
-        # Command without taskset for CPU affinity, to mirror user's script
-        final_cmd = bwrap_cmd + base_cmd
-        # Use shlex.join for safer logging of the command
-        final_bwrap_cmd_str = shlex.join(final_cmd)
-        self.logger.info(f"Instance {instance.instance_num}: Full command: {final_bwrap_cmd_str}")
+        self.logger.info(f"Instance {instance.instance_num}: Full command: {shlex.join(final_cmd)}")
 
         return final_cmd
 
@@ -495,35 +462,24 @@ exec {gamescope_cmd_str} -- env LD_PRELOAD="$LD_PRELOAD_BAK" {proton_cmd_str}
 
         return gamescope_cli_options
 
-    def _build_base_game_command(self, profile: GameProfile, proton_path: Optional[Path], symlinked_exe_path: Path, gamescope_cmd: List[str], instance_num: int) -> List[str]:
-        """Builds the base game command."""
+    def _build_base_game_command(self, profile: GameProfile, proton_path: Optional[Path], symlinked_exe_path: Path, instance_num: int) -> List[str]:
+        """Builds the base game command (Proton or native)."""
         # Add game arguments defined in the profile, if any
         game_specific_args = []
         if profile.game_args:
-            game_specific_args = profile.game_args.split()
+            # Use shlex.split for safer parsing of arguments
+            game_specific_args = shlex.split(profile.game_args)
             self.logger.info(f"Instance {instance_num}: Adding game arguments: {game_specific_args}")
 
-        # Only add gamescope prefix and separator if gamescope is enabled
-        if gamescope_cmd:
-            base_cmd_prefix = gamescope_cmd + ['--']  # Separator for the command to be executed
-        else:
-            base_cmd_prefix = []
-
         if profile.is_native:
-            base_cmd = list(base_cmd_prefix)
-            if symlinked_exe_path:
-                base_cmd.append(str(symlinked_exe_path))
-                base_cmd.extend(game_specific_args)
+            base_cmd = [str(symlinked_exe_path)] + game_specific_args
         else:
-            base_cmd = list(base_cmd_prefix)
-            if proton_path and symlinked_exe_path:
-                base_cmd.extend([str(proton_path), 'run', str(symlinked_exe_path)])
-                base_cmd.extend(game_specific_args)
+            base_cmd = [str(proton_path), 'run', str(symlinked_exe_path)] + game_specific_args
 
         return base_cmd
 
-    def _build_bwrap_command(self, profile: GameProfile, instance_idx: int, device_info: dict, instance_num: int, env: Dict[str, str]) -> List[str]:
-        """Builds the bwrap command, including device bindings and environment variables."""
+    def _build_bwrap_command(self, profile: GameProfile, instance_idx: int, device_info: dict, instance_num: int) -> List[str]:
+        """Builds the bwrap command, including device bindings."""
         bwrap_cmd = [
             'bwrap',
             '--die-with-parent',
@@ -533,10 +489,6 @@ exec {gamescope_cmd_str} -- env LD_PRELOAD="$LD_PRELOAD_BAK" {proton_cmd_str}
             '--cap-add', 'all',
             '--share-net',
         ]
-
-        # Pass environment variables into the sandbox
-        for key, value in env.items():
-            bwrap_cmd.extend(['--setenv', key, value])
 
         device_paths_to_bind = self._collect_device_paths(profile, instance_idx, device_info, instance_num)
 
