@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<gresources>
-  <gresource prefix="/co/uk/somnilok">
-    <file>icons/co/uk/somnilok/Linux-Coop-symbolically.svg</file>
-  </gresource>
   <gresource prefix="/org/gnome/settings">
     <file>icons/settings-symbolic.svg</file>
   </gresource>
