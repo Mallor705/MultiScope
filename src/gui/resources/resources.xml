@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/com/github/jules/protoncoop">
+  <gresource prefix="/org/gnome/shell/theme">
     <file>icons/settings-symbolic.svg</file>
   </gresource>
 </gresources>
