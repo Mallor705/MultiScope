@@ -225,9 +225,7 @@ class ProtonCoopWindow(Adw.ApplicationWindow):
 
     def _add_game_from_archive(self, archive_path: Path):
         try:
-            handler_data, _ = self.game_manager._extract_and_parse_handler(
-                archive_path
-            )
+            handler_data, _ = self.game_manager._extract_and_parse_handler(archive_path)
             game_name = handler_data.get("GameName")
             exe_name = handler_data.get("ExecutableName")
         except (FileNotFoundError, ValueError) as e:
@@ -286,6 +284,9 @@ class ProtonCoopWindow(Adw.ApplicationWindow):
         if self.game_editor and self.advanced_settings_page:
             updated_game, updated_profile = self.game_editor.get_updated_data()
             self.advanced_settings_page.get_updated_data()
+
+            # Sync the profile state in the main window
+            self.selected_profile = updated_profile
 
             self.game_manager.save_game(updated_game)
             self.game_manager.save_profile(updated_game, updated_profile)
