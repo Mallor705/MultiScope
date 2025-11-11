@@ -17,7 +17,7 @@ class Logger:
         logger (logging.Logger): The underlying standard Python logger instance.
     """
 
-    def __init__(self, name: str, log_dir: Path):
+    def __init__(self, name: str, log_dir: Path, reset: bool = False):
         """
         Initializes the logger and sets up its handlers.
 
@@ -28,15 +28,16 @@ class Logger:
             name (str): The name of the logger, typically `__name__` of the
                 calling module.
             log_dir (Path): The path to the directory for storing log files.
+            reset (bool): If True, the log file will be cleared on startup.
         """
         self.log_dir = log_dir
         self.log_dir.mkdir(parents=True, exist_ok=True)
         self.logger = logging.getLogger(name)
         self.logger.setLevel(logging.INFO)
         self._handlers_setup = False
-        self._setup_handlers()
+        self._setup_handlers(reset)
 
-    def _setup_handlers(self):
+    def _setup_handlers(self, reset: bool):
         """
         Configures and adds stream and file handlers to the logger.
 
@@ -48,8 +49,7 @@ class Logger:
             return
 
         formatter = logging.Formatter(
-            '%(asctime)s - %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S'
+            "%(asctime)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
         )
 
         # Console handler to stderr
@@ -60,11 +60,8 @@ class Logger:
 
         # File handler
         log_file = self.log_dir / f"{self.logger.name}.log"
-        file_handler = logging.FileHandler(
-            log_file,
-            mode='a',
-            encoding='utf-8'
-        )
+        file_mode = "w" if reset else "a"
+        file_handler = logging.FileHandler(log_file, mode=file_mode, encoding="utf-8")
         file_handler.setFormatter(formatter)
         file_handler.setLevel(logging.INFO)
         self.logger.addHandler(file_handler)
@@ -124,5 +121,5 @@ class Logger:
         written to their destination.
         """
         for handler in self.logger.handlers:
-            if hasattr(handler, 'flush'):
+            if hasattr(handler, "flush"):
                 handler.flush()

@@ -26,7 +26,7 @@ class ProtonCoopWindow(Adw.ApplicationWindow):
         self.set_title("Proton Coop")
         self.set_default_size(1024, 768)
 
-        self.logger = Logger("ProtonCoop-GUI", Config.LOG_DIR)
+        self.logger = Logger("ProtonCoop-GUI", Config.LOG_DIR, reset=True)
         self.game_manager = GameManager(logger=self.logger)
         self.instance_service = InstanceService(logger=self.logger)
 
@@ -180,14 +180,14 @@ class ProtonCoopWindow(Adw.ApplicationWindow):
         self.selected_profile = self.game_manager.get_profile(game, "Default")
 
         if self.game_editor is None:
-            self.game_editor = GameEditor(game)
+            self.game_editor = GameEditor(game, self.logger)
             self.game_editor.connect("profile-selected", self._on_profile_switched)
             self.game_editor.connect("settings-changed", self._trigger_auto_save)
             self.view_stack.add_titled_with_icon(
                 self.game_editor, "game_settings", "Game Settings", "settings-symbolic"
             )
 
-            self.advanced_settings_page = AdvancedSettingsPage(game)
+            self.advanced_settings_page = AdvancedSettingsPage(game, self.logger)
             self.advanced_settings_page.connect(
                 "settings-changed", self._trigger_auto_save
             )

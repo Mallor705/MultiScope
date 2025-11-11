@@ -33,16 +33,16 @@ class GameEditor(Adw.PreferencesPage):
         "settings-changed": (GObject.SIGNAL_RUN_FIRST, None, ()),
     }
 
-    def __init__(self, game, **kwargs):
+    def __init__(self, game, logger, **kwargs):
         super().__init__(**kwargs)
         self._is_loading = False
         self.game = game
         self.profile = None
         self.player_rows = []
         self._selected_path = game.exe_path
+        self.logger = logger
 
         # Inicializar serviços
-        self.logger = Logger("ProtonCoop-GameEditor", Config.LOG_DIR)
         self.proton_service = ProtonService(self.logger)
         self.device_manager = DeviceManager()
         self.game_manager = GameManager(self.logger)
@@ -670,11 +670,11 @@ class GameEditor(Adw.PreferencesPage):
 class AdvancedSettingsPage(Adw.PreferencesPage):
     __gsignals__ = {"settings-changed": (GObject.SIGNAL_RUN_FIRST, None, ())}
 
-    def __init__(self, game, **kwargs):
+    def __init__(self, game, logger, **kwargs):
         super().__init__(**kwargs)
         self._is_loading = False
         self.game = game
-        self.logger = Logger("ProtonCoop-AdvancedEditor", Config.LOG_DIR)
+        self.logger = logger
         self.env_var_rows = []
         self._build_ui()
         self.update_for_game(game)
