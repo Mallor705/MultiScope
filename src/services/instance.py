@@ -46,7 +46,7 @@ class InstanceService:
 
     def launch_instances(self, profile: GameProfile, profile_name: str) -> None:
         """Launches all game instances according to the provided profile."""
-        if not profile.exe_path:
+        if not profile.absolute_exe_path:
             self.logger.error(
                 f"Executable path is not configured for profile '{profile_name}'. Cannot launch."
             )
@@ -101,7 +101,7 @@ class InstanceService:
             f"Launching {num_instances} instance(s) of '{profile.game_name}'..."
         )
 
-        original_game_path = profile.exe_path.parent
+        original_game_path = profile.game_root_path
 
         for i, instance in enumerate(instances):
             cpu_affinity = core_assignments[i]
@@ -215,7 +215,7 @@ class InstanceService:
             self.logger.info(
                 f"Instance {instance.instance_num}: SymlinkGame is false. Launching directly from {original_exe_path}"
             )
-            return original_exe_path
+            return profile.absolute_exe_path
 
         instance_game_root = instance.prefix_dir / "game_files"
 
@@ -522,14 +522,14 @@ class InstanceService:
             f"Preparing instance {instance.instance_num} with CPU affinity: {cpu_affinity}..."
         )
 
-        if not profile.exe_path:
+        if not profile.absolute_exe_path:
             self.logger.error(
                 f"Instance {instance.instance_num}: Executable path is missing in profile, cannot launch."
             )
             return
 
         final_executable_path = self._create_game_directory_structure(
-            instance, original_game_path, profile.exe_path, profile
+            instance, original_game_path, profile.absolute_exe_path, profile
         )
 
         executable_to_run = final_executable_path
@@ -582,9 +582,9 @@ class InstanceService:
 
             if profile.launcher_exe:
                 self.logger.info(
-                    f"Launcher for instance {instance.instance_num} started with PID: {pid}. Waiting for game process '{profile.exe_path.name}'..."
+                    f"Launcher for instance {instance.instance_num} started with PID: {pid}. Waiting for game process '{profile.absolute_exe_path.name}'..."
                 )
-                game_pid = self._wait_for_game_process(profile.exe_path.name)
+                game_pid = self._wait_for_game_process(profile.absolute_exe_path.name)
                 if game_pid:
                     self.logger.info(
                         f"Game process for instance {instance.instance_num} found with PID: {game_pid}"
@@ -736,19 +736,13 @@ class InstanceService:
         instance_idx = instance.instance_num - 1
 
         # 1. Validate input devices to determine flags for bwrap and gamescope
-        device_info = self._validate_input_devices(
-            profile, instance_idx, instance.instance_num
-        )
+        device_info = self._validate_input_devices(profile, instance_idx, instance.instance_num)
 
         # 2. Build the innermost game command (Proton or native)
-        game_cmd = self._build_base_game_command(
-            profile, proton_path, symlinked_exe_path, instance.instance_num
-        )
+        game_cmd = self._build_base_game_command(profile, proton_path, symlinked_exe_path, instance.instance_num)
 
         # 3. Build the bwrap command, which will wrap the game command
-        bwrap_cmd = self._build_bwrap_command(
-            profile, instance_idx, device_info, instance.instance_num
-        )
+        bwrap_cmd = self._build_bwrap_command(profile, instance_idx, device_info, instance.instance_num)
 
         # 4. Prepend bwrap to the game command
         final_cmd = bwrap_cmd + game_cmd
@@ -856,21 +850,15 @@ class InstanceService:
 
         gamescope_cli_options = [
             gamescope_path,
-            "-W",
-            str(effective_width),
-            "-H",
-            str(effective_height),
-            "-w",
-            str(effective_width),
-            "-h",
-            str(effective_height),
+            "-W", str(effective_width),
+            "-H", str(effective_height),
+            "-w", str(effective_width),
+            "-h", str(effective_height),
         ]
 
         # Always set an unfocused FPS limit to a very high value
         gamescope_cli_options.extend(["-o", "999"])
-        self.logger.info(
-            f"Instance {instance_num}: Setting unfocused FPS limit to 999."
-        )
+        self.logger.info(f"Instance {instance_num}: Setting unfocused FPS limit to 999.")
 
         # Always set a focused FPS limit to a very high value
         gamescope_cli_options.extend(["-r", "999"])
@@ -883,9 +871,7 @@ class InstanceService:
             gamescope_cli_options.extend(["-b"])
 
         if should_add_grab_flags:
-            self.logger.info(
-                f"Instance {instance_num}: Using dedicated mouse and keyboard. Adding --grab and --force-grab-cursor to Gamescope."
-            )
+            self.logger.info(f"Instance {instance_num}: Using dedicated mouse and keyboard. Adding --grab and --force-grab-cursor to Gamescope.")
             gamescope_cli_options.extend(["--grab", "--force-grab-cursor"])
 
         return gamescope_cli_options
@@ -903,41 +889,24 @@ class InstanceService:
         if profile.game_args:
             # Use shlex.split for safer parsing of arguments
             game_specific_args = shlex.split(profile.game_args)
-            self.logger.info(
-                f"Instance {instance_num}: Adding game arguments: {game_specific_args}"
-            )
+            self.logger.info(f"Instance {instance_num}: Adding game arguments: {game_specific_args}")
 
         if profile.is_native:
             base_cmd = [str(symlinked_exe_path)] + game_specific_args
         else:
-            base_cmd = [
-                str(proton_path),
-                "run",
-                str(symlinked_exe_path),
-            ] + game_specific_args
+            base_cmd = [str(proton_path), "run", str(symlinked_exe_path)] + game_specific_args
 
         return base_cmd
 
-    def _build_bwrap_command(
-        self,
-        profile: GameProfile,
-        instance_idx: int,
-        device_info: dict,
-        instance_num: int,
-    ) -> List[str]:
+    def _build_bwrap_command(self, profile: GameProfile, instance_idx: int, device_info: dict, instance_num: int) -> List[str]:
         """Builds the bwrap command, including device bindings."""
         bwrap_cmd = [
             "bwrap",
             "--die-with-parent",
-            "--dev-bind",
-            "/",
-            "/",
-            "--proc",
-            "/proc",
-            "--tmpfs",
-            "/tmp",
-            "--cap-add",
-            "all",
+            "--dev-bind", "/", "/",
+            "--proc", "/proc",
+            "--tmpfs", "/tmp",
+            "--cap-add", "all",
             "--share-net",
         ]
 
@@ -949,13 +918,9 @@ class InstanceService:
             bwrap_cmd.extend(["--tmpfs", "/dev/input"])
             for device_path in device_paths_to_bind:
                 bwrap_cmd.extend(["--dev-bind", device_path, device_path])
-                self.logger.info(
-                    f"Instance {instance_num}: bwrap will bind '{device_path}' to '{device_path}'."
-                )
+                self.logger.info(f"Instance {instance_num}: bwrap will bind '{device_path}' to '{device_path}'.")
         else:
-            self.logger.info(
-                f"Instance {instance_num}: No specific input devices to bind with bwrap. Creating an empty isolated /dev/input."
-            )
+            self.logger.info(f"Instance {instance_num}: No specific input devices to bind with bwrap. Creating an empty isolated /dev/input.")
             bwrap_cmd.extend(["--tmpfs", "/dev/input"])
 
         return bwrap_cmd
@@ -973,23 +938,17 @@ class InstanceService:
         # Joysticks
         if device_info.get("joystick_path_str_for_instance"):
             collected_paths.append(device_info["joystick_path_str_for_instance"])
-            self.logger.info(
-                f"Instance {instance_num}: Queued joystick '{device_info['joystick_path_str_for_instance']}' for bwrap binding."
-            )
+            self.logger.info(f"Instance {instance_num}: Queued joystick '{device_info['joystick_path_str_for_instance']}' for bwrap binding.")
 
         # Mice - uses already validated variables
         if device_info.get("mouse_path_str_for_instance"):
             collected_paths.append(device_info["mouse_path_str_for_instance"])
-            self.logger.info(
-                f"Instance {instance_num}: Queued mouse device '{device_info['mouse_path_str_for_instance']}' for bwrap binding."
-            )
+            self.logger.info(f"Instance {instance_num}: Queued mouse device '{device_info['mouse_path_str_for_instance']}' for bwrap binding.")
 
         # Keyboards - uses already validated variables
         if device_info.get("keyboard_path_str_for_instance"):
             collected_paths.append(device_info["keyboard_path_str_for_instance"])
-            self.logger.info(
-                f"Instance {instance_num}: Queued keyboard device '{device_info['keyboard_path_str_for_instance']}' for bwrap binding."
-            )
+            self.logger.info(f"Instance {instance_num}: Queued keyboard device '{device_info['keyboard_path_str_for_instance']}' for bwrap binding.")
 
         return collected_paths
 
@@ -1009,36 +968,26 @@ class InstanceService:
         or the parent process disappears.
         """
         if parent_pid:
-            self.logger.info(
-                f"CLI process is monitoring parent GUI with PID: {parent_pid}"
-            )
+            self.logger.info(f"CLI process is monitoring parent GUI with PID: {parent_pid}")
 
         try:
             while True:
                 # 1. Check if the parent GUI process is still alive
                 if parent_pid and not psutil.pid_exists(parent_pid):
-                    self.logger.warning(
-                        f"Parent GUI process (PID {parent_pid}) terminated. Shutting down all instances."
-                    )
+                    self.logger.warning(f"Parent GUI process (PID {parent_pid}) terminated. Shutting down all instances.")
                     break  # Exit the loop to trigger final termination
 
                 # 2. Check if any game instances have terminated
                 if not self._is_any_process_running():
                     self.logger.info("All game instances have terminated.")
                     if parent_pid:
-                        self.logger.info(
-                            f"Notifying parent GUI (PID {parent_pid}) to close."
-                        )
+                        self.logger.info(f"Notifying parent GUI (PID {parent_pid}) to close.")
                         try:
                             os.kill(parent_pid, signal.SIGUSR1)
                         except ProcessLookupError:
-                            self.logger.warning(
-                                f"Parent GUI (PID {parent_pid}) not found. Cannot send close signal."
-                            )
+                            self.logger.warning(f"Parent GUI (PID {parent_pid}) not found. Cannot send close signal.")
                         except Exception as e:
-                            self.logger.error(
-                                f"Failed to send SIGUSR1 to parent GUI (PID {parent_pid}): {e}"
-                            )
+                            self.logger.error(f"Failed to send SIGUSR1 to parent GUI (PID {parent_pid}): {e}")
                     break  # Exit if no instances are left
 
                 time.sleep(2)  # Poll every 2 seconds

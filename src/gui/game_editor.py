@@ -39,7 +39,7 @@ class GameEditor(Adw.PreferencesPage):
         self.game = game
         self.profile = None
         self.player_rows = []
-        self._selected_path = game.exe_path
+        self._selected_path = game.game_root_path
         self.logger = logger
 
         # Inicializar serviços
@@ -67,8 +67,8 @@ class GameEditor(Adw.PreferencesPage):
         self.game_name_row.connect("changed", self._on_setting_changed)
         game_group.add(self.game_name_row)
 
-        # Caminho do Executável
-        self.exe_path_row = Adw.ActionRow(title="Executable Path")
+        # Caminho da Raiz do Jogo
+        self.game_root_path_row = Adw.ActionRow(title="Game Root Path")
         self.path_label = Gtk.Label(
             label=f"<small><i>{self._selected_path}</i></small>",
             use_markup=True,
@@ -78,11 +78,11 @@ class GameEditor(Adw.PreferencesPage):
         self.path_label.set_hexpand(True)
 
         button = Gtk.Button(label="Browse...")
-        button.connect("clicked", self._on_open_file_dialog)
+        button.connect("clicked", self._on_open_folder_dialog)
 
-        self.exe_path_row.add_suffix(self.path_label)
-        self.exe_path_row.add_suffix(button)
-        game_group.add(self.exe_path_row)
+        self.game_root_path_row.add_suffix(self.path_label)
+        self.game_root_path_row.add_suffix(button)
+        game_group.add(self.game_root_path_row)
 
         # App ID
         self.app_id_row = Adw.EntryRow(title="Steam App ID")
@@ -272,7 +272,7 @@ class GameEditor(Adw.PreferencesPage):
         self._is_loading = True
         try:
             self.game = game
-            self._selected_path = game.exe_path
+            self._selected_path = game.game_root_path
             self.path_label.set_markup(f"<small><i>{self._selected_path}</i></small>")
 
             selected_idx = self.update_profile_list()
@@ -350,24 +350,24 @@ class GameEditor(Adw.PreferencesPage):
         self.instance_width_row.set_visible(is_custom)
         self.instance_height_row.set_visible(is_custom)
 
-    def _on_open_file_dialog(self, button):
+    def _on_open_folder_dialog(self, button):
         dialog = Gtk.FileChooserDialog(
-            title="Select Game Executable",
+            title="Select Game Root Folder",
             transient_for=self.get_root(),
             modal=True,
-            action=Gtk.FileChooserAction.OPEN,
+            action=Gtk.FileChooserAction.SELECT_FOLDER,
         )
         dialog.add_buttons(
-            "_Cancel", Gtk.ResponseType.CANCEL, "_Open", Gtk.ResponseType.OK
+            "_Cancel", Gtk.ResponseType.CANCEL, "_Select", Gtk.ResponseType.OK
         )
-        dialog.connect("response", self._on_file_selected)
+        dialog.connect("response", self._on_folder_selected)
         dialog.present()
 
-    def _on_file_selected(self, dialog, response_id):
+    def _on_folder_selected(self, dialog, response_id):
         if response_id == Gtk.ResponseType.OK:
-            file = dialog.get_file()
-            if file:
-                self._selected_path = Path(file.get_path())
+            folder = dialog.get_file()
+            if folder:
+                self._selected_path = Path(folder.get_path())
                 self.path_label.set_markup(
                     f"<small><i>{self._selected_path}</i></small>"
                 )
@@ -585,7 +585,7 @@ class GameEditor(Adw.PreferencesPage):
         # Atualizar dados do Jogo
         self.game.game_name = self.game_name_row.get_text()
         if self._selected_path:
-            self.game.exe_path = self._selected_path
+            self.game.game_root_path = self._selected_path
         self.game.app_id = self.app_id_row.get_text() or None
         self.game.game_args = self.game_args_row.get_text() or None
         self.game.is_native = False

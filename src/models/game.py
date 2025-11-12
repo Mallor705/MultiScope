@@ -8,7 +8,7 @@ from ..core.exceptions import ExecutableNotFoundError
 
 
 class Game(BaseModel):
-    model_config = ConfigDict(populate_by_name=True)
+    model_config = ConfigDict(populate_by_name=True, extra='ignore')
     """
     Represents a game in the user's library.
 
@@ -18,7 +18,8 @@ class Game(BaseModel):
 
     Attributes:
         game_name (str): The name of the game.
-        exe_path (Path): The path to the game's primary executable.
+        exe_path (str): The relative path to the game's primary executable from the game_root_path.
+        game_root_path (Path): The root path of the game directory.
         app_id (Optional[str]): The Steam AppID of the game.
         game_args (Optional[str]): Command-line arguments to pass to the game.
         is_native (bool): Flag indicating if the game is a native Linux title.
@@ -29,7 +30,8 @@ class Game(BaseModel):
     """
     guid: Optional[str] = Field(default=None, alias="GUID")
     game_name: str = Field(..., alias="GAME_NAME")
-    exe_path: Path = Field(..., alias="EXE_PATH")
+    game_root_path: Path = Field(..., alias="GAME_ROOT_PATH")
+    exe_path: str = Field(..., alias="EXE_PATH")
     app_id: Optional[str] = Field(default=None, alias="APP_ID")
     game_args: Optional[str] = Field(default=None, alias="GAME_ARGS")
     is_native: bool = Field(default=False, alias="IS_NATIVE")
@@ -59,15 +61,11 @@ class Game(BaseModel):
     change_exe: bool = Field(default=False, alias="CHANGE_EXE")
     copy_custom_utils: Optional[List[str]] = Field(default=None, alias="COPY_CUSTOM_UTILS")
 
-    @validator('exe_path')
-    def validate_exe_path(cls, v):
-        """Validates that the executable path exists."""
-        if v is None:
-            return v
-        path_v = Path(v)
-        if not path_v.exists():
-            raise ExecutableNotFoundError(f"Game executable not found: {path_v}")
-        return path_v
+
+    @property
+    def absolute_exe_path(self) -> Path:
+        """Returns the absolute path to the game executable."""
+        return self.game_root_path / self.exe_path
 
     @validator('game_name')
     def sanitize_game_name(cls, v):

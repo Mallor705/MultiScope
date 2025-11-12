@@ -126,13 +126,17 @@ class GameManager:
         return handler_data, temp_dir
 
 
-    def add_game_from_archive(self, archive_path: Path, exe_path: Path) -> Game:
+    def add_game_from_archive(self, archive_path: Path, exe_path: Path, game_root_path: Path) -> Game:
         """Adds a new game from a .nc or .zip archive."""
         handler_data, temp_dir = self._extract_and_parse_handler(archive_path)
 
+        # Calculate the relative path for exe_path
+        relative_exe_path = str(exe_path.relative_to(game_root_path))
+
         new_game = Game(
             game_name=handler_data.get("GameName"),
-            exe_path=exe_path,
+            exe_path=relative_exe_path,
+            game_root_path=game_root_path,
             guid=handler_data.get("GUID"),
             app_id=handler_data.get("SteamID"),
             executable_to_launch=handler_data.get("ExecutableToLaunch"),
