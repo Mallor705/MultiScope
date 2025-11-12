@@ -368,7 +368,145 @@ class InstanceService:
                 f"Executable for instance {instance.instance_num} not found at expected path {final_exe_path} after setup. It might have been excluded."
             )
 
+        self._handle_folder_links(instance_game_root, profile, instance.instance_num)
+        self._handle_copy_utils(instance_game_root, profile, instance.instance_num)
+
         return final_exe_path
+
+    def _handle_copy_utils(
+        self, instance_game_root: Path, profile: GameProfile, instance_num: int
+    ) -> None:
+        """Handles the CopyCustomUtils operation."""
+        if not profile.copy_custom_utils:
+            return
+
+        utils_dir = Config.APP_DIR / "utils" / "User"
+        if not utils_dir.is_dir():
+            self.logger.warning(
+                f"Instance {instance_num}: utils/User directory not found, skipping CopyCustomUtils."
+            )
+            return
+
+        for item in profile.copy_custom_utils:
+            parts = item.split("|")
+            file_name = parts[0]
+            dest_rel_path = parts[1] if len(parts) > 1 and parts[1] else ""
+            instances_str = parts[2] if len(parts) > 2 and parts[2] else ""
+
+            # Check if this instance should have the file copied
+            if instances_str:
+                try:
+                    target_instances = [
+                        int(i) for i in instances_str.split(",")
+                    ]
+                    if instance_num not in target_instances:
+                        continue
+                except ValueError:
+                    self.logger.warning(
+                        f"Instance {instance_num}: Invalid instance filter '{instances_str}' in CopyCustomUtils, skipping item '{item}'."
+                    )
+                    continue
+
+            src_path = utils_dir / file_name
+            if not src_path.exists():
+                self.logger.warning(
+                    f"Instance {instance_num}: Source file/folder not found in utils/User, skipping: {file_name}"
+                )
+                continue
+
+            dest_path = instance_game_root / dest_rel_path / file_name
+
+            try:
+                dest_path.parent.mkdir(parents=True, exist_ok=True)
+                if src_path.is_dir():
+                    shutil.copytree(src_path, dest_path, dirs_exist_ok=True)
+                    self.logger.info(
+                        f"Instance {instance_num}: Copied directory from {src_path} to {dest_path}"
+                    )
+                else:
+                    shutil.copy2(src_path, dest_path)
+                    self.logger.info(
+                        f"Instance {instance_num}: Copied file from {src_path} to {dest_path}"
+                    )
+            except Exception as e:
+                self.logger.error(
+                    f"Instance {instance_num}: Error copying '{file_name}' to '{dest_path}': {e}"
+                )
+
+    def _create_recursive_hardlinks(self, src: Path, dst: Path) -> None:
+        """Recursively creates hardlinks from src to dst."""
+        if not dst.exists():
+            dst.mkdir(parents=True)
+        for item in os.scandir(src):
+            s = Path(item.path)
+            d = dst / item.name
+            if item.is_dir():
+                self._create_recursive_hardlinks(s, d)
+            else:
+                if not d.exists():
+                    os.link(s, d)
+
+    def _handle_folder_links(
+        self, instance_game_root: Path, profile: GameProfile, instance_num: int
+    ) -> None:
+        """Handles SymlinkFoldersTo and HardlinkFoldersTo operations."""
+        # --- Handle SymlinkFoldersTo ---
+        if profile.symlink_folders_to:
+            for item in profile.symlink_folders_to:
+                try:
+                    src_rel, dst_rel = item.split("|")
+                    src_path = instance_game_root / src_rel
+                    dst_path = instance_game_root / dst_rel
+
+                    if not src_path.exists():
+                        self.logger.warning(
+                            f"Instance {instance_num}: Source path for SymlinkFoldersTo does not exist, skipping: {src_path}"
+                        )
+                        continue
+
+                    self.logger.info(
+                        f"Instance {instance_num}: Moving {src_path} to {dst_path} and creating symlink."
+                    )
+                    shutil.move(str(src_path), str(dst_path))
+                    os.symlink(dst_path, src_path, target_is_directory=True)
+
+                except ValueError:
+                    self.logger.warning(
+                        f"Instance {instance_num}: Invalid format in SymlinkFoldersTo, skipping: '{item}'"
+                    )
+                except Exception as e:
+                    self.logger.error(
+                        f"Instance {instance_num}: Error processing SymlinkFoldersTo item '{item}': {e}"
+                    )
+
+        # --- Handle HardlinkFoldersTo ---
+        if profile.hardlink_folders_to:
+            for item in profile.hardlink_folders_to:
+                try:
+                    src_rel, dst_rel = item.split("|")
+                    src_path = instance_game_root / src_rel
+                    dst_path = instance_game_root / dst_rel
+
+                    if not src_path.exists():
+                        self.logger.warning(
+                            f"Instance {instance_num}: Source path for HardlinkFoldersTo does not exist, skipping: {src_path}"
+                        )
+                        continue
+
+                    self.logger.info(
+                        f"Instance {instance_num}: Moving {src_path} to {dst_path} and creating recursive hardlinks."
+                    )
+                    shutil.move(str(src_path), str(dst_path))
+                    self._create_recursive_hardlinks(dst_path, src_path)
+
+                except ValueError:
+                    self.logger.warning(
+                        f"Instance {instance_num}: Invalid format in HardlinkFoldersTo, skipping: '{item}'"
+                    )
+                except Exception as e:
+                    self.logger.error(
+                        f"Instance {instance_num}: Error processing HardlinkFoldersTo item '{item}': {e}"
+                    )
 
     def _launch_single_instance(
         self,
@@ -394,6 +532,17 @@ class InstanceService:
             instance, original_game_path, profile.exe_path, profile
         )
 
+        executable_to_run = final_executable_path
+        if profile.change_exe:
+            exe_path = Path(executable_to_run)
+            new_exe_name = f"{exe_path.stem} - Player {instance.instance_num}{exe_path.suffix}"
+            new_exe_path = exe_path.with_name(new_exe_name)
+            self.logger.info(
+                f"Instance {instance.instance_num}: Renaming executable to {new_exe_path.name}"
+            )
+            os.rename(exe_path, new_exe_path)
+            executable_to_run = new_exe_path
+
         instance_idx = instance.instance_num - 1
         device_info = self._validate_input_devices(
             profile, instance_idx, instance.instance_num
@@ -404,16 +553,16 @@ class InstanceService:
         )
 
         # Determine the actual executable to launch
-        executable_to_run = (
+        effective_executable_to_run = (
             profile.executable_to_launch
             or profile.launcher_exe
-            or final_executable_path
+            or executable_to_run
         )
-        if isinstance(executable_to_run, str):
-            executable_to_run = final_executable_path.parent / executable_to_run
+        if isinstance(effective_executable_to_run, str):
+            effective_executable_to_run = executable_to_run.parent / effective_executable_to_run
 
         cmd = self._build_command(
-            profile, proton_path, instance, executable_to_run, cpu_affinity
+            profile, proton_path, instance, effective_executable_to_run, cpu_affinity
         )
 
         self.logger.info(
@@ -426,7 +575,7 @@ class InstanceService:
                     stdout=log,
                     stderr=subprocess.STDOUT,
                     env=env,
-                    cwd=final_executable_path.parent,
+                    cwd=effective_executable_to_run.parent,
                     preexec_fn=os.setpgrp,
                 )
             pid = process.pid

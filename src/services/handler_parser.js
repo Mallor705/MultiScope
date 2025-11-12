@@ -33,6 +33,10 @@ const Game = {
     FileSymlinkCopyInstead: [],
     DirSymlinkCopyInstead: [],
     DirSymlinkCopyInsteadIncludeSubFolders: false,
+    SymlinkFoldersTo: [],
+    HardlinkFoldersTo: [],
+    ChangeExe: false,
+    CopyCustomUtils: [],
     Hook: {},
     ProtoInput: {},
     // Add a no-op function for AddOption to prevent errors
@@ -93,4 +97,8 @@ console.log(JSON.stringify({
     FileSymlinkCopyInstead: Game.FileSymlinkCopyInstead,
     DirSymlinkCopyInstead: Game.DirSymlinkCopyInstead,
     DirSymlinkCopyInsteadIncludeSubFolders: Game.DirSymlinkCopyInsteadIncludeSubFolders,
+    SymlinkFoldersTo: Game.SymlinkFoldersTo,
+    HardlinkFoldersTo: Game.HardlinkFoldersTo,
+    ChangeExe: Game.ChangeExe,
+    CopyCustomUtils: Game.CopyCustomUtils,
 }));

@@ -34,7 +34,7 @@ class Game(BaseModel):
     game_args: Optional[str] = Field(default=None, alias="GAME_ARGS")
     is_native: bool = Field(default=False, alias="IS_NATIVE")
     proton_version: Optional[str] = Field(default=None, alias="PROTON_VERSION")
-    apply_dxvk_vkd3d: bool = Field(default=True, alias="APPLY_DXVK_VKD3D")
+    apply_dxvk_vkd3d: bool = Field(default=False, alias="APPLY_DXVK_VKD3D")
     winetricks_verbs: Optional[List[str]] = Field(default=None, alias="WINETRICKS_VERBS")
     env_vars: Optional[Dict[str, str]] = Field(default_factory=dict, alias="ENV_VARS")
     use_mangohud: bool = Field(default=False, alias="USE_MANGOHUD")
@@ -54,6 +54,10 @@ class Game(BaseModel):
     file_symlink_copy_instead: Optional[List[str]] = Field(default=None, alias="FILE_SYMLINK_COPY_INSTEAD")
     dir_symlink_copy_instead: Optional[List[str]] = Field(default=None, alias="DIR_SYMLINK_COPY_INSTEAD")
     dir_symlink_copy_instead_include_sub_folders: bool = Field(default=False, alias="DIR_SYMLINK_COPY_INSTEAD_INCLUDE_SUB_FOLDERS")
+    symlink_folders_to: Optional[List[str]] = Field(default=None, alias="SYMLINK_FOLDERS_TO")
+    hardlink_folders_to: Optional[List[str]] = Field(default=None, alias="HARDLINK_FOLDERS_TO")
+    change_exe: bool = Field(default=False, alias="CHANGE_EXE")
+    copy_custom_utils: Optional[List[str]] = Field(default=None, alias="COPY_CUSTOM_UTILS")
 
     @validator('exe_path')
     def validate_exe_path(cls, v):
