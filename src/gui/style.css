@@ -6,6 +6,10 @@
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+.selected-game {
+    background-color: #3584e4;
+}
+
 .uniform-button {
     min-width: 100px;
 }

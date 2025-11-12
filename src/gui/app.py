@@ -17,6 +17,7 @@ from ..services.game_manager import GameManager
 from ..services.instance import InstanceService
 from .dialogs import AddGameDialog, ConfirmationDialog, TextInputDialog
 from .game_editor import AdvancedSettingsPage, GameEditor
+from .layout_editor import LayoutSettingsPage
 
 
 class ProtonCoopWindow(Adw.ApplicationWindow):
@@ -32,8 +33,10 @@ class ProtonCoopWindow(Adw.ApplicationWindow):
 
         self.selected_game = None
         self.selected_profile = None
+        self.selected_game_row = None
         self.game_editor = None
         self.advanced_settings_page = None
+        self.layout_settings_page = None
         self.games_group = None
 
         self._build_ui()
@@ -176,17 +179,35 @@ class ProtonCoopWindow(Adw.ApplicationWindow):
         self.selected_profile = None
 
     def on_game_selected(self, widget, game):
+        if self.selected_game_row:
+            self.selected_game_row.remove_css_class("selected-game")
+
+        widget.add_css_class("selected-game")
+        self.selected_game_row = widget
+
         self.selected_game = game
         self.selected_profile = self.game_manager.get_profile(game, "Default")
 
         if self.game_editor is None:
+            # Layout
+            self.layout_settings_page = LayoutSettingsPage(game, self.logger)
+            self.layout_settings_page.connect("settings-changed", self._trigger_auto_save)
+            self.layout_settings_page.connect("profile-selected", self._on_profile_switched)
+            self.view_stack.add_titled_with_icon(
+                self.layout_settings_page,
+                "layout_settings",
+                "Layout",
+                "video-display-symbolic",
+            )
+
+            # Game Settings
             self.game_editor = GameEditor(game, self.logger)
-            self.game_editor.connect("profile-selected", self._on_profile_switched)
             self.game_editor.connect("settings-changed", self._trigger_auto_save)
             self.view_stack.add_titled_with_icon(
                 self.game_editor, "game_settings", "Game Settings", "settings-symbolic"
             )
 
+            # Advanced
             self.advanced_settings_page = AdvancedSettingsPage(game, self.logger)
             self.advanced_settings_page.connect(
                 "settings-changed", self._trigger_auto_save
@@ -199,16 +220,19 @@ class ProtonCoopWindow(Adw.ApplicationWindow):
             )
 
         self.game_editor.update_for_game(game)
+        self.game_editor.profile = self.selected_profile
+        self.layout_settings_page.update_for_game(game)
         self.advanced_settings_page.update_for_game(game)
 
         welcome_stack_page = self.view_stack.get_page(self.welcome_page)
         welcome_stack_page.set_visible(False)
-        self.view_stack.set_visible_child(self.game_editor)
+        self.view_stack.set_visible_child(self.layout_settings_page)
         self.footer_bar.set_visible(True)
         self.launch_button.set_sensitive(True)
 
     def _on_profile_switched(self, editor, profile):
         self.selected_profile = profile
+        self.game_editor.profile = profile
         self.logger.info(f"Switched to profile: {profile.profile_name}")
 
     def on_add_game_clicked(self, button):
@@ -304,9 +328,10 @@ class ProtonCoopWindow(Adw.ApplicationWindow):
         return True
 
     def _trigger_auto_save(self, *args):
-        if self.game_editor and self.advanced_settings_page:
-            updated_game, updated_profile = self.game_editor.get_updated_data()
+        if self.game_editor and self.advanced_settings_page and self.layout_settings_page:
+            updated_game, _ = self.game_editor.get_updated_data()
             self.advanced_settings_page.get_updated_data()
+            updated_profile = self.layout_settings_page.get_updated_data()
 
             # Sync the profile state in the main window
             self.selected_profile = updated_profile
@@ -318,7 +343,7 @@ class ProtonCoopWindow(Adw.ApplicationWindow):
 
     def on_launch_clicked(self, button):
         if self.selected_game and self.selected_profile:
-            selected_players = self.game_editor.get_selected_players()
+            selected_players = self.layout_settings_page.get_selected_players()
             if not selected_players:
                 self._show_error_dialog("No instances selected to launch.")
                 return
@@ -347,18 +372,17 @@ class ProtonCoopApplication(Adw.Application):
         Gio.Resource.load(resource_path)._register()
         self.connect("activate", self.on_activate)
 
+    def on_activate(self, app):
+        self.win = ProtonCoopWindow(application=app)
         # Carregar o CSS
         css_provider = Gtk.CssProvider()
         css_path = Path(__file__).parent / "style.css"
         css_provider.load_from_path(str(css_path))
         Gtk.StyleContext.add_provider_for_display(
-            Gdk.Display.get_default(),
+            self.win.get_display(),
             css_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
         )
-
-    def on_activate(self, app):
-        self.win = ProtonCoopWindow(application=app)
         self.win.present()
 
 
