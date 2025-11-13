@@ -271,7 +271,7 @@ class ProtonCoopWindow(Adw.ApplicationWindow):
         if response_id == Gtk.ResponseType.OK:
             folder = dialog.get_file()
             if folder:
-                game_root_path = Path(folder.get_path())
+                game_cwd = Path(folder.get_path())
 
                 exe_dialog = Gtk.FileChooserDialog(
                     title=f"Select the executable '{exe_name}'",
@@ -284,14 +284,14 @@ class ProtonCoopWindow(Adw.ApplicationWindow):
                 )
 
                 # Start browsing from the selected game root path
-                folder_gfile = Gio.File.new_for_path(str(game_root_path))
+                folder_gfile = Gio.File.new_for_path(str(game_cwd))
                 exe_dialog.set_current_folder(folder_gfile)
 
-                exe_dialog.connect("response", self._on_exe_selected, archive_path, game_root_path, exe_name)
+                exe_dialog.connect("response", self._on_exe_selected, archive_path, game_cwd, exe_name)
                 exe_dialog.present()
         dialog.destroy()
 
-    def _on_exe_selected(self, dialog, response_id, archive_path, game_root_path, exe_name):
+    def _on_exe_selected(self, dialog, response_id, archive_path, game_cwd, exe_name):
         if response_id == Gtk.ResponseType.OK:
             file = dialog.get_file()
             if file:
@@ -306,7 +306,7 @@ class ProtonCoopWindow(Adw.ApplicationWindow):
                     return
 
                 try:
-                    self.game_manager.add_game_from_archive(archive_path, exe_path, game_root_path)
+                    self.game_manager.add_game_from_archive(archive_path, exe_path, game_cwd)
                     self.load_games_into_sidebar()
                 except (ValidationError, FileExistsError) as e:
                     self._show_error_dialog(str(e))

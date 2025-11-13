@@ -30,7 +30,7 @@ class GameEditor(Adw.PreferencesPage):
         self.game = game
         self.profile = None
         self.player_rows = []
-        self._selected_path = game.game_root_path
+        self._selected_path = game.game_cwd
         self.logger = logger
 
         # Inicializar serviços
@@ -59,7 +59,7 @@ class GameEditor(Adw.PreferencesPage):
         game_group.add(self.game_name_row)
 
         # Caminho da Raiz do Jogo
-        self.game_root_path_row = Adw.ActionRow(title="Game Root Path")
+        self.game_cwd_row = Adw.ActionRow(title="Game Root Path")
         self.path_label = Gtk.Label(
             label=f"<small><i>{self._selected_path}</i></small>",
             use_markup=True,
@@ -71,9 +71,9 @@ class GameEditor(Adw.PreferencesPage):
         button = Gtk.Button(label="Browse...")
         button.connect("clicked", self._on_open_folder_dialog)
 
-        self.game_root_path_row.add_suffix(self.path_label)
-        self.game_root_path_row.add_suffix(button)
-        game_group.add(self.game_root_path_row)
+        self.game_cwd_row.add_suffix(self.path_label)
+        self.game_cwd_row.add_suffix(button)
+        game_group.add(self.game_cwd_row)
 
         # App ID
         self.app_id_row = Adw.EntryRow(title="Steam App ID")
@@ -99,7 +99,7 @@ class GameEditor(Adw.PreferencesPage):
         self._is_loading = True
         try:
             self.game = game
-            self._selected_path = game.game_root_path
+            self._selected_path = game.game_cwd
             self.path_label.set_markup(f"<small><i>{self._selected_path}</i></small>")
 
             self.load_game_data()
@@ -160,7 +160,7 @@ class GameEditor(Adw.PreferencesPage):
         # Atualizar dados do Jogo
         self.game.game_name = self.game_name_row.get_text()
         if self._selected_path:
-            self.game.game_root_path = self._selected_path
+            self.game.game_cwd = self._selected_path
         self.game.app_id = self.app_id_row.get_text() or None
         self.game.game_args = self.game_args_row.get_text() or None
         self.game.is_native = False

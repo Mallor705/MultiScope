@@ -101,7 +101,7 @@ class InstanceService:
             f"Launching {num_instances} instance(s) of '{profile.game_name}'..."
         )
 
-        original_game_path = profile.game_root_path
+        original_game_path = profile.game_cwd
 
         for i, instance in enumerate(instances):
             cpu_affinity = core_assignments[i]
