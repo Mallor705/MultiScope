@@ -21,9 +21,9 @@ char* get_log_path() {
     if (log_path[0] == '\0') {
         const char* home = getenv("HOME");
         if (home == NULL) {
-            strcpy(log_path, "/tmp/game_workdir.log");
+            strcpy(log_path, "/tmp/game_cwd.log");
         } else {
-            snprintf(log_path, sizeof(log_path), "%s/game_workdir.log", home);
+            snprintf(log_path, sizeof(log_path), "%s/game_cwd.log", home);
         }
     }
     return log_path;
