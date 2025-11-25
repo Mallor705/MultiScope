@@ -217,6 +217,8 @@ class InstanceService:
             env["PULSE_SINK"] = device_info["audio_device_id_for_instance"]
             self.logger.info(f"Instance {instance_num}: Setting PULSE_SINK to '{device_info['audio_device_id_for_instance']}'.")
 
+        # Custom ENV variables are set via bwrap --setenv to target Steam directly.
+
         self.logger.info(f"Instance {instance_num}: Final environment prepared.")
         return env
 
@@ -354,6 +356,17 @@ class InstanceService:
             # Create an empty isolated /dev/input if no devices are specified
             cmd.extend(["--tmpfs", "/dev/input"])
 
+        # Ensure custom ENV variables reach Steam inside the sandbox
+        try:
+            extra_env = profile.get_env_for_instance(instance_idx) if hasattr(profile, "get_env_for_instance") else {}
+            for k, v in (extra_env or {}).items():
+                if v is None:
+                    v = ""
+                cmd.extend(["--setenv", str(k), str(v)])
+            if extra_env:
+                self.logger.info(f"Instance {instance_num}: Added {len(extra_env)} --setenv entries to bwrap.")
+        except Exception as e:
+            self.logger.error(f"Instance {instance_num}: Failed to add --setenv entries: {e}")
         return cmd
 
     def terminate_all(self) -> None:

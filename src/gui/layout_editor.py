@@ -72,7 +72,18 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         )
         self.orientation_row.connect("notify::selected-item", self._on_setting_changed)
         layout_group.add(self.orientation_row)
-
+        
+        # Global environment variables
+        self.env_group = Adw.PreferencesGroup(title="Environment Variables (Global)")
+        self.add(self.env_group)
+        self.global_env_rows = []
+        
+        self.global_env_add_row = Adw.ActionRow(title="Add environment variable")
+        global_add_btn = Gtk.Button.new_with_mnemonic("_Add")
+        global_add_btn.connect("clicked", self._on_add_global_env_clicked)
+        self.global_env_add_row.add_suffix(global_add_btn)
+        self.env_group.add(self.global_env_add_row)
+        
         self.players_group = Adw.PreferencesGroup(title="Instance Configurations")
         self.add(self.players_group)
 
@@ -104,6 +115,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
             self.orientation_row.set_selected(self.orientations.index(orientation))
         
         self.rebuild_player_rows()
+        # Populate per-player device selections
         for i, row_dict in enumerate(self.player_rows):
             if i < len(self.profile.player_configs):
                 config = self.profile.player_configs[i]
@@ -111,6 +123,27 @@ class LayoutSettingsPage(Adw.PreferencesPage):
                 self._set_combo_row_selection(row_dict["mouse"], self.input_devices["mouse"], config.MOUSE_EVENT_PATH)
                 self._set_combo_row_selection(row_dict["keyboard"], self.input_devices["keyboard"], config.KEYBOARD_EVENT_PATH)
                 self._set_combo_row_selection(row_dict["audio"], self.audio_devices, config.AUDIO_DEVICE_ID)
+                # Ensure env UI exists for this player
+                if not row_dict.get("env_initialized"):
+                    env_title_row = Adw.ActionRow(title="Environment Variables")
+                    add_btn = Gtk.Button.new_with_mnemonic("_Add")
+                    add_btn.connect("clicked", lambda b, i=i: self._add_player_env_row_by_index(i))
+                    env_title_row.add_suffix(add_btn)
+                    row_dict["expander"].add_row(env_title_row)
+                    row_dict["env_initialized"] = True
+                    row_dict["env_rows"] = []
+                # Populate per-player ENV
+                if getattr(config, "env", None):
+                    for k, v in (config.env or {}).items():
+                        self._add_player_env_row_by_index(i, k, v)
+        # Populate global ENV
+        if hasattr(self, "global_env_rows"):
+            for env_row in self.global_env_rows:
+                self.env_group.remove(env_row["row"])
+        self.global_env_rows = []
+        if getattr(self.profile, "env", None):
+            for k, v in (self.profile.env or {}).items():
+                self._add_global_env_row(k, v)
         
         self._is_loading = False
 
@@ -149,6 +182,9 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         else:
             self.profile.splitscreen = None
 
+        # Collect global environment variables
+        self.profile.env = self._collect_env_from_rows(self.global_env_rows)
+
         new_configs = []
         for i in range(self.profile.num_players):
             if i < len(self.player_rows):
@@ -158,6 +194,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
                     MOUSE_EVENT_PATH=self._get_combo_row_device_id(row_dict["mouse"], self.input_devices["mouse"]),
                     KEYBOARD_EVENT_PATH=self._get_combo_row_device_id(row_dict["keyboard"], self.input_devices["keyboard"]),
                     AUDIO_DEVICE_ID=self._get_combo_row_device_id(row_dict["audio"], self.audio_devices),
+                    env=self._collect_env_from_rows(row_dict.get("env_rows", [])),
                 )
                 new_configs.append(new_config)
             else:
@@ -173,6 +210,17 @@ class LayoutSettingsPage(Adw.PreferencesPage):
     def _on_num_players_changed(self, adjustment):
         if not self._is_loading:
             self.rebuild_player_rows()
+            # Ensure env sections exist after rebuilding player rows
+            for idx, row_dict in enumerate(self.player_rows):
+                if "env_rows" not in row_dict:
+                    row_dict["env_rows"] = []
+                if not row_dict.get("env_initialized"):
+                    env_title_row = Adw.ActionRow(title="Environment Variables")
+                    add_btn = Gtk.Button.new_with_mnemonic("_Add")
+                    add_btn.connect("clicked", lambda b, i=idx: self._add_player_env_row_by_index(i))
+                    env_title_row.add_suffix(add_btn)
+                    row_dict["expander"].add_row(env_title_row)
+                    row_dict["env_initialized"] = True
             self.emit("settings-changed")
 
     def _on_resolution_changed(self, combo_row, *args):
@@ -187,6 +235,77 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         self.orientation_row.set_visible(is_splitscreen)
         if not self._is_loading:
             self.emit("settings-changed")
+
+    def _create_env_kv_row(self, container):
+        row = Adw.ActionRow()
+        key_entry = Gtk.Entry(placeholder_text="KEY")
+        value_entry = Gtk.Entry(placeholder_text="VALUE")
+        remove_btn = Gtk.Button.new_with_mnemonic("_Remove")
+        key_entry.set_width_chars(18)
+        value_entry.set_width_chars(28)
+        key_entry.connect("changed", self._on_setting_changed)
+        value_entry.connect("changed", self._on_setting_changed)
+        row.add_suffix(key_entry)
+        row.add_suffix(Gtk.Label(label="="))
+        row.add_suffix(value_entry)
+        row.add_suffix(remove_btn)
+        # Add row to correct container type
+        if isinstance(container, Adw.PreferencesGroup):
+            container.add(row)
+        elif isinstance(container, Adw.ExpanderRow):
+            container.add_row(row)
+        else:
+            try:
+                container.add(row)
+            except Exception:
+                container.add_row(row)
+        return {"row": row, "key": key_entry, "value": value_entry, "remove": remove_btn}
+
+    def _on_add_global_env_clicked(self, button):
+        self._add_global_env_row()
+
+    def _add_global_env_row(self, key: str = "", value: str = ""):
+        env_row = self._create_env_kv_row(self.env_group)
+        env_row["key"].set_text(str(key) if key is not None else "")
+        env_row["value"].set_text(str(value) if value is not None else "")
+        def on_remove(btn, row=env_row):
+            try:
+                self.env_group.remove(row["row"])
+            except Exception:
+                pass
+            if row in self.global_env_rows:
+                self.global_env_rows.remove(row)
+            self._on_setting_changed()
+        env_row["remove"].connect("clicked", on_remove)
+        self.global_env_rows.append(env_row)
+
+    def _add_player_env_row_by_index(self, idx: int, key: str = "", value: str = ""):
+        if idx < 0 or idx >= len(self.player_rows):
+            return
+        rd = self.player_rows[idx]
+        env_row = self._create_env_kv_row(rd["expander"])
+        env_row["key"].set_text(str(key) if key is not None else "")
+        env_row["value"].set_text(str(value) if value is not None else "")
+        def on_remove(btn, row=env_row, rd=rd):
+            try:
+                rd["expander"].remove(row["row"])
+            except Exception:
+                pass
+            if "env_rows" in rd and row in rd["env_rows"]:
+                rd["env_rows"].remove(row)
+            self._on_setting_changed()
+        env_row["remove"].connect("clicked", on_remove)
+        rd.setdefault("env_rows", [])
+        rd["env_rows"].append(env_row)
+
+    def _collect_env_from_rows(self, rows) -> dict:
+        env = {}
+        for r in rows or []:
+            key = (r["key"].get_text() or "").strip()
+            val = r["value"].get_text() if r["value"] else ""
+            if key:
+                env[key] = str(val)
+        return env
 
     def rebuild_player_rows(self):
         for row_dict in self.player_rows:

@@ -25,6 +25,7 @@ class PlayerInstanceConfig(BaseModel):
     KEYBOARD_EVENT_PATH: Optional[str] = Field(default=None, alias="KEYBOARD_EVENT_PATH")
     AUDIO_DEVICE_ID: Optional[str] = Field(default=None, alias="AUDIO_DEVICE_ID")
     monitor_id: Optional[str] = Field(default=None, alias="MONITOR_ID")
+    env: Optional[Dict[str, str]] = Field(default=None, alias="ENV")
 
 
 class SplitscreenConfig(BaseModel):
@@ -53,6 +54,7 @@ class Profile(BaseModel):
     instance_height: Optional[int] = Field(default=720, alias="INSTANCE_HEIGHT")
     mode: Optional[str] = Field(default="fullscreen", alias="MODE")
     splitscreen: Optional[SplitscreenConfig] = Field(default=None, alias="SPLITSCREEN")
+    env: Optional[Dict[str, str]] = Field(default=None, alias="ENV")
     player_configs: List[PlayerInstanceConfig] = Field(default_factory=lambda: [PlayerInstanceConfig(), PlayerInstanceConfig()], alias="PLAYERS")
     selected_players: Optional[List[int]] = Field(default=None, alias="selected_players")
 
@@ -99,6 +101,17 @@ class Profile(BaseModel):
         if self.selected_players:
             return len(self.selected_players)
         return len(self.player_configs) if self.player_configs else 0
+
+    def get_env_for_instance(self, instance_idx: int) -> Dict[str, str]:
+        """Returns the merged environment variables for a given instance index (0-based).
+        Per-player ENV overrides values from the global ENV."""
+        base_env: Dict[str, str] = dict(self.env or {})
+        if 0 <= instance_idx < len(self.player_configs):
+            player_env = self.player_configs[instance_idx].env or {}
+            player_env = {str(k): str(v) for k, v in player_env.items()}
+            base_env.update(player_env)
+        base_env = {str(k): str(v) for k, v in base_env.items()}
+        return base_env
 
     def get_instance_dimensions(self, instance_num: int) -> Tuple[Optional[int], Optional[int]]:
         """Calculates instance dimensions, accounting for splitscreen."""
