@@ -276,7 +276,11 @@ class InstanceService:
             "--bind", str(home_path), self._SANDBOX_HOME,
         ]
 
-        # Handle input device bindings
+        # Bind /dev to make /dev/null, /dev/zero, etc. available to Steam's runtime.
+        # This is safer than it looks, as bwrap filters sensitive device nodes.
+        cmd.extend(["--dev-bind", "/dev", "/dev"])
+
+        # Handle specific input device bindings, if any are configured
         device_paths_to_bind = [
             p for p in [
                 device_info.get("joystick_path_str_for_instance"),
@@ -285,13 +289,23 @@ class InstanceService:
             ] if p
         ]
 
-        if device_paths_to_bind:
-            cmd.extend(["--tmpfs", "/dev/input"])
-            for device_path in device_paths_to_bind:
-                cmd.extend(["--dev-bind", device_path, device_path])
-                self.logger.info(f"Instance {instance_num}: bwrap will bind '{device_path}'.")
-        else:
-            cmd.extend(["--tmpfs", "/dev/input"])
+        for device_path in device_paths_to_bind:
+            # The individual --dev-bind calls are still needed even with the main /dev
+            # bind, especially on systems with more complex /dev layouts, to ensure
+            # the specific event nodes are present and correctly permissioned.
+            cmd.extend(["--dev-bind", device_path, device_path])
+            self.logger.info(f"Instance {instance_num}: bwrap will explicitly bind '{device_path}'.")
+
+        # Ensure the sandboxed process knows where its home is
+        cmd.extend(["--setenv", "HOME", self._SANDBOX_HOME])
+        cmd.extend(["--setenv", "XDG_CONFIG_HOME", f"{self._SANDBOX_HOME}/.config"])
+        cmd.extend(["--setenv", "XDG_DATA_HOME", f"{self._SANDBOX_HOME}/.local/share"])
+        cmd.extend(["--setenv", "XDG_CACHE_HOME", f"{self._SANDBOX_HOME}/.cache"])
+        cmd.extend(["--setenv", "XDG_STATE_HOME", f"{self._SANDBOX_HOME}/.local/state"])
+
+        # Unset XDG_RUNTIME_DIR to prevent sandboxed apps from trying to access
+        # the host's /run/user/<uid> directory, which would cause permission errors.
+        cmd.extend(["--unsetenv", "XDG_RUNTIME_DIR"])
 
         # Ensure custom ENV variables reach Steam inside the sandbox
         try:
