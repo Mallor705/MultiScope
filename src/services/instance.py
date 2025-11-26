@@ -89,15 +89,20 @@ class InstanceService:
         self.logger.info(f"Launching instance {instance_num} (Log: {log_file})")
 
         try:
-            with open(log_file, "w") as log:
-                process = subprocess.Popen(
-                    cmd,
-                    stdout=log,
-                    stderr=subprocess.STDOUT,
-                    env=env,
-                    cwd=home_path, # Launch from the isolated home directory
-                    preexec_fn=os.setpgrp,
-                )
+            # Use 'script' command to capture all terminal output from nested processes
+            # (gamescope -> bwrap -> steam). This is more reliable than stdout redirection
+            # because it captures output from a pseudo-terminal.
+            cmd_str = shlex.join(cmd)
+            script_cmd = ["script", "-q", "-e", "-c", cmd_str, str(log_file)]
+            
+            process = subprocess.Popen(
+                script_cmd,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                env=env,
+                cwd=home_path,  # Launch from the isolated home directory
+                preexec_fn=os.setpgrp,
+            )
             self.pids.append(process.pid)
             self.processes.append(process)
             self.logger.info(f"Instance {instance_num} started with PID: {process.pid}")
