@@ -130,7 +130,7 @@ class InstanceService:
         env.pop("PYTHONPATH", None)
 
         # This is critical for preventing system crashes and graphical glitches.
-        env["ENABLE_GAMESCOPE_WSI"] = "1"
+        # env["ENABLE_GAMESCOPE_WSI"] = "1"
 
         # # Set the HOME variable for the sandboxed user
         # env["HOME"] = self._SANDBOX_HOME

@@ -63,8 +63,10 @@ class MultiScopeWindow(Adw.ApplicationWindow):
         self.profile = updated_profile
         self.profile.save()
         self.logger.info("Profile auto-saved.")
+        self.layout_settings_page._run_verification()
 
     def on_launch_clicked(self, button):
+        self.layout_settings_page._run_verification()
         selected_players = self.layout_settings_page.get_selected_players()
         if not selected_players:
             self._show_error_dialog("No instances selected to launch.")
@@ -83,6 +85,7 @@ class MultiScopeWindow(Adw.ApplicationWindow):
         self.launch_button.set_visible(True)
         self.stop_button.set_visible(False)
         self.layout_settings_page.set_sensitive(True) # Re-enable UI
+        self.layout_settings_page._run_verification()
 
 class MultiScopeApplication(Adw.Application):
     def __init__(self, **kwargs):

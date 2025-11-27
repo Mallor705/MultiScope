@@ -6,6 +6,7 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 
 from ..services.device_manager import DeviceManager
+from ..services.verification_service import VerificationService
 from gi.repository import Adw, Gdk, GObject, Gtk
 
 class LayoutSettingsPage(Adw.PreferencesPage):
@@ -20,6 +21,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         self.player_rows = []
         self.logger = logger
 
+        self.verification_service = VerificationService(logger)
         self.device_manager = DeviceManager()
         self.input_devices = self.device_manager.get_input_devices()
         self.audio_devices = self.device_manager.get_audio_devices()
@@ -27,6 +29,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
 
         self._build_ui()
         self.load_profile_data()
+        self._run_verification()
 
     def _build_ui(self):
         self.set_title("Layout Settings")
@@ -237,6 +240,10 @@ class LayoutSettingsPage(Adw.PreferencesPage):
                     row_dict["env_initialized"] = True
             self.emit("settings-changed")
 
+    def _on_player_selected_changed(self, checkbox, *args):
+        if not self._is_loading:
+            self.emit("settings-changed")
+
     def _on_resolution_changed(self, combo_row, *args):
         is_custom = combo_row.get_selected() == 0
         self.instance_width_row.set_visible(is_custom)
@@ -337,6 +344,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
 
             checkbox = Gtk.CheckButton()
             checkbox.set_active(True)
+            checkbox.connect("toggled", self._on_player_selected_changed)
             expander.add_prefix(checkbox)
 
             def create_device_row(title, device_type):
@@ -363,7 +371,23 @@ class LayoutSettingsPage(Adw.PreferencesPage):
                 "mouse": mouse_row,
                 "keyboard": keyboard_row,
                 "audio": audio_row,
+                "status_icon": None
             })
+
+    def _run_verification(self):
+        for i, row_dict in enumerate(self.player_rows):
+            instance_num = i + 1
+            status = self.verification_service.verify_instance(instance_num)
+
+            # Remove existing icon first
+            if row_dict["status_icon"]:
+                row_dict["expander"].remove(row_dict["status_icon"])
+                row_dict["status_icon"] = None
+
+            if status == "Passed":
+                icon = Gtk.Image.new_from_icon_name("check-outlined-symbolic")
+                row_dict["expander"].add_suffix(icon)
+                row_dict["status_icon"] = icon
 
     def get_selected_players(self) -> list[int]:
         return [i + 1 for i, r in enumerate(self.player_rows) if r["checkbox"].get_active()]
