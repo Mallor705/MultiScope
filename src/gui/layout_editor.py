@@ -218,6 +218,8 @@ class LayoutSettingsPage(Adw.PreferencesPage):
                 new_configs.append(PlayerInstanceConfig()) # Add empty config for new players
         self.profile.player_configs = new_configs
         
+        self.profile.selected_players = self.get_selected_players()
+
         return self.profile
 
     def _on_setting_changed(self, *args):
