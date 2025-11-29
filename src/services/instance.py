@@ -227,7 +227,7 @@ class InstanceService:
 
         # Enable this if you experience system crashes and graphical glitches.
         # env["ENABLE_GAMESCOPE_WSI"] = "1"
-
+        # env["LD_PRELOAD"] = ""
         # Handle joystick assignment
         if device_info.get("joystick_path_str_for_instance"):
             env["SDL_JOYSTICK_DEVICE"] = device_info["joystick_path_str_for_instance"]
@@ -333,7 +333,7 @@ class InstanceService:
             "-H", str(height),
             "-w", str(width),
             "-h", str(height),
-            "--xwayland-count", "1",
+            # "--xwayland-count", "1",
             # "--mangoapp",
         ]
 
@@ -360,7 +360,7 @@ class InstanceService:
         """Builds the base steam command."""
         if use_gamescope:
             self.logger.info(f"Instance {instance_num}: Using Steam command with Gamescope flags.")
-            return ["steam", "-gamepadui", "-pipewire-dmabuf"]
+            return ["steam", "-gamepadui"]
         else:
             self.logger.info(f"Instance {instance_num}: Using plain Steam command.")
             return ["steam"]
@@ -377,12 +377,17 @@ class InstanceService:
         cmd = [
             "bwrap",
             "--dev-bind", "/", "/",
+            "--proc", "/proc" ,
+            "--dev-bind", "/dev", "/dev" ,
+            "--tmpfs", "/dev/shm" ,
             "--die-with-parent",
             "--unshare-user",
+            # "--unshare-pid",
             "--uid", uid,
             "--gid", gid,
-            "--tmpfs", "/tmp",
+            "--bind", "/tmp", "/tmp",
             "--tmpfs", "/home",  # Create a writable /home for the user mount
+            "--bind", f"/run/user/{uid}", f"/run/user/{uid}" ,
             "--share-net",
         ]
 
@@ -400,6 +405,8 @@ class InstanceService:
             "--setenv", "XDG_CACHE_HOME", cache_home,
             "--setenv", "XDG_STATE_HOME", state_home,
             "--setenv", "XDG_RUNTIME_DIR", runtime_dir,
+            "--setenv", "LD_PRELOAD", "",
+            "--setenv", "ENABLE_GAMESCOPE_WSI", "1"
         ])
 
         # Mount the isolated home directory to the fake user's home and
