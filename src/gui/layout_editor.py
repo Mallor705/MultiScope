@@ -150,9 +150,10 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         for i, row_dict in enumerate(self.player_rows):
             if i < len(self.profile.player_configs):
                 config = self.profile.player_configs[i]
+                row_dict["grab_input"].set_active(config.grab_input_devices)
                 self._set_combo_row_selection(row_dict["joystick"], self.input_devices["joystick"], config.PHYSICAL_DEVICE_ID)
-                self._set_combo_row_selection(row_dict["mouse"], self.input_devices["mouse"], config.MOUSE_EVENT_PATH)
-                self._set_combo_row_selection(row_dict["keyboard"], self.input_devices["keyboard"], config.KEYBOARD_EVENT_PATH)
+                # self._set_combo_row_selection(row_dict["mouse"], self.input_devices["mouse"], config.MOUSE_EVENT_PATH)
+                # self._set_combo_row_selection(row_dict["keyboard"], self.input_devices["keyboard"], config.KEYBOARD_EVENT_PATH)
                 self._set_combo_row_selection(row_dict["audio"], self.audio_devices, config.AUDIO_DEVICE_ID)
                 # Ensure env UI exists for this player
                 if not row_dict.get("env_initialized"):
@@ -227,8 +228,9 @@ class LayoutSettingsPage(Adw.PreferencesPage):
                 row_dict = self.player_rows[i]
                 new_config = PlayerInstanceConfig(
                     PHYSICAL_DEVICE_ID=self._get_combo_row_device_id(row_dict["joystick"], self.input_devices["joystick"]),
-                    MOUSE_EVENT_PATH=self._get_combo_row_device_id(row_dict["mouse"], self.input_devices["mouse"]),
-                    KEYBOARD_EVENT_PATH=self._get_combo_row_device_id(row_dict["keyboard"], self.input_devices["keyboard"]),
+                    grab_input_devices=row_dict["grab_input"].get_active(),
+                    # MOUSE_EVENT_PATH=self._get_combo_row_device_id(row_dict["mouse"], self.input_devices["mouse"]),
+                    # KEYBOARD_EVENT_PATH=self._get_combo_row_device_id(row_dict["keyboard"], self.input_devices["keyboard"]),
                     AUDIO_DEVICE_ID=self._get_combo_row_device_id(row_dict["audio"], self.audio_devices),
                     env=self._collect_env_from_rows(row_dict.get("env_rows", [])),
                 )
@@ -394,8 +396,13 @@ class LayoutSettingsPage(Adw.PreferencesPage):
                 return row
 
             joystick_row = create_device_row("Gamepad", "joystick")
-            mouse_row = create_device_row("Mouse", "mouse")
-            keyboard_row = create_device_row("Keyboard", "keyboard")
+            # mouse_row = create_device_row("Mouse", "mouse")
+            # keyboard_row = create_device_row("Keyboard", "keyboard")
+
+            grab_input_switch = Adw.SwitchRow(title="Capturar Mouse e Teclado")
+            grab_input_switch.connect("notify::active", self._on_setting_changed)
+            expander.add_row(grab_input_switch)
+
 
             audio_model = Gtk.StringList.new(["None"] + [d["name"] for d in self.audio_devices])
             audio_row = Adw.ComboRow(title="Audio Device", model=audio_model)
@@ -415,8 +422,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
                 "checkbox": checkbox,
                 "expander": expander,
                 "joystick": joystick_row,
-                "mouse": mouse_row,
-                "keyboard": keyboard_row,
+                "grab_input": grab_input_switch,
                 "audio": audio_row,
                 "status_icon": None,
                 "launch_button": launch_button,
