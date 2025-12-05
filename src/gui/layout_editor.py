@@ -179,6 +179,18 @@ class LayoutSettingsPage(Adw.PreferencesPage):
             for k, v in (self.profile.env or {}).items():
                 self._add_global_env_row(k, v)
 
+        # After loading, enforce exclusivity rules on the UI
+        active_grab_index = -1
+        for i, row_dict in enumerate(self.player_rows):
+            if row_dict["grab_input"].get_active():
+                active_grab_index = i
+                break
+
+        if active_grab_index != -1:
+            for i, row_dict in enumerate(self.player_rows):
+                if i != active_grab_index:
+                    row_dict["grab_input"].set_sensitive(False)
+
         self._is_loading = False
 
     def _set_combo_row_selection(self, combo_row, device_list, device_id):
@@ -281,6 +293,25 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         self.orientation_row.set_visible(is_splitscreen)
         if not self._is_loading:
             self.emit("settings-changed")
+
+    def _on_grab_input_toggled(self, switch, gparam, index):
+        if self._is_loading:
+            return
+
+        is_active = switch.get_active()
+
+        for i, row_dict in enumerate(self.player_rows):
+            grab_switch = row_dict["grab_input"]
+            if i == index:
+                continue
+
+            if is_active:
+                grab_switch.set_active(False)
+                grab_switch.set_sensitive(False)
+            else:
+                grab_switch.set_sensitive(True)
+
+        self._on_setting_changed()
 
     def _create_env_kv_row(self, container):
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
@@ -400,7 +431,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
             # keyboard_row = create_device_row("Keyboard", "keyboard")
 
             grab_input_switch = Adw.SwitchRow(title="Capturar Mouse e Teclado")
-            grab_input_switch.connect("notify::active", self._on_setting_changed)
+            grab_input_switch.connect("notify::active", self._on_grab_input_toggled, i)
             expander.add_row(grab_input_switch)
 
 
