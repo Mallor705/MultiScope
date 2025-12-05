@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 from typing import List, Optional
 
-import psutil
+# import psutil
 
 from ..core.config import Config
 from ..core.exceptions import DependencyError, VirtualDeviceError
@@ -254,8 +254,10 @@ class InstanceService:
             )
             return None
 
-        mouse_path = _validate_device(player_config.MOUSE_EVENT_PATH, "Mouse")
-        keyboard_path = _validate_device(player_config.KEYBOARD_EVENT_PATH, "Keyboard")
+        # mouse_path = _validate_device(player_config.MOUSE_EVENT_PATH, "Mouse")
+        # keyboard_path = _validate_device(player_config.KEYBOARD_EVENT_PATH, "Keyboard")
+        mouse_path = None
+        keyboard_path = None
         joystick_path = _validate_device(player_config.PHYSICAL_DEVICE_ID, "Joystick")
 
         audio_id = player_config.AUDIO_DEVICE_ID
@@ -267,7 +269,7 @@ class InstanceService:
             "keyboard_path_str_for_instance": keyboard_path,
             "joystick_path_str_for_instance": joystick_path,
             "audio_device_id_for_instance": audio_id if audio_id and audio_id.strip() else None,
-            "should_add_grab_flags": bool(mouse_path and keyboard_path),
+            "should_add_grab_flags": player_config.grab_input_devices,
         }
 
     def _build_gamescope_command(self, profile: Profile, should_add_grab_flags: bool, instance_num: int) -> List[str]:
@@ -286,8 +288,8 @@ class InstanceService:
             "-h", str(height),
             "-o", "999", # Always set an unfocused FPS limit to a very high value
             "-r", "999", # Always set a focused FPS limit to a very high value
-            # "--xwayland-count", "1",
-            # "--mangoapp",
+            "--xwayland-count", "2",
+            "--mangoapp",
         ]
 
         if not profile.is_splitscreen_mode:
