@@ -288,8 +288,8 @@ class InstanceService:
             "-h", str(height),
             "-o", "999", # Always set an unfocused FPS limit to a very high value
             "-r", "999", # Always set a focused FPS limit to a very high value
-            "--xwayland-count", "2",
-            "--mangoapp",
+            # "--xwayland-count", "2",
+            # "--mangoapp",
         ]
 
         if not profile.is_splitscreen_mode:
