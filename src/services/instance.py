@@ -279,15 +279,25 @@ class InstanceService:
             self.logger.error(f"Instance {instance_num}: Invalid dimensions. Aborting launch.")
             return []
 
+        # Get refresh rate for the specific instance
+        instance_idx = instance_num - 1
+        refresh_rate = 60  # Default
+        if profile.player_configs and 0 <= instance_idx < len(profile.player_configs):
+            refresh_rate = profile.player_configs[instance_idx].refresh_rate
+        else:
+            self.logger.warning(f"Instance {instance_num}: Could not find player config, defaulting refresh rate to 60Hz.")
+
+        refresh_rate_str = str(refresh_rate)
+
         cmd = [
             "gamescope",
-            "-e", # Enable Steam integration
+            "-e",  # Enable Steam integration
             "-W", str(width),
             "-H", str(height),
             "-w", str(width),
             "-h", str(height),
-            "-o", "999", # Always set an unfocused FPS limit to a very high value
-            "-r", "999", # Always set a focused FPS limit to a very high value
+            "-o", refresh_rate_str,  # Set the unfocused FPS limit
+            "-r", refresh_rate_str,  # Set the focused FPS limit
             # "--xwayland-count", "2",
             # "--mangoapp",
         ]

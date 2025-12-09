@@ -27,6 +27,7 @@ class PlayerInstanceConfig(BaseModel):
     AUDIO_DEVICE_ID: Optional[str] = Field(default=None, alias="AUDIO_DEVICE_ID")
     monitor_id: Optional[str] = Field(default=None, alias="MONITOR_ID")
     env: Optional[Dict[str, str]] = Field(default=None, alias="ENV")
+    refresh_rate: int = Field(default=60, alias="REFRESH_RATE")
 
 
 class SplitscreenConfig(BaseModel):

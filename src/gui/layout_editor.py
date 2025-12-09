@@ -30,6 +30,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         self.input_devices = self.device_manager.get_input_devices()
         self.audio_devices = self.device_manager.get_audio_devices()
         self.display_outputs = self.device_manager.get_display_outputs()
+        self.refresh_rates = ["60", "75", "90", "120", "144", "165", "180", "240"]
 
         self._build_ui()
         self.load_profile_data()
@@ -156,6 +157,15 @@ class LayoutSettingsPage(Adw.PreferencesPage):
                 # self._set_combo_row_selection(row_dict["mouse"], self.input_devices["mouse"], config.MOUSE_EVENT_PATH)
                 # self._set_combo_row_selection(row_dict["keyboard"], self.input_devices["keyboard"], config.KEYBOARD_EVENT_PATH)
                 self._set_combo_row_selection(row_dict["audio"], self.audio_devices, config.AUDIO_DEVICE_ID)
+
+                # Load refresh rate
+                refresh_rate_str = str(config.refresh_rate)
+                if refresh_rate_str in self.refresh_rates:
+                    row_dict["refresh_rate"].set_selected(self.refresh_rates.index(refresh_rate_str))
+                else:
+                    # Default to 60Hz if the saved value is not in the list
+                    row_dict["refresh_rate"].set_selected(0)
+
                 # Ensure env UI exists for this player
                 if not row_dict.get("env_initialized"):
                     env_title_row = Adw.ActionRow(title="Environment Variables")
@@ -239,6 +249,10 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         for i in range(self.profile.num_players):
             if i < len(self.player_rows):
                 row_dict = self.player_rows[i]
+
+                selected_refresh_rate_item = row_dict["refresh_rate"].get_selected_item()
+                selected_refresh_rate = int(selected_refresh_rate_item.get_string()) if selected_refresh_rate_item else 60
+
                 new_config = PlayerInstanceConfig(
                     PHYSICAL_DEVICE_ID=self._get_combo_row_device_id(row_dict["joystick"], self.input_devices["joystick"]),
                     grab_input_devices=row_dict["grab_input"].get_active(),
@@ -246,6 +260,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
                     # KEYBOARD_EVENT_PATH=self._get_combo_row_device_id(row_dict["keyboard"], self.input_devices["keyboard"]),
                     AUDIO_DEVICE_ID=self._get_combo_row_device_id(row_dict["audio"], self.audio_devices),
                     env=self._collect_env_from_rows(row_dict.get("env_rows", [])),
+                    refresh_rate=selected_refresh_rate,
                 )
                 new_configs.append(new_config)
             else:
@@ -443,6 +458,12 @@ class LayoutSettingsPage(Adw.PreferencesPage):
             audio_row.connect("notify::selected-item", self._on_setting_changed)
             expander.add_row(audio_row)
 
+            refresh_rate_model = Gtk.StringList.new(self.refresh_rates)
+            refresh_rate_row = Adw.ComboRow(title="Refresh Rate", model=refresh_rate_model)
+            refresh_rate_row.get_style_context().add_class("refresh-rate-row")
+            refresh_rate_row.connect("notify::selected-item", self._on_setting_changed)
+            expander.add_row(refresh_rate_row)
+
             launch_button = Gtk.Button(label="Start")
             launch_button.get_style_context().add_class("configure-button")
             launch_button.set_valign(Gtk.Align.CENTER)
@@ -457,6 +478,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
                 "joystick": joystick_row,
                 "grab_input": grab_input_switch,
                 "audio": audio_row,
+                "refresh_rate": refresh_rate_row,
                 "status_icon": None,
                 "launch_button": launch_button,
                 "is_running": False,
