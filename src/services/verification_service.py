@@ -10,7 +10,7 @@ class VerificationService:
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
     def _get_verification_path(self, instance_num: int) -> Path:
-        return Config.get_steam_home_path(instance_num) / ".local/share"
+        return Config.get_instance_home_path(instance_num) / ".local/share"
 
     def verify_instance(self, instance_num: int) -> str:
         verification_path = self._get_verification_path(instance_num)
