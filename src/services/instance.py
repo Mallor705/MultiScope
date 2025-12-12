@@ -315,7 +315,7 @@ class InstanceService:
         """Builds the base steam command."""
         if use_gamescope:
             self.logger.info(f"Instance {instance_num}: Using Steam command with Gamescope flags.")
-            return ["steam", "-gamepadui", "-steamdeck", "-steamos3"]
+            return ["steam", "-gamepadui"]
         else:
             self.logger.info(f"Instance {instance_num}: Using plain Steam command.")
             return ["steam"]
