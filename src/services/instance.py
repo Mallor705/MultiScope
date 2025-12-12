@@ -4,8 +4,9 @@ import copy
 import shutil
 import signal
 import subprocess
+import time
 from pathlib import Path
-from typing import Optional, Dict
+from typing import List, Optional
 
 from ..core.config import Config
 from ..core.exceptions import DependencyError, VirtualDeviceError
@@ -24,8 +25,8 @@ class InstanceService:
         self.virtual_device_service = VirtualDeviceService(logger)
         self._virtual_joystick_path: Optional[str] = None
         self._virtual_joystick_checked: bool = False
-        self.pids: Dict[int, int] = {}
-        self.processes: Dict[int, subprocess.Popen] = {}
+        self.pids: dict[int, int] = {}
+        self.processes: dict[int, subprocess.Popen] = {}
         self.termination_in_progress = False
 
     def validate_dependencies(self, use_gamescope: bool = True) -> None:
@@ -54,7 +55,7 @@ class InstanceService:
         device_info = self._validate_input_devices(profile, instance_idx, instance_num)
 
         env = self._prepare_environment(profile, device_info, instance_num)
-
+        
         command_builder = CommandBuilder(
             self.logger,
             profile,
@@ -180,7 +181,7 @@ class InstanceService:
 
         self.logger.info("Isolated Steam directories are ready.")
 
-    def _prepare_environment(self, profile: Profile, device_info: Dict, instance_num: int) -> Dict:
+    def _prepare_environment(self, profile: Profile, device_info: dict, instance_num: int) -> dict:
         """Prepares a minimal environment for the Steam instance."""
         env = os.environ.copy()
         env.pop("PYTHONHOME", None)
@@ -199,7 +200,7 @@ class InstanceService:
         self.logger.info(f"Instance {instance_num}: Final environment prepared.")
         return env
 
-    def _validate_input_devices(self, profile: Profile, instance_idx: int, instance_num: int) -> Dict:
+    def _validate_input_devices(self, profile: Profile, instance_idx: int, instance_num: int) -> dict:
         """Validates input devices and returns information about them."""
         # Get specific player config
         player_config = (
