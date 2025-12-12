@@ -71,7 +71,7 @@ mkdir -p "$DESKTOP_DIR"
 cat > "$DESKTOP_DIR/$DESKTOP_FILE_NAME" << EOF
 [Desktop Entry]
 Name=$APP_NAME
-Exec=$INSTALL_DIR/$BINARY_NAME gui
+Exec=$INSTALL_DIR/$BINARY_NAME
 Icon=utilities-terminal
 Type=Application
 Categories=Development;IDE;
