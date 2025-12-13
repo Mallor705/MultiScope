@@ -1,7 +1,7 @@
 import os
 import re
 import subprocess
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 
 class DeviceManager:
@@ -16,43 +16,7 @@ class DeviceManager:
 
     def __init__(self):
         """Initializes the DeviceManager."""
-        self.pnp_ids = self._load_pnp_ids()
-
-    def _load_pnp_ids(self) -> Dict[str, str]:
-        """
-        Loads and parses the pnp.ids file to map vendor IDs to manufacturer names.
-        """
-        pnp_map = {}
-        # Common locations for the pnp.ids file
-        pnp_paths = ["/usr/share/hwdata/pnp.ids", "/usr/share/misc/pnp.ids"]
-        pnp_file = None
-
-        for path in pnp_paths:
-            if os.path.exists(path):
-                pnp_file = path
-                break
-
-        if not pnp_file:
-            return pnp_map
-
-        try:
-            with open(pnp_file, 'r', encoding='utf-8', errors='ignore') as f:
-                for line in f:
-                    if line.startswith("#") or not line.strip():
-                        continue
-
-                    # Vendor entries are not indented
-                    if not line.startswith("\t"):
-                        parts = line.strip().split("\t", 1)
-                        if len(parts) == 2:
-                            vendor_id = parts[0]
-                            vendor_name = parts[1].strip()
-                            if len(vendor_id) == 3:
-                                pnp_map[vendor_id] = vendor_name
-        except IOError:
-            pass # File not found or not readable
-
-        return pnp_map
+        pass
 
     def _run_command(self, command: str) -> str:
         """
@@ -168,40 +132,23 @@ class DeviceManager:
 
         return sorted(audio_sinks, key=lambda x: x['name'])
 
-    def _parse_edid(self, edid_raw: bytes) -> Tuple[Optional[str], Optional[str]]:
-        """
-        Parses raw EDID data to find the manufacturer ID and monitor model name.
-        """
-        manufacturer_id = None
-        model_name = None
-
-        # The manufacturer ID is stored in bytes 8-9.
-        try:
-            # The ID is a 3-letter code, packed into 15 bits.
-            m_id_bytes = edid_raw[8:10]
-            # Each letter is a 5-bit uppercase char offset from 'A'.
-            pnp_id = (
-                chr(((m_id_bytes[0] & 0b01111100) >> 2) + 64) +
-                chr(((m_id_bytes[0] & 0b00000011) << 3) + ((m_id_bytes[1] & 0b11100000) >> 5) + 64) +
-                chr((m_id_bytes[1] & 0b00011111) + 64)
-            )
-            manufacturer_id = pnp_id
-        except IndexError:
-            pass
-
-        # The model name is in a descriptor block.
+    def _parse_edid(self, edid_raw: bytes) -> Optional[str]:
+        """Parses raw EDID data to find the monitor model name."""
+        # Standard EDID descriptor blocks are 18 bytes long.
+        # We are looking for a monitor name descriptor.
+        # Descriptor blocks start at byte 54. There are 4 descriptor blocks.
         for i in range(54, 126, 18):
             block = edid_raw[i : i + 18]
+            # Monitor name descriptor starts with 00 00 00 FC 00
             if block.startswith(b'\x00\x00\x00\xfc\x00'):
                 try:
+                    # The name is a 13-byte ASCII string, null-terminated.
                     name = block[5:18].split(b'\n')[0].decode('ascii').strip()
                     if name:
-                        model_name = name
-                        break # Found the name, no need to check other blocks
+                        return name
                 except (UnicodeDecodeError, IndexError):
                     continue
-
-        return manufacturer_id, model_name
+        return None
 
     def get_display_outputs(self) -> List[Dict[str, str]]:
         """
@@ -242,26 +189,14 @@ class DeviceManager:
                             if os.path.exists(edid_path):
                                 with open(edid_path, 'rb') as f:
                                     edid_raw = f.read()
-                                    manufacturer_id, model_name = self._parse_edid(edid_raw)
-                                    if model_name or manufacturer_id:
+                                    model_name = self._parse_edid(edid_raw)
+                                    if model_name:
                                         break # Found name, stop searching connectors
                         except (IOError, OSError):
                             continue # Ignore errors reading from a specific connector
 
                 # Step 3: Build the final name.
-                brand_name = self.pnp_ids.get(manufacturer_id)
-
-                parts = []
-                if brand_name:
-                    parts.append(brand_name)
-                if model_name:
-                    parts.append(model_name)
-
-                if parts:
-                    name = f"{' '.join(parts)} ({display_id})"
-                else:
-                    name = display_id # Fallback
-
+                name = f"{model_name} ({display_id})" if model_name else display_id
                 display_outputs.append({"id": display_id, "name": name})
 
         except (IOError, OSError):
