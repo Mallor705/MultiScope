@@ -12,8 +12,8 @@ from ..core.config import Config
 from ..core.exceptions import DependencyError, VirtualDeviceError
 from ..core.logger import Logger
 from ..models.profile import Profile, PlayerInstanceConfig
-from .virtual_device_service import VirtualDeviceService
-from .command_builder import CommandBuilder
+from .virtual_device import VirtualDeviceService
+from .cmd_builder import CommandBuilder
 
 
 class InstanceService:
@@ -22,7 +22,7 @@ class InstanceService:
     def __init__(self, logger: Logger):
         """Initializes the instance service."""
         self.logger = logger
-        self.virtual_device_service = VirtualDeviceService(logger)
+        self.virtual_device = VirtualDeviceService(logger)
         self._virtual_joystick_path: Optional[str] = None
         self._virtual_joystick_checked: bool = False
         self.pids: dict[int, int] = {}
@@ -55,8 +55,8 @@ class InstanceService:
         device_info = self._validate_input_devices(profile, instance_idx, instance_num)
 
         env = self._prepare_environment(profile, device_info, instance_num)
-        
-        command_builder = CommandBuilder(
+
+        cmd_builder = CommandBuilder(
             self.logger,
             profile,
             device_info,
@@ -64,7 +64,7 @@ class InstanceService:
             home_path,
             self._virtual_joystick_path,
         )
-        cmd = command_builder.build_command()
+        cmd = cmd_builder.build_command()
 
         log_file = Config.LOG_DIR / f"steam_instance_{instance_num}.log"
         self.logger.info(f"Launching instance {instance_num} (Log: {log_file})")
@@ -117,7 +117,7 @@ class InstanceService:
             if needs_virtual_joystick:
                 self.logger.info("One or more instances lack a physical joystick. Creating a virtual one.")
                 try:
-                    self._virtual_joystick_path = self.virtual_device_service.create_virtual_joystick()
+                    self._virtual_joystick_path = self.virtual_device.create_virtual_joystick()
                 except VirtualDeviceError:
                     self.logger.error("Halting launch due to virtual joystick creation failure.")
                     # Re-raise the exception to be caught by the UI layer
@@ -253,7 +253,7 @@ class InstanceService:
             self.processes.clear()
 
             if self._virtual_joystick_path:
-                self.virtual_device_service.destroy_virtual_joystick()
+                self.virtual_device.destroy_virtual_joystick()
                 self._virtual_joystick_path = None
             self._virtual_joystick_checked = False
         finally:
