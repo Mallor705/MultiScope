@@ -1,6 +1,7 @@
+import os
 import re
 import subprocess
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 
 class DeviceManager:
@@ -131,88 +132,76 @@ class DeviceManager:
 
         return sorted(audio_sinks, key=lambda x: x['name'])
 
+    def _parse_edid(self, edid_raw: bytes) -> Optional[str]:
+        """Parses raw EDID data to find the monitor model name."""
+        # Standard EDID descriptor blocks are 18 bytes long.
+        # We are looking for a monitor name descriptor.
+        # Descriptor blocks start at byte 54. There are 4 descriptor blocks.
+        for i in range(54, 126, 18):
+            block = edid_raw[i : i + 18]
+            # Monitor name descriptor starts with 00 00 00 FC 00
+            if block.startswith(b'\x00\x00\x00\xfc\x00'):
+                try:
+                    # The name is a 13-byte ASCII string, null-terminated.
+                    name = block[5:18].split(b'\n')[0].decode('ascii').strip()
+                    if name:
+                        return name
+                except (UnicodeDecodeError, IndexError):
+                    continue
+        return None
+
     def get_display_outputs(self) -> List[Dict[str, str]]:
         """
-        Detects connected display outputs (monitors) using `xrandr --verbose`.
-        The order of monitors is preserved.
-
-        Returns:
-            List[Dict[str, str]]: A list representing connected monitors,
-            containing 'id' (e.g., "DP-1") and 'name' (e.g., "Dell S2721DGF (DP-1)").
+        Detects connected display outputs and their model names.
+        It uses `xrandr` to get the list of connected ports in the correct
+        order, then reads EDID information from `/sys/class/drm/` to find
+        the real monitor model name.
         """
+        # Step 1: Get the list and order of connected displays from xrandr.
+        xrandr_output = self._run_command("xrandr --query")
+        connected_displays = []
+        for line in xrandr_output.splitlines():
+            if " connected" in line and not line.startswith(" "):
+                display_id = line.split()[0]
+                if not display_id.lower().startswith("virtual"):
+                    connected_displays.append(display_id)
+
+        # Step 2: Find model names by reading EDID from sysfs.
         display_outputs = []
+        drm_path = "/sys/class/drm/"
         try:
-            xrandr_output = self._run_command("xrandr --verbose")
-            if not xrandr_output:
-                # Fallback to --query if --verbose fails
-                xrandr_output = self._run_command("xrandr --query")
-        except Exception:
-            xrandr_output = self._run_command("xrandr --query")
+            # Match xrandr outputs (e.g., "DP-1") with DRM connectors.
+            drm_connectors = [d for d in os.listdir(drm_path) if "card" in d]
 
-        current_display_id = None
-        edid_data = []
-
-        # First pass: parse EDID and associate with display_id
-        displays_edid = {}
-        for line in xrandr_output.splitlines():
-            if " connected" in line and not line.startswith(" "):
-                if current_display_id and edid_data:
-                    displays_edid[current_display_id] = edid_data
-                    edid_data = []
-                current_display_id = line.split()[0]
-            elif current_display_id and "EDID" in line:
-                # Start of EDID block
-                edid_data = []
-            elif current_display_id and re.match(r'^\s+[0-9a-f]{32}', line.strip()):
-                edid_data.append(line.strip().replace(" ", ""))
-        if current_display_id and edid_data:
-            displays_edid[current_display_id] = edid_data
-
-        # Second pass: re-parse to build the final list, preserving order
-        resolution_pattern = re.compile(r"(\d+x\d+)\+\d+\+\d+")
-
-        for line in xrandr_output.splitlines():
-            if " connected" in line and not line.startswith(" "):
-                parts = line.split()
-                display_id = parts[0]
-
-                if display_id.lower().startswith("virtual"):
-                    continue
-
+            for display_id in connected_displays:
                 model_name = None
-                if display_id in displays_edid:
-                    full_edid = "".join(displays_edid[display_id])
-                    # Look for monitor name descriptor (0x000000fc)
-                    for i in range(0, len(full_edid) - 32, 32):
-                        block = full_edid[i:i+32]
-                        if block.startswith('000000fc00'):
-                            try:
-                                # The model name is the hex string after the descriptor
-                                model_hex = block[10:]
-                                model_name = bytearray.fromhex(model_hex).decode('utf-8', errors='ignore').strip()
-                                # Clean up non-printable characters
-                                model_name = "".join(filter(lambda x: x in "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ -_", model_name))
-                                if model_name:
-                                    break # Found a valid name
-                            except Exception:
-                                model_name = None
+                for connector in drm_connectors:
+                    if display_id in connector:
+                        try:
+                            # Check if the connector is enabled and has EDID info.
+                            status_path = os.path.join(drm_path, connector, "status")
+                            edid_path = os.path.join(drm_path, connector, "edid")
 
-                # Fallback naming logic
-                if model_name:
-                    name = f"{model_name} ({display_id})"
-                else:
-                    is_primary = "primary" in parts
-                    resolution = ""
-                    match = resolution_pattern.search(line)
-                    if match:
-                        resolution = match.group(1)
+                            with open(status_path, 'r') as f:
+                                if f.read().strip() != "connected":
+                                    continue
 
-                    name = f"{display_id}"
-                    if resolution:
-                        name += f" ({resolution})"
-                    if is_primary:
-                        name += " [Primary]"
+                            if os.path.exists(edid_path):
+                                with open(edid_path, 'rb') as f:
+                                    edid_raw = f.read()
+                                    model_name = self._parse_edid(edid_raw)
+                                    if model_name:
+                                        break # Found name, stop searching connectors
+                        except (IOError, OSError):
+                            continue # Ignore errors reading from a specific connector
 
+                # Step 3: Build the final name.
+                name = f"{model_name} ({display_id})" if model_name else display_id
                 display_outputs.append({"id": display_id, "name": name})
+
+        except (IOError, OSError):
+            # Fallback if /sys/class/drm is not accessible.
+            # Return the simple list from xrandr.
+            return [{"id": did, "name": did} for did in connected_displays]
 
         return display_outputs
