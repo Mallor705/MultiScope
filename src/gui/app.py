@@ -15,6 +15,7 @@ from ..core.exceptions import VirtualDeviceError
 from ..core.logger import Logger
 from ..models.profile import Profile
 from ..services.instance import InstanceService
+from ..services.kde_panel_manager import KdePanelManager
 from .layout_editor import LayoutSettingsPage
 
 
@@ -27,6 +28,7 @@ class MultiScopeWindow(Adw.ApplicationWindow):
         self.logger = Logger("MultiScope-GUI", Config.LOG_DIR, reset=True)
         self.instance_service = InstanceService(logger=self.logger)
         self.profile = Profile.load()
+        self.kde_panel_manager = KdePanelManager(self.logger)
 
         self._launch_thread = None
         self._cancel_launch_event = threading.Event()
@@ -136,6 +138,7 @@ class MultiScopeWindow(Adw.ApplicationWindow):
 
     def _restore_ui_after_failed_launch(self):
         """Restores the UI to its pre-launch state after a failure."""
+        self.kde_panel_manager.restore_panel_states()
         self.launch_button.set_visible(True)
         self.stop_button.set_visible(False)
         self.layout_settings_page.set_sensitive(True)
@@ -168,6 +171,10 @@ class MultiScopeWindow(Adw.ApplicationWindow):
         self.profile.selected_players = selected_players
         self.profile.save() # Save selection before launching
 
+        # KDE Panel Management
+        self.kde_panel_manager.save_panel_states()
+        self.kde_panel_manager.set_panels_dodge_windows()
+
         # Update UI immediately to give feedback
         self.launch_button.set_visible(False)
         self.stop_button.set_visible(True)
@@ -186,6 +193,10 @@ class MultiScopeWindow(Adw.ApplicationWindow):
             # The worker will terminate running instances as it shuts down
 
         self.instance_service.terminate_all()
+
+        # KDE Panel Management
+        self.kde_panel_manager.restore_panel_states()
+
         self.launch_button.set_visible(True)
         self.stop_button.set_visible(False)
         self.layout_settings_page.set_sensitive(True)
