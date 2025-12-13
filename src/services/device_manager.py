@@ -134,21 +134,40 @@ class DeviceManager:
     def get_display_outputs(self) -> List[Dict[str, str]]:
         """
         Detects connected display outputs (monitors) using `xrandr`.
+        The order of monitors returned by `xrandr` is preserved.
 
         Returns:
             List[Dict[str, str]]: A list of dictionaries, where each
             dictionary represents a connected monitor and contains its
-            'id' and 'name' (e.g., "DP-1").
+            'id' (e.g., "DP-1") and a descriptive 'name' (e.g., "DP-1 (1920x1080) [Primary]").
         """
         display_outputs = []
         xrandr_output = self._run_command("xrandr --query")
-        connected_pattern = re.compile(r"^(\S+) connected.*")
+        resolution_pattern = re.compile(r"(\d+x\d+)\+\d+\+\d+")
 
         for line in xrandr_output.splitlines():
-            match = connected_pattern.match(line)
-            if match:
-                display_name = match.group(1)
-                if not display_name.lower().startswith("virtual"):
-                    display_outputs.append({"id": display_name, "name": display_name})
+            if " connected" in line:
+                parts = line.split()
+                display_id = parts[0]
 
-        return sorted(display_outputs, key=lambda x: x['name']) 
+                if display_id.lower().startswith("virtual"):
+                    continue
+
+                is_primary = "primary" in parts
+
+                resolution = ""
+                # Search for resolution in the line
+                match = resolution_pattern.search(line)
+                if match:
+                    resolution = match.group(1)
+
+                # Build descriptive name
+                name = f"{display_id}"
+                if resolution:
+                    name += f" ({resolution})"
+                if is_primary:
+                    name += " [Primary]"
+
+                display_outputs.append({"id": display_id, "name": name})
+
+        return display_outputs
