@@ -133,40 +133,85 @@ class DeviceManager:
 
     def get_display_outputs(self) -> List[Dict[str, str]]:
         """
-        Detects connected display outputs (monitors) using `xrandr`.
-        The order of monitors returned by `xrandr` is preserved.
+        Detects connected display outputs (monitors) using `xrandr --verbose`.
+        The order of monitors is preserved.
 
         Returns:
-            List[Dict[str, str]]: A list of dictionaries, where each
-            dictionary represents a connected monitor and contains its
-            'id' (e.g., "DP-1") and a descriptive 'name' (e.g., "DP-1 (1920x1080) [Primary]").
+            List[Dict[str, str]]: A list representing connected monitors,
+            containing 'id' (e.g., "DP-1") and 'name' (e.g., "Dell S2721DGF (DP-1)").
         """
         display_outputs = []
-        xrandr_output = self._run_command("xrandr --query")
+        try:
+            xrandr_output = self._run_command("xrandr --verbose")
+            if not xrandr_output:
+                # Fallback to --query if --verbose fails
+                xrandr_output = self._run_command("xrandr --query")
+        except Exception:
+            xrandr_output = self._run_command("xrandr --query")
+
+        current_display_id = None
+        edid_data = []
+
+        # First pass: parse EDID and associate with display_id
+        displays_edid = {}
+        for line in xrandr_output.splitlines():
+            if " connected" in line and not line.startswith(" "):
+                if current_display_id and edid_data:
+                    displays_edid[current_display_id] = edid_data
+                    edid_data = []
+                current_display_id = line.split()[0]
+            elif current_display_id and "EDID" in line:
+                # Start of EDID block
+                edid_data = []
+            elif current_display_id and re.match(r'^\s+[0-9a-f]{32}', line.strip()):
+                edid_data.append(line.strip().replace(" ", ""))
+        if current_display_id and edid_data:
+            displays_edid[current_display_id] = edid_data
+
+        # Second pass: re-parse to build the final list, preserving order
         resolution_pattern = re.compile(r"(\d+x\d+)\+\d+\+\d+")
 
         for line in xrandr_output.splitlines():
-            if " connected" in line:
+            if " connected" in line and not line.startswith(" "):
                 parts = line.split()
                 display_id = parts[0]
 
                 if display_id.lower().startswith("virtual"):
                     continue
 
-                is_primary = "primary" in parts
+                model_name = None
+                if display_id in displays_edid:
+                    full_edid = "".join(displays_edid[display_id])
+                    # Look for monitor name descriptor (0x000000fc)
+                    for i in range(0, len(full_edid) - 32, 32):
+                        block = full_edid[i:i+32]
+                        if block.startswith('000000fc00'):
+                            try:
+                                # The model name is the hex string after the descriptor
+                                model_hex = block[10:]
+                                model_name = bytearray.fromhex(model_hex).decode('utf-8', errors='ignore').strip()
+                                # Clean up non-printable characters
+                                model_name = "".join(filter(lambda x: x in "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ -_", model_name))
+                                if model_name:
+                                    break # Found a valid name
+                            except Exception:
+                                model_name = None
 
-                resolution = ""
-                # Search for resolution in the line
-                match = resolution_pattern.search(line)
-                if match:
-                    resolution = match.group(1)
+                # Fallback naming logic
+                if model_name:
+                    name = f"{model_name} ({display_id})"
+                else:
+                    is_primary = "primary" in parts
+                    resolution = ""
+                    match = resolution_pattern.search(line)
+                    if match:
+                        resolution = match.group(1)
 
-                # Build descriptive name
-                name = f"{display_id}"
-                if resolution:
-                    name += f" ({resolution})"
-                if is_primary:
-                    name += " [Primary]"
+                    name = f"{display_id}"
+                    if resolution:
+                        name += f" ({resolution})"
+                    if is_primary:
+                        name += " [Primary]"
 
                 display_outputs.append({"id": display_id, "name": name})
 
