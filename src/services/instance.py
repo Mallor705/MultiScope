@@ -235,6 +235,7 @@ class InstanceService:
             "joystick_path_str_for_instance": joystick_path,
             "audio_device_id_for_instance": audio_id if audio_id and audio_id.strip() else None,
             "should_add_grab_flags": player_config.grab_input_devices,
+            "display_index_for_instance": player_config.display_index,
         }
 
     def terminate_all(self) -> None:

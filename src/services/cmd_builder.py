@@ -71,6 +71,8 @@ class CommandBuilder:
 
         refresh_rate_str = str(refresh_rate)
 
+        display_index = self.device_info.get("display_index_for_instance", 0)
+
         cmd = [
             "gamescope",
             "-e",  # Enable Steam integration
@@ -81,7 +83,7 @@ class CommandBuilder:
             "-o", refresh_rate_str,  # Set the unfocused FPS limit
             "-r", refresh_rate_str,  # Set the focused FPS limit
             "--backend", "sdl",
-            "--display-index", "0",
+            "--display-index", str(display_index),
         ]
 
         if not self.profile.is_splitscreen_mode:

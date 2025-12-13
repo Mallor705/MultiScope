@@ -169,6 +169,9 @@ class LayoutSettingsPage(Adw.PreferencesPage):
                 # self._set_combo_row_selection(row_dict["mouse"], self.input_devices["mouse"], config.MOUSE_EVENT_PATH)
                 # self._set_combo_row_selection(row_dict["keyboard"], self.input_devices["keyboard"], config.KEYBOARD_EVENT_PATH)
                 self._set_combo_row_selection(row_dict["audio"], self.audio_devices, config.AUDIO_DEVICE_ID)
+                self._set_combo_row_selection_by_index(
+                    row_dict["display"], self.display_outputs, config.display_index
+                )
 
                 # Load refresh rate
                 refresh_rate_str = str(config.refresh_rate)
@@ -232,6 +235,15 @@ class LayoutSettingsPage(Adw.PreferencesPage):
 
         combo_row.set_selected(0)
 
+    def _set_combo_row_selection_by_index(
+        self, combo_row, data_list, selected_index
+    ):
+        """Sets the ComboRow selection based on a direct index."""
+        if selected_index is not None and 0 <= selected_index < len(data_list):
+            combo_row.set_selected(selected_index)
+        else:
+            combo_row.set_selected(0)  # Default to the first item
+
     def get_updated_data(self) -> Profile:
         self.profile.num_players = int(self.num_players_row.get_value())
 
@@ -271,6 +283,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
                     # MOUSE_EVENT_PATH=self._get_combo_row_device_id(row_dict["mouse"], self.input_devices["mouse"]),
                     # KEYBOARD_EVENT_PATH=self._get_combo_row_device_id(row_dict["keyboard"], self.input_devices["keyboard"]),
                     AUDIO_DEVICE_ID=self._get_combo_row_device_id(row_dict["audio"], self.audio_devices),
+                    display_index=row_dict["display"].get_selected(),
                     env=self._collect_env_from_rows(row_dict.get("env_rows", [])),
                     refresh_rate=selected_refresh_rate,
                 )
@@ -499,6 +512,18 @@ class LayoutSettingsPage(Adw.PreferencesPage):
             audio_row.connect("notify::selected-item", self._on_setting_changed)
             expander.add_row(audio_row)
 
+            display_model = Gtk.StringList.new(
+                [d["name"] for d in self.display_outputs]
+            )
+            display_row = Adw.ComboRow(
+                title="Monitor", model=display_model
+            )
+            display_row.get_style_context().add_class("display-row")
+            display_row.connect(
+                "notify::selected-item", self._on_setting_changed
+            )
+            expander.add_row(display_row)
+
             refresh_rate_model = Gtk.StringList.new(self.refresh_rates)
             refresh_rate_row = Adw.ComboRow(title="Refresh Rate", model=refresh_rate_model)
             refresh_rate_row.get_style_context().add_class("refresh-rate-row")
@@ -519,6 +544,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
                 "joystick": joystick_row,
                 "grab_input": grab_input_switch,
                 "audio": audio_row,
+                "display": display_row,
                 "refresh_rate": refresh_rate_row,
                 "status_icon": None,
                 "launch_button": launch_button,
