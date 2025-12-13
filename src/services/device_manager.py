@@ -227,7 +227,7 @@ class DeviceManager:
             drm_connectors = [d for d in os.listdir(drm_path) if "card" in d]
 
             for display_id in connected_displays:
-                manufacturer_id, model_name = None, None
+                model_name = None
                 for connector in drm_connectors:
                     if display_id in connector:
                         try:
