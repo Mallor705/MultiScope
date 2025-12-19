@@ -133,7 +133,7 @@ class InstanceService:
         self._launch_single_instance(active_profile, instance_num)
 
     def terminate_instance(self, instance_num: int) -> None:
-        """Terminates a single Steam instance."""
+        """Terminates a single Steam instance gracefully."""
         if instance_num not in self.processes:
             self.logger.warning(f"Attempted to terminate non-existent instance {instance_num}")
             return
@@ -141,15 +141,42 @@ class InstanceService:
         process = self.processes[instance_num]
         if process.poll() is None:
             try:
-                os.killpg(os.getpgid(process.pid), signal.SIGKILL)
-                self.logger.info(f"Sent SIGKILL to process group of PID {process.pid} for instance {instance_num}")
+                pgid = os.getpgid(process.pid)
+                self.logger.info(f"Sending SIGTERM to process group {pgid} for instance {instance_num}")
+                os.killpg(pgid, signal.SIGTERM)
+                process.wait(timeout=10)
+                self.logger.info(f"Instance {instance_num} terminated gracefully.")
             except ProcessLookupError:
                 self.logger.info(f"Process group for PID {process.pid} not found for instance {instance_num}.")
+            except subprocess.TimeoutExpired:
+                self.logger.warning(f"Instance {instance_num} did not terminate after 10s. Sending SIGKILL.")
+                try:
+                    pgid = os.getpgid(process.pid)
+                    os.killpg(pgid, signal.SIGKILL)
+                    self.logger.info(f"Sent SIGKILL to process group {pgid} for instance {instance_num}")
+                except ProcessLookupError:
+                    self.logger.info(f"Process group for PID {process.pid} not found when sending SIGKILL.")
+                except Exception as e:
+                    self.logger.error(f"Failed to kill process group for PID {process.pid}: {e}")
             except Exception as e:
-                self.logger.error(f"Failed to kill process group for PID {process.pid} for instance {instance_num}: {e}")
-        process.wait()
+                self.logger.error(f"An unexpected error occurred during termination for instance {instance_num}: {e}")
+
+        if process.poll() is None:
+            process.wait()
+
         del self.processes[instance_num]
         del self.pids[instance_num]
+
+    ## CLEAN HOME
+    # def _cleanup_instance_home(self, instance_num: int) -> None:
+    #     """Removes the home directory of a terminated instance."""
+    #     home_path = Config.get_steam_home_path(instance_num)
+    #     if home_path.exists():
+    #         try:
+    #             self.logger.info(f"Cleaning up home directory for instance {instance_num} at {home_path}")
+    #             shutil.rmtree(home_path)
+    #         except OSError as e:
+    #             self.logger.error(f"Failed to remove home directory for instance {instance_num}: {e}")
 
     def _prepare_home(self, home_path: Path) -> None:
         """

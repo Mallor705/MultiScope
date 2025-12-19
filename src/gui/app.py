@@ -187,20 +187,34 @@ class MultiScopeWindow(Adw.ApplicationWindow):
         self._launch_thread.start()
 
 
+    def _termination_worker(self):
+        """Worker function to terminate instances in a separate thread."""
+        self.logger.info("Termination worker started.")
+        self.instance_service.terminate_all()
+        # Stop KWin script if it was started
+        self.kde_manager.stop_kwin_script()
+        # KDE Panel Management
+        self.kde_manager.restore_panel_states()
+        GLib.idle_add(self._on_termination_finished)
+
     def on_stop_clicked(self, button):
         if self._launch_thread and self._launch_thread.is_alive():
             self.logger.info("Cancelling in-progress launch...")
             self._cancel_launch_event.set()
-            # The worker will terminate running instances as it shuts down
 
-        self.instance_service.terminate_all()
+        # Update UI immediately for responsiveness
+        self.stop_button.set_sensitive(False)
+        self.stop_button.set_label("Stopping")
 
-        # Stop KWin script if it was started
-        self.kde_manager.stop_kwin_script()
+        # Start the termination process in a background thread
+        termination_thread = threading.Thread(target=self._termination_worker)
+        termination_thread.start()
 
-        # KDE Panel Management
-        self.kde_manager.restore_panel_states()
-
+    def _on_termination_finished(self):
+        """Callback executed in the main thread when the termination worker is done."""
+        self.logger.info("Termination worker finished.")
+        self.stop_button.set_sensitive(True)
+        self.stop_button.set_label("Stop")
         self.launch_button.set_visible(True)
         self.stop_button.set_visible(False)
         self.layout_settings_page.set_sensitive(True)
