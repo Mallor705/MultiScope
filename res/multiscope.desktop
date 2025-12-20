@@ -1,7 +1,7 @@
 #!/usr/bin/env xdg-open
 [Desktop Entry]
 Name=MultiScope
-Exec=~/AppImages/multiscope.appimage
+Exec=multiscope
 Icon=multiscope
 Type=Application
 Categories=Game;Utility;
