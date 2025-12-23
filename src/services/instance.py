@@ -73,14 +73,8 @@ class InstanceService:
         self.logger.info(f"Instance {instance_num}: Full command: {shlex.join(cmd)}")
 
         try:
-            # Use 'script' command to capture all terminal output from nested processes
-            # (gamescope -> bwrap -> steam). This is more reliable than stdout redirection
-            # because it captures output from a pseudo-terminal.
-            cmd_str = shlex.join(cmd)
-            script_cmd = ["script", "-q", "-e", "-c", cmd_str, str(log_file)]
-
             process = subprocess.Popen(
-                script_cmd,
+                cmd,
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
                 env=env,
@@ -134,19 +128,6 @@ class InstanceService:
         Config.LOG_DIR.mkdir(parents=True, exist_ok=True)
         self._launch_single_instance(active_profile, instance_num)
 
-    def cleanup(self) -> None:
-        """Runs a series of pkill commands to ensure all related processes are terminated."""
-        self.logger.info("Running fallback process terminators...")
-        commands = [
-            "pkill -9 -f wine 2>/dev/null || true",
-        ]
-        for cmd in commands:
-            try:
-                subprocess.run(cmd, shell=True, check=False)
-                self.logger.info(f"Successfully terminated processes with command '{cmd}'")
-            except Exception as e:
-                self.logger.error(f"Error running fallback terminator '{cmd}': {e}")
-
     def terminate_instance(self, instance_num: int) -> None:
         """Terminates a single Steam instance gracefully."""
         if instance_num not in self.processes:
@@ -154,6 +135,7 @@ class InstanceService:
             return
 
         process = self.processes[instance_num]
+        self.logger.info(f"Terminating instance {process}...")
         if process.poll() is None:
             try:
                 pgid = os.getpgid(process.pid)
@@ -183,6 +165,7 @@ class InstanceService:
             del self.processes[instance_num]
         if instance_num in self.pids:
             del self.pids[instance_num]
+
 
     def _prepare_home(self, home_path: Path) -> None:
         """
@@ -297,9 +280,6 @@ class InstanceService:
             self.logger.info("Instance termination complete.")
             self.pids.clear()
             self.processes.clear()
-
-            self.cleanup()
-            self.logger.info("Cleanup complete.")
 
         finally:
             self.termination_in_progress = False
