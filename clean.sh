@@ -12,8 +12,7 @@ killall -9 python 2>/dev/null || true
 killall -9 python3 2>/dev/null || true
 pkill -9 -f multiscope 2>/dev/null || true
 pkill -9 -f gamescope 2>/dev/null || true
-pkill -9 -f wineserver 2>/dev/null || true
-pkill -9 -f winedevice 2>/dev/null || true
+pkill -9 -f wine 2>/dev/null || true
 sleep 1
 echo "   ✅ Processos finalizados"
 

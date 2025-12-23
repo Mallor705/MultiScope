@@ -24,9 +24,11 @@ class MultiScopeWindow(Adw.ApplicationWindow):
         self.set_default_size(800, 600)
 
         self.logger = Logger("MultiScope-GUI", Config.LOG_DIR, reset=True)
-        self.instance_service = InstanceService(logger=self.logger)
         self.profile = Profile.load()
         self.kde_manager = KdeManager(self.logger)
+        self.instance_service = InstanceService(
+            logger=self.logger, kde_manager=self.kde_manager
+        )
 
         self._launch_thread = None
         self._cancel_launch_event = threading.Event()
@@ -187,17 +189,6 @@ class MultiScopeWindow(Adw.ApplicationWindow):
         self._launch_thread = threading.Thread(target=self._launch_worker)
         self._launch_thread.start()
 
-
-    def _termination_worker(self):
-        """Worker function to terminate instances in a separate thread."""
-        self.logger.info("Termination worker started.")
-        self.instance_service.terminate_all()
-        # Stop KWin script if it was started
-        self.kde_manager.stop_kwin_script()
-        # KDE Panel Management
-        self.kde_manager.restore_panel_states()
-        GLib.idle_add(self._on_termination_finished)
-
     def on_stop_clicked(self, button):
         if self._launch_thread and self._launch_thread.is_alive():
             self.logger.info("Cancelling in-progress launch...")
@@ -208,8 +199,8 @@ class MultiScopeWindow(Adw.ApplicationWindow):
         self.stop_button.set_label("Stopping")
 
         # Start the termination process in a background thread
-        termination_thread = threading.Thread(target=self._termination_worker)
-        termination_thread.start()
+        self.instance_service.terminate_all()
+        GLib.idle_add(self._on_termination_finished)
 
     def _on_termination_finished(self):
         """Callback executed in the main thread when the termination worker is done."""
@@ -235,9 +226,7 @@ class MultiScopeWindow(Adw.ApplicationWindow):
         """Worker function to terminate everything before closing."""
         self.logger.info("Shutdown worker started.")
         self.instance_service.terminate_all()
-        self.kde_manager.stop_kwin_script()
-        self.kde_manager.restore_panel_states()
-        self.logger.info("All services terminated. Exiting application.")
+        GLib.idle_add(self._on_termination_finished)
         GLib.idle_add(self.get_application().quit)
 
 

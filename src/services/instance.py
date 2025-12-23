@@ -14,15 +14,17 @@ from ..core.logger import Logger
 from ..models.profile import Profile, PlayerInstanceConfig
 from .virtual_device import VirtualDeviceService
 from .cmd_builder import CommandBuilder
+from .kde_manager import KdeManager
 
 
 class InstanceService:
     """Service responsible for managing Steam instances."""
 
-    def __init__(self, logger: Logger):
+    def __init__(self, logger: Logger, kde_manager: Optional[KdeManager] = None):
         """Initializes the instance service."""
         self.logger = logger
         self.virtual_device = VirtualDeviceService(logger)
+        self.kde_manager = kde_manager
         self._virtual_joystick_path: Optional[str] = None
         self._virtual_joystick_checked: bool = False
         self.pids: dict[int, int] = {}
@@ -136,14 +138,12 @@ class InstanceService:
         """Runs a series of pkill commands to ensure all related processes are terminated."""
         self.logger.info("Running fallback process terminators...")
         commands = [
-            # "pkill -9 -f multiscope 2>/dev/null || true",
-            # "pkill -9 -f gamescope 2>/dev/null || true",
-            "pkill -9 -f wineserver 2>/dev/null || true",
-            "pkill -9 -f winedevice 2>/dev/null || true",
+            "pkill -9 -f wine 2>/dev/null || true",
         ]
         for cmd in commands:
             try:
                 subprocess.run(cmd, shell=True, check=False)
+                self.logger.info(f"Successfully terminated processes with command '{cmd}'")
             except Exception as e:
                 self.logger.error(f"Error running fallback terminator '{cmd}': {e}")
 
@@ -278,6 +278,19 @@ class InstanceService:
             self.termination_in_progress = True
             self.logger.info("Starting termination of all instances...")
 
+            # Cleanup virtual joystick
+            if self._virtual_joystick_path:
+                self.virtual_device.destroy_virtual_joystick()
+                self._virtual_joystick_path = None
+                self.logger.info("Virtual joystick destroyed.")
+            self._virtual_joystick_checked = False
+
+            # Cleanup KDE-specific settings
+            if self.kde_manager:
+                self.kde_manager.stop_kwin_script()
+                self.kde_manager.restore_panel_states()
+                self.logger.info("KDE-specific cleanup complete.")
+
             for instance_num in list(self.processes.keys()):
                 self.terminate_instance(instance_num)
 
@@ -288,9 +301,5 @@ class InstanceService:
             self.cleanup()
             self.logger.info("Cleanup complete.")
 
-            if self._virtual_joystick_path:
-                self.virtual_device.destroy_virtual_joystick()
-                self._virtual_joystick_path = None
-            self._virtual_joystick_checked = False
         finally:
             self.termination_in_progress = False
