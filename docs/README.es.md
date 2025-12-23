@@ -1,5 +1,4 @@
-```markdown
-[Inglés](../README.md) | [Español](./README.es.md)
+[English](../README.md) | [Português](./README.pt-br.md)
 
 # MultiScope
 
