@@ -55,8 +55,7 @@ class InstanceService:
         # Prepare minimal home structure - Steam will auto-install on first run
         self._prepare_home(home_path)
 
-        instance_idx = instance_num - 1
-        device_info = self._validate_input_devices(profile, instance_idx, instance_num)
+        device_info = self._validate_input_devices(profile, instance_num, instance_num)
 
         env = self._prepare_environment(profile, device_info, instance_num)
 
@@ -219,12 +218,12 @@ class InstanceService:
         self.logger.info(f"Instance {instance_num}: Final environment prepared.")
         return env
 
-    def _validate_input_devices(self, profile: Profile, instance_idx: int, instance_num: int) -> dict:
+    def _validate_input_devices(self, profile: Profile, instance_num: int, instance_num_display: int) -> dict:
         """Validates input devices and returns information about them."""
         # Get specific player config
         player_config = (
-            profile.player_configs[instance_idx]
-            if profile.player_configs and 0 <= instance_idx < len(profile.player_configs)
+            profile.player_configs[instance_num]
+            if profile.player_configs and 0 <= instance_num < len(profile.player_configs)
             else PlayerInstanceConfig() # Default empty config
         )
 
@@ -233,10 +232,10 @@ class InstanceService:
                 return None
             path_obj = Path(path_str)
             if path_obj.exists() and path_obj.is_char_device():
-                 self.logger.info(f"Instance {instance_num}: {device_type} device '{path_str}' assigned.")
+                 self.logger.info(f"Instance {instance_num_display}: {device_type} device '{path_str}' assigned.")
                  return str(path_obj.resolve())
             self.logger.warning(
-                f"Instance {instance_num}: {device_type} device '{path_str}' not found or not a char device."
+                f"Instance {instance_num_display}: {device_type} device '{path_str}' not found or not a char device."
             )
             return None
 
@@ -246,7 +245,7 @@ class InstanceService:
 
         audio_id = player_config.audio_device_id
         if audio_id and audio_id.strip():
-            self.logger.info(f"Instance {instance_num}: Audio device ID '{audio_id}' assigned.")
+            self.logger.info(f"Instance {instance_num_display}: Audio device ID '{audio_id}' assigned.")
 
         return {
             "mouse_path_str_for_instance": mouse_path,

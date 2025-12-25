@@ -426,7 +426,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
             self.profile.player_configs.append(PlayerInstanceConfig())
 
         for i in range(num_players):
-            expander = Adw.ExpanderRow(title=f"Instance {i + 1}")
+            expander = Adw.ExpanderRow(title=f"Instance {i}")
             expander.get_style_context().add_class("player-expander")
             self.players_group.add(expander)
 
@@ -494,7 +494,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
 
     def _run_verification(self):
         for i, row_dict in enumerate(self.player_rows):
-            instance_num = i + 1
+            instance_num = i
             status = self.verification_service.verify_instance(instance_num)
 
             # Remove existing icon first
@@ -509,7 +509,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
                 row_dict["status_icon"] = icon
 
     def get_selected_players(self) -> list[int]:
-        return [i + 1 for i, r in enumerate(self.player_rows) if r["checkbox"].get_active()]
+        return [i for i, r in enumerate(self.player_rows) if r["checkbox"].get_active()]
 
     def _get_combo_row_device_id(self, combo_row, device_list):
         selected_idx = combo_row.get_selected()
@@ -519,7 +519,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
 
     def _on_instance_launch_clicked(self, button, instance_idx):
         row_data = self.player_rows[instance_idx]
-        instance_num = instance_idx + 1
+        instance_num = instance_idx
 
         if row_data["is_running"]:
             self.instance_service.terminate_instance(instance_num)

@@ -167,47 +167,40 @@ class DeviceManager:
 
     def get_instance_dimensions(self, profile: Profile, instance_num: int) -> Tuple[Optional[int], Optional[int]]:
         """Calculates instance dimensions, accounting for splitscreen.
-        For grupos de no máximo 4 instâncias, repete a lógica para cada grupo."""
+        For groups of up to 4 instances, the logic is repeated for each group."""
 
-        # Obtém informações dos monitores
         monitors = self.get_screen_info()
 
-        # Ordena monitores por ID
         monitors_sorted = sorted(monitors, key=lambda x: x["id"])
 
-        # Determina qual monitor usar para esta instância/grupo
         monitor_to_use = None
 
         if not profile.is_splitscreen_mode or not profile.splitscreen:
-            # Modo fullscreen
-            if instance_num <= len(monitors_sorted):
-                monitor_to_use = monitors_sorted[instance_num - 1]
+            # Fullscreen mode
+            if instance_num < len(monitors_sorted):
+                monitor_to_use = monitors_sorted[instance_num]
             else:
-                # Se não há mais monitores, retorna None
                 return None, None
         else:
-            # Modo splitscreen
+            # Splitscreen mode
             orientation = profile.splitscreen.orientation
             num_players = profile.effective_num_players()
 
             if num_players < 1:
-                # Fallback para monitor 0 se não há jogadores
                 if monitors_sorted:
                     monitor_to_use = monitors_sorted[0]
                 else:
                     return None, None
             else:
-                # Lógica para grupos de até 4 instâncias
-                group_index = (instance_num - 1) // 4
+                group_index = instance_num // 4
 
                 if group_index < len(monitors_sorted):
                     monitor_to_use = monitors_sorted[group_index]
                 else:
-                    # Para mais grupos, não há monitor disponível
                     return None, None
 
-                # Aplica lógica de splitscreen dentro do grupo
-                instance_in_group = (instance_num - 1) % 4 + 1
+                # Applies splitscreen logic within the group.
+                instance_in_group = instance_num % 4
                 num_players_in_group = min(4, num_players - group_index * 4)
 
                 if monitor_to_use:
@@ -223,21 +216,19 @@ class DeviceManager:
                             return width, height // 2
                     elif num_players_in_group == 3:
                         if orientation == "vertical":
-                            if instance_in_group == 1:
+                            if instance_in_group == 0:
                                 return width // 2, height
                             else:
                                 return width // 2, height // 2
                         else:
-                            if instance_in_group == 1:
+                            if instance_in_group == 0:
                                 return width, height // 2
                             else:
                                 return width // 2, height // 2
                     elif num_players_in_group == 4:
                         return width // 2, height // 2
 
-        # Se chegou aqui e tem um monitor para usar, retorna dimensões completas
         if monitor_to_use:
             return monitor_to_use["width"], monitor_to_use["height"]
 
-        # Fallback para casos inesperados
         return None, None

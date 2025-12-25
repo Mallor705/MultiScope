@@ -30,13 +30,11 @@ class CommandBuilder:
         [gamescope] -> [bwrap] -> [steam]  (when gamescope is enabled)
         [bwrap] -> [steam]                  (when gamescope is disabled)
         """
-        instance_idx = self.instance_num - 1
-
         # 1. Build the innermost steam command
         steam_cmd = self._build_base_steam_command()
 
         # 2. Build the bwrap command, which will wrap the steam command
-        bwrap_cmd = self._build_bwrap_command(instance_idx)
+        bwrap_cmd = self._build_bwrap_command(self.instance_num)
 
         # 3. Prepend bwrap to the steam command
         final_cmd = bwrap_cmd + steam_cmd
@@ -62,12 +60,11 @@ class CommandBuilder:
             return []
 
         # Get refresh rate for the specific instance
-        instance_idx = self.instance_num - 1
         refresh_rate = 60  # Default
-        if self.profile.player_configs and 0 <= instance_idx < len(
+        if self.profile.player_configs and 0 <= self.instance_num < len(
             self.profile.player_configs
         ):
-            refresh_rate = self.profile.player_configs[instance_idx].refresh_rate
+            refresh_rate = self.profile.player_configs[self.instance_num].refresh_rate
         else:
             self.logger.warning(f"Instance {self.instance_num}: Could not find player config, defaulting refresh rate to 60Hz.")
 
