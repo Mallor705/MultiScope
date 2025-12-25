@@ -32,6 +32,7 @@ class MultiScopeWindow(Adw.ApplicationWindow):
 
         self._launch_thread = None
         self._cancel_launch_event = threading.Event()
+        self._is_running = False
 
         self._build_ui()
         self._update_launch_button_state()
@@ -55,9 +56,6 @@ class MultiScopeWindow(Adw.ApplicationWindow):
 
         self.layout_settings_page = LayoutSettingsPage(self.profile, self.logger)
         self.layout_settings_page.connect("settings-changed", self._trigger_auto_save)
-        self.layout_settings_page.connect(
-            "instance-state-changed", self._on_instance_state_changed
-        )
         self.toolbar_view.set_content(self.layout_settings_page)
 
         # Footer Bar for Play/Stop buttons
@@ -67,19 +65,26 @@ class MultiScopeWindow(Adw.ApplicationWindow):
         self.footer_bar.set_show_end_title_buttons(False)
         self.toolbar_view.add_bottom_bar(self.footer_bar)
 
-        self.launch_button = Gtk.Button.new_with_mnemonic("Play")
+        self.launch_button = Gtk.Button()
         self.launch_button.get_style_context().add_class("suggested-action")
-        self.launch_button.get_style_context().add_class("launch-button")
+        self.launch_button.get_style_context().add_class("play-button-fixed-size")
         self.launch_button.connect("clicked", self.on_launch_clicked)
         self.launch_button.set_sensitive(False)
+
+        self.launch_spinner = Gtk.Spinner()
+        self.launch_spinner.set_spinning(False)
+
+        self.launch_label = Gtk.Label(label="Play")
+        self.launch_content_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6, hexpand=False)
+        self.launch_content_box.append(self.launch_label)
+        
+        self.launch_button.set_child(self.launch_content_box)
         self.footer_bar.pack_end(self.launch_button)
 
-        self.stop_button = Gtk.Button.new_with_mnemonic("Stop")
-        self.stop_button.get_style_context().add_class("destructive-action")
-        self.stop_button.get_style_context().add_class("stop-button")
-        self.stop_button.connect("clicked", self.on_stop_clicked)
-        self.stop_button.set_visible(False)
-        self.footer_bar.pack_end(self.stop_button)
+
+
+
+
 
     def _trigger_auto_save(self, *args):
         updated_profile = self.layout_settings_page.get_updated_data()
@@ -105,14 +110,8 @@ class MultiScopeWindow(Adw.ApplicationWindow):
                 break
         self.launch_button.set_sensitive(all_passed)
 
-    def _on_instance_state_changed(self, *args):
-        if self.layout_settings_page.is_any_instance_running():
-            self.launch_button.set_sensitive(False)
-        else:
-            self._update_launch_button_state()
 
     def _launch_worker(self):
-        """Worker function to launch instances in a separate thread."""
         selected_players = self.profile.selected_players
         self.logger.info(f"Launch worker started for players: {selected_players}")
 
@@ -121,48 +120,54 @@ class MultiScopeWindow(Adw.ApplicationWindow):
                 if self._cancel_launch_event.is_set():
                     self.logger.info("Launch sequence cancelled by user.")
                     break
-
                 self.logger.info(f"Worker launching instance {instance_num}...")
                 self.instance_service.launch_instance(self.profile, instance_num)
-                time.sleep(5)  # Stagger launches
+                time.sleep(5)
 
-            # If the loop completes without errors, finalize the launch
-            GLib.idle_add(self._on_launch_finished)
+            if not self._cancel_launch_event.is_set():
+                GLib.idle_add(self._on_launch_finished)
 
         except VirtualDeviceError as e:
             self.logger.error(f"Caught virtual device error: {e}. Aborting launch.")
-            # Ensure any instances that *did* launch are stopped
             self.instance_service.terminate_all()
-            # Safely update the UI from the main thread
             GLib.idle_add(self._show_error_dialog, f"Could not launch: {e}")
             GLib.idle_add(self._restore_ui_after_failed_launch)
 
     def _restore_ui_after_failed_launch(self):
-        """Restores the UI to its pre-launch state after a failure."""
         self.kde_manager.restore_panel_states()
-        self.launch_button.set_visible(True)
-        self.stop_button.set_visible(False)
+        self.launch_label.set_label("Play")
+        self.launch_spinner.stop()
+        if self.launch_spinner.get_parent() == self.launch_content_box:
+            self.launch_content_box.remove(self.launch_spinner)
         self.layout_settings_page.set_sensitive(True)
         self.layout_settings_page.set_running_state(False)
+        self._is_running = False
         self._launch_thread = None
         self._cancel_launch_event.clear()
         self._update_launch_button_state()
 
     def _on_launch_finished(self):
-        """Callback executed in the main thread when the launch worker is done."""
         self.logger.info("Launch worker finished.")
-        # If the process was cancelled, terminate_all has already been called.
-        # Otherwise, we just update the UI state.
         if not self._cancel_launch_event.is_set():
-            self.launch_button.set_visible(False)
-            self.stop_button.set_visible(True)
+            self.launch_label.set_label("Stop")
+            self.launch_button.get_style_context().remove_class("suggested-action")
+            self.launch_button.get_style_context().add_class("destructive-action")
             self.layout_settings_page.set_sensitive(False)
             self.layout_settings_page.set_running_state(True)
+            self._is_running = True
+        
+        self.launch_spinner.stop()
+        if self.launch_spinner.get_parent() == self.launch_content_box:
+            self.launch_content_box.remove(self.launch_spinner)
+        self.launch_button.set_sensitive(True)
         self._launch_thread = None
         self._cancel_launch_event.clear()
 
-
     def on_launch_clicked(self, button):
+        if self._is_running:
+            self.on_stop_clicked()
+            return
+
         self.layout_settings_page._run_verification()
         selected_players = self.layout_settings_page.get_selected_players()
         if not selected_players:
@@ -170,52 +175,57 @@ class MultiScopeWindow(Adw.ApplicationWindow):
             return
 
         self.profile.selected_players = selected_players
-        self.profile.save() # Save selection before launching
+        self.profile.save()
 
         if self.profile.enable_kwin_script:
             self.kde_manager.start_kwin_script(self.profile)
 
-        # KDE Panel Management
         self.kde_manager.save_panel_states()
         self.kde_manager.set_panels_dodge_windows()
 
-        # Update UI immediately to give feedback
-        self.launch_button.set_visible(False)
-        self.stop_button.set_visible(True)
+        self.launch_label.set_label("Starting")
+        self.launch_button.set_sensitive(False)
+        self.launch_content_box.append(self.launch_spinner)
+        self.launch_spinner.start()
         self.layout_settings_page.set_sensitive(False)
 
-        # Start the launch process in a background thread
         self._cancel_launch_event.clear()
         self._launch_thread = threading.Thread(target=self._launch_worker)
         self._launch_thread.start()
 
-    def on_stop_clicked(self, button):
+    def on_stop_clicked(self):
         if self._launch_thread and self._launch_thread.is_alive():
             self.logger.info("Cancelling in-progress launch...")
             self._cancel_launch_event.set()
 
-        # Update UI immediately for responsiveness
-        self.stop_button.set_sensitive(False)
-        self.stop_button.set_label("Stopping")
+        self.launch_label.set_label("Stopping")
+        self.launch_button.set_sensitive(False)
+        self.launch_content_box.append(self.launch_spinner)
+        self.launch_spinner.start()
 
-        # Start the termination process in a background thread
+        stop_thread = threading.Thread(target=self._stop_worker)
+        stop_thread.start()
+
+    def _stop_worker(self):
         self.instance_service.terminate_all()
         GLib.idle_add(self._on_termination_finished)
 
     def _on_termination_finished(self):
-        """Callback executed in the main thread when the termination worker is done."""
         self.logger.info("Termination worker finished.")
-        self.stop_button.set_sensitive(True)
-        self.stop_button.set_label("Stop")
-        self.launch_button.set_visible(True)
-        self.stop_button.set_visible(False)
+        self.launch_label.set_label("Play")
+        self.launch_button.set_sensitive(True)
+        self.launch_spinner.stop()
+        if self.launch_spinner.get_parent() == self.launch_content_box:
+            self.launch_content_box.remove(self.launch_spinner)
+        self.launch_button.get_style_context().remove_class("destructive-action")
+        self.launch_button.get_style_context().add_class("suggested-action")
         self.layout_settings_page.set_sensitive(True)
         self.layout_settings_page.set_running_state(False)
         self.layout_settings_page._run_verification()
         self._update_launch_button_state()
+        self._is_running = False
 
     def on_close_request(self, *args):
-        """Handle the window close request."""
         self.logger.info("Close request received. Starting shutdown procedure.")
         self.set_sensitive(False)
         shutdown_thread = threading.Thread(target=self._shutdown_worker)
@@ -223,10 +233,8 @@ class MultiScopeWindow(Adw.ApplicationWindow):
         return True
 
     def _shutdown_worker(self):
-        """Worker function to terminate everything before closing."""
         self.logger.info("Shutdown worker started.")
-        self.instance_service.terminate_all()
-        GLib.idle_add(self._on_termination_finished)
+        self._stop_worker()
         GLib.idle_add(self.get_application().quit)
 
 

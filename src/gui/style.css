@@ -85,3 +85,8 @@ AdwToolbarView > AdwHeaderBar:last-child {
 .verification-passed-icon {
     color: #51AE40;
 }
+
+.play-button-fixed-size {
+    min-width: 120px;
+    min-height: 40px;
+}
