@@ -15,6 +15,7 @@ from ..models.profile import Profile, PlayerInstanceConfig
 from .virtual_device import VirtualDeviceService
 from .cmd_builder import CommandBuilder
 from .kde_manager import KdeManager
+from .device_manager import DeviceManager
 
 
 class InstanceService:
@@ -25,6 +26,7 @@ class InstanceService:
         self.logger = logger
         self.virtual_device = VirtualDeviceService(logger)
         self.kde_manager = kde_manager
+        self.device_manager = DeviceManager()
         self._virtual_joystick_path: Optional[str] = None
         self._virtual_joystick_checked: bool = False
         self.pids: dict[int, int] = {}
@@ -62,6 +64,7 @@ class InstanceService:
             self.logger,
             profile,
             device_info,
+            self.device_manager,
             instance_num,
             home_path,
             self._virtual_joystick_path,
@@ -106,7 +109,7 @@ class InstanceService:
                         if profile.player_configs and i < len(profile.player_configs)
                         else PlayerInstanceConfig()
                     )
-                    if not player_config.PHYSICAL_DEVICE_ID:
+                    if not player_config.physical_device_id:
                         needs_virtual_joystick = True
                         break
 
@@ -239,9 +242,9 @@ class InstanceService:
 
         mouse_path = None
         keyboard_path = None
-        joystick_path = _validate_device(player_config.PHYSICAL_DEVICE_ID, "Joystick")
+        joystick_path = _validate_device(player_config.physical_device_id, "Joystick")
 
-        audio_id = player_config.AUDIO_DEVICE_ID
+        audio_id = player_config.audio_device_id
         if audio_id and audio_id.strip():
             self.logger.info(f"Instance {instance_num}: Audio device ID '{audio_id}' assigned.")
 

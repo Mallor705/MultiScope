@@ -13,10 +13,9 @@ class PlayerInstanceConfig(BaseModel):
     """
     model_config = ConfigDict(populate_by_name=True)
 
-    PHYSICAL_DEVICE_ID: Optional[str] = Field(default=None, alias="PHYSICAL_DEVICE_ID")
+    physical_device_id: Optional[str] = Field(default=None, alias="PHYSICAL_DEVICE_ID")
     grab_input_devices: bool = Field(default=False, alias="GRAB_INPUT_DEVICES")
-
-    AUDIO_DEVICE_ID: Optional[str] = Field(default=None, alias="AUDIO_DEVICE_ID")
+    audio_device_id: Optional[str] = Field(default=None, alias="AUDIO_DEVICE_ID")
     monitor_id: Optional[str] = Field(default=None, alias="MONITOR_ID")
     env: Optional[Dict[str, str]] = Field(default=None, alias="ENV")
     refresh_rate: int = Field(default=60, alias="REFRESH_RATE")
@@ -107,48 +106,3 @@ class Profile(BaseModel):
             base_env.update(player_env)
         base_env = {str(k): str(v) for k, v in base_env.items()}
         return base_env
-
-    def get_instance_dimensions(self, instance_num: int) -> Tuple[Optional[int], Optional[int]]:
-        """Calculates instance dimensions, accounting for splitscreen.
-        For grupos de no máximo 4 instâncias, repete a lógica para cada grupo."""
-        if not self.instance_width or not self.instance_height:
-            return None, None
-
-        if not self.is_splitscreen_mode or not self.splitscreen:
-            return self.instance_width, self.instance_height
-
-        orientation = self.splitscreen.orientation
-        num_players = self.effective_num_players()
-
-        if num_players < 1:
-            return self.instance_width, self.instance_height
-
-        # Lógica para grupos de até 4 instâncias
-        group_index = (instance_num - 1) // 4
-        instance_in_group = (instance_num - 1) % 4 + 1
-        num_players_in_group = min(4, num_players - group_index * 4)
-
-        if num_players_in_group == 1:
-            return self.instance_width, self.instance_height
-        elif num_players_in_group == 2:
-            if orientation == "vertical":
-                return self.instance_width // 2, self.instance_height
-            else:
-                return self.instance_width, self.instance_height // 2
-        elif num_players_in_group == 3:
-            if orientation == "vertical":
-                if instance_in_group == 1:
-                    return self.instance_width // 2, self.instance_height
-                else:
-                    return self.instance_width // 2, self.instance_height // 2
-            else:
-                if instance_in_group == 1:
-                    return self.instance_width, self.instance_height // 2
-                else:
-                    return self.instance_width // 2, self.instance_height // 2
-
-        elif num_players_in_group == 4:
-            return self.instance_width // 2, self.instance_height // 2
-        else:
-            # Fallback para casos inesperados
-            return self.instance_width, self.instance_height

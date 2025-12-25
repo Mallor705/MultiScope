@@ -28,7 +28,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         self.device_manager = DeviceManager()
         self.input_devices = self.device_manager.get_input_devices()
         self.audio_devices = self.device_manager.get_audio_devices()
-        self.display_outputs = self.device_manager.get_display_outputs()
+        self.display_outputs = self.device_manager.get_screen_info()
         self.refresh_rates = ["60", "75", "90", "120", "144", "165", "180", "240"]
 
         self._build_ui()
@@ -72,25 +72,6 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         )
         self.gamescope_settings_group.add(gamescope_expander)
 
-        self.resolutions = ["Custom", "1920x1080", "2560x1440", "1280x720", "800x600"]
-        self.resolution_row = Adw.ComboRow(
-            title="Base Resolution", model=Gtk.StringList.new(self.resolutions)
-        )
-        self.resolution_row.get_style_context().add_class("resolution-row")
-        self.resolution_row.connect("notify::selected-item", self._on_resolution_changed)
-        self.resolution_row.connect("notify::selected-item", self._on_setting_changed)
-        gamescope_expander.add_row(self.resolution_row)
-
-        self.instance_width_row = Adw.EntryRow(title="Custom Width")
-        self.instance_width_row.get_style_context().add_class("instance-width-row")
-        self.instance_width_row.connect("changed", self._on_setting_changed)
-        gamescope_expander.add_row(self.instance_width_row)
-
-        self.instance_height_row = Adw.EntryRow(title="Custom Height")
-        self.instance_height_row.get_style_context().add_class("instance-height-row")
-        self.instance_height_row.connect("changed", self._on_setting_changed)
-        gamescope_expander.add_row(self.instance_height_row)
-
         self.screen_modes = ["Fullscreen", "Splitscreen"]
         self.screen_mode_row = Adw.ComboRow(
             title="Screen Mode", model=Gtk.StringList.new(self.screen_modes)
@@ -106,8 +87,6 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         self.orientation_row.get_style_context().add_class("orientation-row")
         self.orientation_row.connect("notify::selected-item", self._on_setting_changed)
         gamescope_expander.add_row(self.orientation_row)
-
-
 
         # Global environment variables
         self.env_group = Adw.PreferencesGroup(title="Environment Variables (Global)")
@@ -134,19 +113,6 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         adj = self.num_players_row.get_adjustment()
         adj.set_value(self.profile.num_players)
 
-        res_str = f"{self.profile.instance_width}x{self.profile.instance_height}"
-        if res_str in self.resolutions:
-            self.resolution_row.set_selected(self.resolutions.index(res_str))
-        else:
-            self.resolution_row.set_selected(0) # Custom
-
-        self.instance_width_row.set_text(str(self.profile.instance_width or ""))
-        self.instance_height_row.set_text(str(self.profile.instance_height or ""))
-
-        is_custom = self.resolution_row.get_selected() == 0
-        self.instance_width_row.set_visible(is_custom)
-        self.instance_height_row.set_visible(is_custom)
-
         is_splitscreen = self.profile.mode == "splitscreen"
         self.screen_mode_row.set_selected(1 if is_splitscreen else 0)
         self.orientation_row.set_visible(is_splitscreen)
@@ -167,10 +133,10 @@ class LayoutSettingsPage(Adw.PreferencesPage):
             if i < len(self.profile.player_configs):
                 config = self.profile.player_configs[i]
                 row_dict["grab_input"].set_active(config.grab_input_devices)
-                self._set_combo_row_selection(row_dict["joystick"], self.input_devices["joystick"], config.PHYSICAL_DEVICE_ID)
+                self._set_combo_row_selection(row_dict["joystick"], self.input_devices["joystick"], config.physical_device_id)
                 # self._set_combo_row_selection(row_dict["mouse"], self.input_devices["mouse"], config.MOUSE_EVENT_PATH)
                 # self._set_combo_row_selection(row_dict["keyboard"], self.input_devices["keyboard"], config.KEYBOARD_EVENT_PATH)
-                self._set_combo_row_selection(row_dict["audio"], self.audio_devices, config.AUDIO_DEVICE_ID)
+                self._set_combo_row_selection(row_dict["audio"], self.audio_devices, config.audio_device_id)
 
                 # Load refresh rate
                 refresh_rate_str = str(config.refresh_rate)
@@ -239,15 +205,6 @@ class LayoutSettingsPage(Adw.PreferencesPage):
     def get_updated_data(self) -> Profile:
         self.profile.num_players = int(self.num_players_row.get_value())
 
-        selected_res = self.resolution_row.get_selected_item().get_string()
-        if selected_res == "Custom":
-            self.profile.instance_width = int(self.instance_width_row.get_text() or 0)
-            self.profile.instance_height = int(self.instance_height_row.get_text() or 0)
-        else:
-            width, height = map(int, selected_res.split("x"))
-            self.profile.instance_width = width
-            self.profile.instance_height = height
-
         self.profile.mode = self.screen_mode_row.get_selected_item().get_string().lower()
         if self.profile.mode == "splitscreen":
             orientation = self.orientation_row.get_selected_item().get_string().lower()
@@ -272,12 +229,12 @@ class LayoutSettingsPage(Adw.PreferencesPage):
 
                 new_config = PlayerInstanceConfig(
                     PHYSICAL_DEVICE_ID=self._get_combo_row_device_id(row_dict["joystick"], self.input_devices["joystick"]),
-                    grab_input_devices=row_dict["grab_input"].get_active(),
+                    GRAB_INPUT_DEVICES=row_dict["grab_input"].get_active(),
+                    AUDIO_DEVICE_ID=self._get_combo_row_device_id(row_dict["audio"], self.audio_devices),
+                    ENV=self._collect_env_from_rows(row_dict.get("env_rows", [])),
+                    REFRESH_RATE=selected_refresh_rate,
                     # MOUSE_EVENT_PATH=self._get_combo_row_device_id(row_dict["mouse"], self.input_devices["mouse"]),
                     # KEYBOARD_EVENT_PATH=self._get_combo_row_device_id(row_dict["keyboard"], self.input_devices["keyboard"]),
-                    AUDIO_DEVICE_ID=self._get_combo_row_device_id(row_dict["audio"], self.audio_devices),
-                    env=self._collect_env_from_rows(row_dict.get("env_rows", [])),
-                    refresh_rate=selected_refresh_rate,
                 )
                 new_configs.append(new_config)
             else:
@@ -311,13 +268,6 @@ class LayoutSettingsPage(Adw.PreferencesPage):
             self.emit("settings-changed")
 
     def _on_player_selected_changed(self, checkbox, *args):
-        if not self._is_loading:
-            self.emit("settings-changed")
-
-    def _on_resolution_changed(self, combo_row, *args):
-        is_custom = combo_row.get_selected() == 0
-        self.instance_width_row.set_visible(is_custom)
-        self.instance_height_row.set_visible(is_custom)
         if not self._is_loading:
             self.emit("settings-changed")
 

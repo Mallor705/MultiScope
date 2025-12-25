@@ -3,7 +3,7 @@ from typing import List, Dict, Optional
 
 from ..models.profile import Profile
 from ..core.logger import Logger
-
+from .device_manager import DeviceManager
 
 class CommandBuilder:
     def __init__(
@@ -11,6 +11,7 @@ class CommandBuilder:
         logger: Logger,
         profile: Profile,
         device_info: Dict,
+        device_manager: DeviceManager,
         instance_num: int,
         home_path: Path,
         virtual_joystick_path: Optional[str],
@@ -18,6 +19,7 @@ class CommandBuilder:
         self.logger = logger
         self.profile = profile
         self.device_info = device_info
+        self.device_manager = device_manager
         self.instance_num = instance_num
         self.home_path = home_path
         self.virtual_joystick_path = virtual_joystick_path
@@ -54,7 +56,7 @@ class CommandBuilder:
 
     def _build_gamescope_command(self, should_add_grab_flags: bool) -> List[str]:
         """Builds the Gamescope command."""
-        width, height = self.profile.get_instance_dimensions(self.instance_num)
+        width, height = self.device_manager.get_instance_dimensions(self.profile, self.instance_num)
         if not width or not height:
             self.logger.error(f"Instance {self.instance_num}: Invalid dimensions. Aborting launch.")
             return []

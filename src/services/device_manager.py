@@ -1,7 +1,9 @@
 import logging
 import re
 import subprocess
-from typing import Dict, List
+from screeninfo import get_monitors
+from ..models.profile import Profile
+from typing import Dict, List, Tuple, Optional, Union
 
 
 class DeviceManager:
@@ -151,30 +153,101 @@ class DeviceManager:
 
         return sorted(audio_sinks, key=lambda x: x['name'])
 
-    def get_display_outputs(self) -> List[Dict[str, str]]:
-        """
-        Detects connected display outputs (monitors) using `xrandr`.
+    def get_screen_info(self) -> List[Dict[str, Union[int, bool]]]:
+        monitors = []
+        for i, monitor in enumerate(get_monitors()):
+            monitors.append({
+                "id": i,
+                "name": monitor.name,
+                "x": monitor.x,
+                "y": monitor.y,
+                "width": monitor.width,
+                "height": monitor.height,
+                "is_primary": monitor.is_primary,
+            })
+        return monitors
 
-        Returns:
-            List[Dict[str, str]]: A list of dictionaries, where each
-            dictionary represents a connected monitor and contains its
-            'id' and 'name' (e.g., "DP-1").
-        """
-        display_outputs = []
-        xrandr_output = self._run_command("xrandr --query")
-        connected_pattern = re.compile(r"^(\S+) connected.*")
+    def get_instance_dimensions(self, profile: Profile, instance_num: int) -> Tuple[Optional[int], Optional[int]]:
+        """Calculates instance dimensions, accounting for splitscreen.
+        For grupos de no máximo 4 instâncias, repete a lógica para cada grupo."""
 
-        for line in xrandr_output.splitlines():
-            try:
-                match = connected_pattern.match(line)
-                if match:
-                    display_name = match.group(1)
-                    if not display_name.lower().startswith("virtual"):
-                        display_outputs.append({"id": display_name, "name": display_name})
-            except (IndexError, AttributeError) as e:
-                logging.warning(
-                    f"Could not parse display output line: '{line}'. Error: {e}"
-                )
-                continue
+        # Obtém informações dos monitores
+        monitors = self.get_screen_info()
 
-        return sorted(display_outputs, key=lambda x: x['name'])
+        # Encontra o monitor primário
+        primary_monitor = next((m for m in monitors if m["is_primary"]), None)
+        # Ordena monitores não-primários por ID
+        secondary_monitors = sorted([m for m in monitors if not m["is_primary"]], key=lambda x: x["id"])
+
+        # Determina qual monitor usar para esta instância/grupo
+        monitor_to_use = None
+
+        if not profile.is_splitscreen_mode or not profile.splitscreen:
+            # Modo fullscreen
+            if instance_num == 1:
+                monitor_to_use = primary_monitor
+            else:
+                # Para instâncias 2, 3, 4... usa monitores secundários em sequência
+                secondary_index = instance_num - 2  # -2 porque instância 2 usa índice 0
+                if secondary_index < len(secondary_monitors):
+                    monitor_to_use = secondary_monitors[secondary_index]
+                else:
+                    # Se não há mais monitores, retorna None
+                    return None, None
+        else:
+            # Modo splitscreen
+            orientation = profile.splitscreen.orientation
+            num_players = profile.effective_num_players()
+
+            if num_players < 1:
+                # Fallback para monitor primário se não há jogadores
+                monitor_to_use = primary_monitor
+            else:
+                # Lógica para grupos de até 4 instâncias
+                group_index = (instance_num - 1) // 4
+
+                if group_index == 0:
+                    # Primeiro grupo usa monitor primário
+                    monitor_to_use = primary_monitor
+                elif group_index == 1 and secondary_monitors:
+                    # Segundo grupo usa o monitor secundário com menor ID
+                    monitor_to_use = secondary_monitors[0]
+                else:
+                    # Para mais grupos, não há monitor disponível
+                    return None, None
+
+                # Aplica lógica de splitscreen dentro do grupo
+                instance_in_group = (instance_num - 1) % 4 + 1
+                num_players_in_group = min(4, num_players - group_index * 4)
+
+                if monitor_to_use:
+                    width = monitor_to_use["width"]
+                    height = monitor_to_use["height"]
+
+                    if num_players_in_group == 1:
+                        return width, height
+                    elif num_players_in_group == 2:
+                        if orientation == "vertical":
+                            return width // 2, height
+                        else:
+                            return width, height // 2
+                    elif num_players_in_group == 3:
+                        if orientation == "vertical":
+                            if instance_in_group == 1:
+                                return width // 2, height
+                            else:
+                                return width // 2, height // 2
+                        else:
+                            if instance_in_group == 1:
+                                return width, height // 2
+                            else:
+                                return width // 2, height // 2
+                    elif num_players_in_group == 4:
+                        return width // 2, height // 2
+
+        # Se chegou aqui e tem um monitor para usar, retorna dimensões completas
+        if monitor_to_use:
+            return monitor_to_use["width"], monitor_to_use["height"]
+
+        # Fallback para casos inesperados
+        return None, None
