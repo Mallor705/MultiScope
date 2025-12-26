@@ -2,8 +2,6 @@
 
 Bem-vindo ao guia do MultiScope! Este documento irá guiá-lo pelo processo de configuração e uso do aplicativo MultiScope para executar múltiplas instâncias do Steam.
 
-[IMAGEM]
-
 ## 1. Número de Instâncias
 
 Primeiro, você precisa decidir quantas instâncias do Steam deseja executar. O MultiScope suporta até 8 instâncias no total.
@@ -13,7 +11,7 @@ Primeiro, você precisa decidir quantas instâncias do Steam deseja executar. O 
 
 Use o seletor numérico "Número de Instâncias" para definir a quantidade desejada.
 
-[IMAGEM]
+<img width="708" height="127" alt="general_layout" src="https://github.com/user-attachments/assets/3a764b39-fccf-451d-b2c4-56661a9a344e" />
 
 ## 2. Modo de Tela
 
@@ -21,6 +19,8 @@ Você pode escolher entre dois modos de tela:
 
 - **Tela Cheia (Fullscreen):** Cada instância será executada em um monitor separado.
 - **Tela Dividida (Splitscreen):** As instâncias serão dispostas em um único monitor, seja horizontal ou verticalmente.
+
+<img width="708" height="204" alt="screen_settings" src="https://github.com/user-attachments/assets/d8b87c4c-3112-46a7-a85c-5ec35d7d043d" />
 
 ### Opções de Tela Dividida
 
@@ -31,9 +31,10 @@ Ao selecionar "Splitscreen", você pode escolher entre duas orientações:
 
 Posições e formatos variam automaticamente de acordo com o número de instâncias.
 
-Obs: O auto-tiling das instâncias funciona apenas com ambientes `KDE Plasma`.
+Nota: O auto-tiling das instâncias funciona apenas com ambientes `KDE Plasma`.
 
-[IMAGEM]
+<img width="1280" height="720" alt="horizontal-game" src="https://github.com/user-attachments/assets/15ba21f3-c1cc-4f3c-8b9c-7e54bebdb90a" />
+<img width="1280" height="720" alt="vertical-game" src="https://github.com/user-attachments/assets/28a4b3f2-8588-4e89-be28-6728decb7a25" />
 
 ## 3. Configuração da Instância
 
@@ -45,7 +46,7 @@ Para cada instância, você pode configurar as seguintes opções:
 - **Taxa de Atualização (Refresh Rate):** Definir a taxa de atualização para a instância. Util se você quer travar o FPS ou usar uma taxa de atualização específica.
 - **Variável de Ambiente (Environment Variables):** Definir variáveis de ambiente específicas para a instância.
 
-[IMAGEM]
+<img width="637" height="448" alt="player_config" src="https://github.com/user-attachments/assets/d8aabe8a-c194-46b1-94d6-9edf106dc8c8" />
 
 ## 4. Iniciando uma Instância
 
@@ -55,7 +56,7 @@ Cada instância pode ser iniciada individualmente pelo seu botão **"Start"**. P
 
 Apenas instâncias que já possuem o Steam instalado podem ser iniciadas com o **"Jogar"**. Você pode verificar isso pelo ícone de visto (check) na instância. Se o ícone não estiver presente, instale o Steam clicando no botão **"Start"** daquela instância. Isso permite configurar, adicionar jogos ou aplicativos de maneira rápida e direta em uma instância específica.
 
-[IMAGEM]
+<img width="708" height="185" alt="instance_config" src="https://github.com/user-attachments/assets/aaec6105-babe-4017-a130-1877f2aaf8ef" />
 
 ## 5. Modo Big Picture do Steam (Opicional)
 
@@ -65,7 +66,7 @@ Para fazer isso, vá em `Configurações > Interface` e marque a caixa para `Ini
 
 Repita esse processo para todas as instâncias que você deseja iniciar no Modo Big Picture.
 
-[IMAGEM]
+<img width="850" height="722" alt="bigpicture" src="https://github.com/user-attachments/assets/f9f3f4be-4322-4dfb-97f3-72aabe10bc9d" />
 
 ## 6. Jogar
 
@@ -73,11 +74,13 @@ Quando todas as suas instâncias estiverem configuradas e em execução, você p
 
 Divirta-se em sua sessão de jogos!
 
-[IMAGEM]
+# Opcional
 
-## 7. Aplicativos (Opcional)
+## 7. Aplicativos
 
 Para adicionar aplicativos à sua instância, vá em `Adicionar Jogo` e clique em `Adicionar um jogo não Steam...`. Selecione o aplicativo que deseja adicionar.
+
+<img width="364" height="142" alt="add-game" src="https://github.com/user-attachments/assets/7de6ce46-5ba4-4060-9d18-d718bc390053" />
 
 ### Por que fazer isso?
 
@@ -85,4 +88,8 @@ Isso permite que você execute aplicativos diretamente da instância, assim é p
 
 Um bom exemplo de uso é o [mangojuice](https://github.com/radiolamp/mangojuice); caso queira usá-lo com configurações personalizadas você precisará executar e configurá-lo para cada instância individualmente.
 
-[IMAGEM]
+## 8. Enviroment Variables (Global)
+
+Faz o mesmo que **Enviroment Variables**, mas para todas as instâncias ao mesmo tempo.
+
+<img width="708" height="123" alt="env_var_global" src="https://github.com/user-attachments/assets/bf6d5437-feac-4f48-bfe3-5e5f8a355ad9" />
