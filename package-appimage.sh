@@ -14,6 +14,9 @@ wget -c "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous
 chmod +x linuxdeploy-x86_64.AppImage
 
 # 4. Run linuxdeploy
+
+export LINUXDEPLOY_OUTPUT_VERSION="0.8.0"
+
 ./linuxdeploy-x86_64.AppImage \
     --appdir AppDir \
     --executable dist/multiscope \
