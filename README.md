@@ -21,7 +21,7 @@ MultiScope is designed as a flexible solution for simultaneous multi-gaming on L
 
 ## 🎬 Demo
 
-`![MultiScope Demo](GIF_URL)`
+[horizontal-demo.webm](https://github.com/user-attachments/assets/7f74342f-415f-4296-8dbf-1c66e8286092)
 
 ## ⚙️ How It Works
 
