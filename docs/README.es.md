@@ -14,11 +14,10 @@ MultiScope está diseñado como una solución flexible para jugar múltiples jue
 1.  **Gestión Sencilla de Múltiples Instancias:** Ejecuta varias instancias de Steam al mismo tiempo, permitiendo que tú y tus amigos disfruten sus bibliotecas de juegos por separado.
 2.  **Asignación de Hardware por Instancia:** Asigna ratones, teclados y controles específicos a cada instancia del juego. (El ratón/teclado solo se puede asignar a una instancia a la vez)
 3.  **Canales de Audio Dedicados:** Envía el audio de cada instancia del juego a un dispositivo de salida de audio separado.
-4.  **Interfaz Gráfica Intuitiva (GUI):** Una interfaz amigable que simplifica la configuración y el lanzamiento de tus sesiones de juego.
-5.  **Directorio Home Separado:** MultiScope te permite tener un directorio "home" nuevo y separado para cada instancia, lo que te permite personalizar configuraciones y archivos individualmente. (No interfiere con tu directorio Home principal)
-6.  **Biblioteca de Juegos Compartida:** MultiScope te permite compartir el directorio de juegos de Steam entre varias instancias, ahorrando espacio en disco y facilitando las actualizaciones de juegos. (Los usuarios necesitan tener el juego en sus bibliotecas de Steam para poder ejecutarlo)
-7.  **Usa Cualquier Proton:** MultiScope te permite usar cualquier versión de Proton para ejecutar tus juegos, incluyendo versiones personalizadas como [ProtonGE](https://github.com/GloriousEggroll/proton-ge-custom).
-8.  **Juega lo que Quieras:** Las instancias no están limitadas a jugar el mismo juego; cada instancia puede jugar el juego que desee (siempre que el usuario tenga el juego en su biblioteca de Steam).
+4.  **Directorio Home Separado:** MultiScope te permite tener un directorio "home" nuevo y separado para cada instancia, lo que te permite personalizar configuraciones y archivos individualmente. (No interfiere con tu directorio Home principal)
+5.  **Biblioteca de Juegos Compartida:** MultiScope te permite compartir el directorio de juegos de Steam entre varias instancias, ahorrando espacio en disco y facilitando las actualizaciones de juegos. (Los usuarios necesitan tener el juego en sus bibliotecas de Steam para poder ejecutarlo)
+6.  **Usa Cualquier Proton:** MultiScope te permite usar cualquier versión de Proton para ejecutar tus juegos, incluyendo versiones personalizadas como [ProtonGE](https://github.com/GloriousEggroll/proton-ge-custom).
+7.  **Juega lo que Quieras:** Las instancias no están limitadas a jugar el mismo juego; cada instancia puede jugar el juego que desee (siempre que el usuario tenga el juego en su biblioteca de Steam).
 
 ## 🎬 Demostración
 
@@ -29,7 +28,7 @@ MultiScope está diseñado como una solución flexible para jugar múltiples jue
 La forma más fácil y recomendada de usar MultiScope es a través de la versión AppImage. Este archivo único funciona en la mayoría de las distribuciones modernas de Linux sin necesidad de instalación en el sistema.
 
 1.  **Descarga la AppImage más reciente:**
-    Ve a la página de [**Releases**](https://github.com/Mallor705/MultiScope/releases) y descarga el archivo `.appimage` más reciente.
+    Ve a la página de [**Releases**](https://github.com/Mallor705/MultiScope/releases) y descarga el archivo `.AppImage` más reciente.
 
 2.  **Hazlo Ejecutable:**
     Después de descargarlo, haz clic derecho en el archivo, ve a "Propiedades" y marca la casilla "Permitir ejecutar el archivo como programa". Alternativamente, puedes usar la terminal:
@@ -50,11 +49,13 @@ Consulta nuestra [Guía](./GUIDE.es.md) para obtener más información sobre có
 
 ---
 
-## 🚀 Estado del Proyecto
+## 🚀 Estado y Compatibilidad del Proyecto
+
+Necesita tener los paquetes `steam` y `gamescope` nativos de su distribución. MultiScope debería funcionar correctamente en sistemas que ya ejecutan `Gamescope` y `Steam` con normalidad, ya que su funcionalidad predeterminada no se ve alterada.
+
+Para que el mosaico automático de ventanas funcione correctamente, se recomienda usar KDE Plasma 6.0 o superior. En otros entornos de escritorio (DE), deberá mover las ventanas usted mismo.
 
 MultiScope está en desarrollo activo; todavía se pueden encontrar algunos errores.
-
-En cuanto a compatibilidad, MultiScope debería funcionar bien en sistemas que ya puedan ejecutar Gamescope y Steam normalmente, ya que su funcionamiento estándar no se altera.
 
 Si encuentras problemas, no dudes en compartir tus comentarios y reportar errores en la sección de [Issues](https://github.com/Mallor705/MultiScope/issues).
 
@@ -63,16 +64,6 @@ Si encuentras problemas, no dudes en compartir tus comentarios y reportar errore
 ## ⚙️ Cómo Funciona
 
 MultiScope orquesta múltiples instancias independientes de Steam aprovechando las tecnologías de aislamiento y gestión de pantalla de Linux. El objetivo principal es ejecutar sesiones separadas de Steam que no entren en conflicto entre sí, permitiendo que diferentes usuarios inicien sesión y jueguen simultáneamente sin interferencia entre los clientes de Steam.
-
-Aquí tienes un desglose técnico de los componentes principales:
-
--   **Aislamiento con Bubblewrap:** Esta es la base de MultiScope. Para cada instancia de Steam, MultiScope usa `bubblewrap` para crear un entorno aislado ("sandbox"). Una función crítica de este aislamiento es la creación de un directorio `home` único y separado para cada instancia. Esto asegura que cada sesión de Steam tenga su propia configuración, caché de datos, archivos de guardado y credenciales de usuario, evitando cualquier cruce de datos o conflictos entre instancias o con el usuario del sistema.
-
--   **Aislamiento de Dispositivos de Entrada:** `bubblewrap` crea un directorio `/dev/input` privado y vacío dentro del entorno aislado. Luego, usa `--dev-bind` para exponer selectivamente *solo* los dispositivos de entrada asignados (por ejemplo, un teclado, ratón o controlador específico) en ese directorio privado. Este es el núcleo del aislamiento de entrada: la instancia de Steam aislada es fundamentalmente incapaz de ver cualquier otro dispositivo de entrada aparte de los que le fueron asignados explícitamente.
-
--   **Gestión de Pantalla con Gamescope:** MultiScope lanza instancias del cliente de Steam. Para gestionar cómo se muestran estas instancias, ofrece la opción de usar `gamescope` de Valve. Cuando está activado, `gamescope` actúa como un micro-compositor, ejecutando una instancia de Steam en un servidor de pantalla anidado y aislado. Esto permite un control preciso sobre las ventanas, resolución y configuraciones de rendimiento para la sesión de ese jugador.
-
--   **Redirección de Audio con Pipewire:** Para la gestión de audio, MultiScope define variables de entorno (`PULSE_SINK`) que instruyen al servidor de audio `pipewire` a dirigir todo el audio de una instancia aislada específica a un dispositivo de audio dedicado. Esto permite que el audio del juego de cada jugador se envíe a sus propios audífonos o altavoces.
 
 ---
 

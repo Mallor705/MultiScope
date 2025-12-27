@@ -14,11 +14,10 @@ MultiScope is designed as a flexible solution for simultaneous multi-gaming on L
 1.  **Simple Multi-Instance Management:** Run multiple Steam instances simultaneously, allowing you and your friends to enjoy your game libraries separately.
 2.  **Per-Instance Hardware Assignment:** Assign specific mice, keyboards, and controllers to each game instance. (Mouse/Keyboard can only be assigned to one instance at a time)
 3.  **Dedicated Audio Channels:** Route audio from each game instance to a separate audio output device.
-4.  **Intuitive Graphical Interface (GUI):** A user-friendly interface that simplifies setting up and launching your gaming sessions.
-5.  **Separate Home Directory:** MultiScope allows you to have a new, separate home for each instance, enabling you to customize settings and files individually. (Does not interfere with your standard Home directory)
-6.  **Shared Game Library:** MultiScope allows you to share the Steam game directory among multiple instances, saving disk space and making game updates easier. (Users need to own the game in their Steam libraries to run it)
-7.  **Use Any Proton:** MultiScope lets you use any version of Proton to run your games, including custom protons like [ProtonGE](https://github.com/GloriousEggroll/proton-ge-custom).
-8.  **Play What You Want:** Instances are not limited to playing the same game; each instance can play whichever game it wants (provided the user owns the game in their Steam library).
+4.  **Separate Home Directory:** MultiScope allows you to have a new, separate home for each instance, enabling you to customize settings and files individually. (Does not interfere with your standard Home directory)
+5.  **Shared Game Library:** MultiScope allows you to share the Steam game directory among multiple instances, saving disk space and making game updates easier. (Users need to own the game in their Steam libraries to run it)
+6.  **Use Any Proton:** MultiScope lets you use any version of Proton to run your games, including custom protons like [ProtonGE](https://github.com/GloriousEggroll/proton-ge-custom).
+7.  **Play What You Want:** Instances are not limited to playing the same game; each instance can play whichever game it wants (provided the user owns the game in their Steam library).
 
 ## 🎬 Demo
 
@@ -29,7 +28,7 @@ MultiScope is designed as a flexible solution for simultaneous multi-gaming on L
 The easiest and recommended way to use MultiScope is via the AppImage version. This single file works on most modern Linux distributions without requiring system installation.
 
 1.  **Download the Latest AppImage:**
-    Go to the [**Releases**](https://github.com/Mallor705/MultiScope/releases) page and download the latest `.appimage` file.
+    Go to the [**Releases**](https://github.com/Mallor705/MultiScope/releases) page and download the latest `.AppImage` file.
 
 2.  **Make it Executable:**
     After downloading, right-click the file, go to "Properties," and check the "Allow executing file as program" box. Alternatively, you can use the terminal:
@@ -50,11 +49,13 @@ Access our [Guide](docs/GUIDE.md) for more information on how to use MultiScope.
 
 ---
 
-## 🚀 Project Status
+## 🚀 Project Status and Compatibility
+
+You need to have the `steam` and `gamescope` packages native to your distro. MultiScope should work fine on systems that can already run `Gamescope` and `Steam` normally, as their default functionality is not altered.
+
+For window auto-tiling to work properly, it is recommended to use KDE Plasma 6.0 or higher. In other DEs, you will need to move the windows yourself.
 
 MultiScope is under active development; some bugs may still be encountered.
-
-Regarding compatibility, MultiScope should work well on systems that can already run Gamescope and Steam normally, as their standard operation is not altered.
 
 If you encounter issues, feel free to share your feedback and report bugs in the [Issues](https://github.com/Mallor705/MultiScope/issues) section.
 
@@ -63,16 +64,6 @@ If you encounter issues, feel free to share your feedback and report bugs in the
 ## ⚙️ How It Works
 
 MultiScope orchestrates multiple independent Steam instances by leveraging Linux sandboxing and display management technologies. The main goal is to run separate Steam sessions that do not conflict with each other, allowing different users to log in and play simultaneously without interference between the Steam clients.
-
-Here is a technical breakdown of the main components:
-
--   **Sandboxing with Bubblewrap:** This is the cornerstone of MultiScope. For each Steam instance, MultiScope uses `bubblewrap` to create an isolated sandbox environment. A critical function of this sandbox is the creation of a unique, separate `home` directory for each instance. This ensures each Steam session has its own configuration, data cache, save files, and user credentials, preventing any data crossover or conflicts between instances or with the system user.
-
--   **Input Device Isolation:** `bubblewrap` creates a private, empty `/dev/input` directory inside the sandbox. It then uses `--dev-bind` to selectively expose *only* the assigned input devices (e.g., a specific keyboard, mouse, or controller) into that private directory. This is the core of input isolation: the sandboxed Steam instance is fundamentally incapable of seeing any other input devices besides those explicitly assigned to it.
-
--   **Display Management with Gamescope:** MultiScope launches instances of the Steam client. To manage how these Steam instances are displayed, it offers the option to use Valve's `gamescope`. When enabled, `gamescope` acts as a micro-compositor, running a Steam instance on a nested, isolated display server. This allows for precise control over windows, resolution, and performance settings for that player's session.
-
--   **Audio Redirection with Pipewire:** For audio management, MultiScope sets environment variables (`PULSE_SINK`) that instruct the `pipewire` audio server to route all audio from a specific sandboxed instance to a dedicated audio device. This allows each player's game audio to be sent to their own headphones or speakers.
 
 ---
 
