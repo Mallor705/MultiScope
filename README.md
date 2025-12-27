@@ -111,7 +111,7 @@ We welcome contributions from everyone! If you are interested in helping improve
 
 ## 📜 License
 
-This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**. For more details, see the [LICENSE](../LICENSE) file.
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**. For more details, see the [LICENSE](./LICENSE) file.
 
 ## ⚖️ Legal Disclaimer
 
