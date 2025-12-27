@@ -51,7 +51,7 @@ Consulta nuestra [Guía](./GUIDE.es.md) para obtener más información sobre có
 
 ## 🚀 Estado y Compatibilidad del Proyecto
 
-Necesita tener los paquetes `steam` y `gamescope` nativos de su distribución. MultiScope debería funcionar correctamente en sistemas que ya ejecutan `Gamescope` y `Steam` con normalidad, ya que su funcionalidad predeterminada no se ve alterada.
+Necesita tener los paquetes `steam` y `gamescope` nativos de su distribución. MultiScope debería funcionar correctamente en sistemas que ya ejecutan `Gamescope` y `Steam` con normalidad.
 
 Para que el mosaico automático de ventanas funcione correctamente, se recomienda usar KDE Plasma 6.0 o superior. En otros entornos de escritorio (DE), deberá mover las ventanas usted mismo.
 

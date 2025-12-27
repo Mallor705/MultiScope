@@ -51,7 +51,7 @@ Acesse nosso [Guia](./GUIDE.pt-br.md) para mais informações sobre como usar o 
 
 ## 🚀 Status e Compatibilidade do Projeto
 
-É necessário ter os pacotes `steam` e `gamescope` nativos de sua distro. O MultiScope deve funcionar bem em sistemas que já conseguem executar o `Gamescope` e `Steam` normalmente, já que o funcionamento padrão deles não é alterado.
+É necessário ter os pacotes `steam` e `gamescope` nativos de sua distro. O MultiScope deve funcionar bem em sistemas que já conseguem executar o `Gamescope` e `Steam` normalmente.
 
 Para que o auto-tiling das janelas funcione bem, é recomendado usar KDE Plasma 6.0 ou superior. Em outras DE, será necessário mover as janelas você mesmo. 
 
