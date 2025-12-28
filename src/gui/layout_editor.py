@@ -16,6 +16,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
     __gsignals__ = {
         "settings-changed": (GObject.SIGNAL_RUN_FIRST, None, ()),
         "instance-state-changed": (GObject.SIGNAL_RUN_FIRST, None, ()),
+        "verification-completed": (GObject.SIGNAL_RUN_FIRST, None, ()),
     }
 
     def __init__(self, profile, logger, **kwargs):
@@ -509,6 +510,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         is_verified = self.steam_verifier.verify(instance_path)
         self.verification_statuses[instance_num] = is_verified
         self._update_verification_status_ui(instance_num, is_verified)
+        self.emit("verification-completed")
 
     def _update_verification_status_ui(self, instance_num: int, is_verified: bool):
         if instance_num >= len(self.player_rows):

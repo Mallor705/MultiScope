@@ -56,6 +56,7 @@ class MultiScopeWindow(Adw.ApplicationWindow):
 
         self.layout_settings_page = LayoutSettingsPage(self.profile, self.logger)
         self.layout_settings_page.connect("settings-changed", self._trigger_auto_save)
+        self.layout_settings_page.connect("verification-completed", self._update_launch_button_state)
         self.toolbar_view.set_content(self.layout_settings_page)
 
         # Footer Bar for Play/Stop buttons
