@@ -30,8 +30,14 @@ class InstanceService:
         self._virtual_joystick_path: Optional[str] = None
         self._virtual_joystick_checked: bool = False
         self.pids: dict[int, int] = {}
+        self.pgids: dict[int, int] = {}
         self.processes: dict[int, subprocess.Popen] = {}
         self.termination_in_progress = False
+        self.is_flatpak = self._is_flatpak()
+
+    def _is_flatpak(self) -> bool:
+        """Checks if the application is running inside a Flatpak."""
+        return os.path.exists("/.flatpak-info")
 
     def validate_dependencies(self, use_gamescope: bool = True) -> None:
         """Validates if all necessary commands are available on the system."""
@@ -39,9 +45,20 @@ class InstanceService:
         required_commands = ["bwrap", "steam"]
         if use_gamescope:
             required_commands.insert(0, "gamescope")
-        for cmd in required_commands:
-            if not shutil.which(cmd):
-                raise DependencyError(f"Required command '{cmd}' not found")
+
+        for cmd_name in required_commands:
+            # If in Flatpak, check on the host. Otherwise, check locally.
+            if self.is_flatpak:
+                check_cmd = ["flatpak-spawn", "--host", "which", cmd_name]
+                try:
+                    # We check the return code. A non-zero indicates the command is not found.
+                    subprocess.run(check_cmd, check=True, capture_output=True)
+                except subprocess.CalledProcessError:
+                    raise DependencyError(f"Required command '{cmd_name}' not found on the host system")
+            else:
+                if not shutil.which(cmd_name):
+                    raise DependencyError(f"Required command '{cmd_name}' not found")
+
         self.logger.info("Dependencies validated successfully")
 
     def _launch_single_instance(self, profile: Profile, instance_num: int) -> None:
@@ -52,11 +69,8 @@ class InstanceService:
         home_path.mkdir(parents=True, exist_ok=True)
         self.logger.info(f"Instance {instance_num}: Using isolated home path '{home_path}'")
 
-        # Prepare minimal home structure - Steam will auto-install on first run
         self._prepare_home(home_path)
-
         device_info = self._validate_input_devices(profile, instance_num, instance_num)
-
         env = self._prepare_environment(profile, device_info, instance_num)
 
         cmd_builder = CommandBuilder(
@@ -70,22 +84,52 @@ class InstanceService:
         )
         cmd = cmd_builder.build_command()
 
+        # If running in Flatpak, use an inline script to launch on the host
+        if self.is_flatpak:
+            escaped_cmd = " ".join(shlex.quote(c) for c in cmd)
+            inline_script = f"""
+                set -m; 
+                {escaped_cmd} & 
+                PID=$!; 
+                PGID=$(ps -o pgid= -p $PID | tr -d ' '); 
+                echo $PGID; 
+                fg %1;
+            """
+            cmd = ["flatpak-spawn", "--host", "bash", "-c", inline_script]
+
         log_file = Config.LOG_DIR / f"steam_instance_{instance_num}.log"
         self.logger.info(f"Launching instance {instance_num} (Log: {log_file})")
         self.logger.info(f"Instance {instance_num}: Full command: {shlex.join(cmd)}")
 
         try:
+            # For Flatpak, we need to capture stdout to get the PGID
+            stdout_pipe = subprocess.PIPE if self.is_flatpak else subprocess.DEVNULL
+            
             process = subprocess.Popen(
                 cmd,
-                stdout=subprocess.DEVNULL,
+                stdout=stdout_pipe,
                 stderr=subprocess.DEVNULL,
                 env=env,
-                cwd=Path.home(),  # Launch from the user's real home directory
-                preexec_fn=os.setpgrp,
+                cwd=Path.home(),
+                preexec_fn=os.setpgrp if not self.is_flatpak else None,
             )
+
+            if self.is_flatpak:
+                # Read the PGID from the host-launcher script
+                try:
+                    pgid_line = process.stdout.readline().decode().strip()
+                    self.pgids[instance_num] = int(pgid_line)
+                    self.logger.info(f"Instance {instance_num} started on host with PGID: {self.pgids[instance_num]}")
+                except (ValueError, IndexError) as e:
+                    self.logger.error(f"Failed to parse PGID for instance {instance_num}: {e}")
+                    raise
+            else:
+                self.pgids[instance_num] = os.getpgid(process.pid)
+            
             self.pids[instance_num] = process.pid
             self.processes[instance_num] = process
             self.logger.info(f"Instance {instance_num} started with PID: {process.pid}")
+
         except Exception as e:
             self.logger.error(f"Failed to launch instance {instance_num}: {e}")
 
@@ -137,28 +181,34 @@ class InstanceService:
             return
 
         process = self.processes[instance_num]
-        self.logger.info(f"Terminating instance {process}...")
+        self.logger.info(f"Terminating instance {process.pid}...")
+        
         if process.poll() is None:
+            pgid = self.pgids.get(instance_num)
+            if pgid:
+                if self.is_flatpak:
+                    self.logger.info(f"Sending SIGTERM to host process group {pgid} for instance {instance_num}")
+                    subprocess.run(["flatpak-spawn", "--host", "kill", "-s", "SIGTERM", f"-{pgid}"])
+                else:
+                    try:
+                        self.logger.info(f"Sending SIGTERM to process group {pgid} for instance {instance_num}")
+                        os.killpg(pgid, signal.SIGTERM)
+                    except ProcessLookupError:
+                        self.logger.info(f"Process group for PID {process.pid} not found for instance {instance_num}.")
+
             try:
-                pgid = os.getpgid(process.pid)
-                self.logger.info(f"Sending SIGTERM to process group {pgid} for instance {instance_num}")
-                os.killpg(pgid, signal.SIGTERM)
                 process.wait(timeout=10)
                 self.logger.info(f"Instance {instance_num} terminated gracefully.")
-            except ProcessLookupError:
-                self.logger.info(f"Process group for PID {process.pid} not found for instance {instance_num}.")
             except subprocess.TimeoutExpired:
                 self.logger.warning(f"Instance {instance_num} did not terminate after 10s. Sending SIGKILL.")
-                try:
-                    pgid = os.getpgid(process.pid)
-                    os.killpg(pgid, signal.SIGKILL)
-                    self.logger.info(f"Sent SIGKILL to process group {pgid} for instance {instance_num}")
-                except ProcessLookupError:
-                    self.logger.info(f"Process group for PID {process.pid} not found when sending SIGKILL.")
-                except Exception as e:
-                    self.logger.error(f"Failed to kill process group for PID {process.pid}: {e}")
-            except Exception as e:
-                self.logger.error(f"An unexpected error occurred during termination for instance {instance_num}: {e}")
+                if pgid:
+                    if self.is_flatpak:
+                        subprocess.run(["flatpak-spawn", "--host", "kill", "-s", "SIGKILL", f"-{pgid}"])
+                    else:
+                        try:
+                            os.killpg(pgid, signal.SIGKILL)
+                        except ProcessLookupError:
+                            self.logger.info(f"Process group for PID {process.pid} not found when sending SIGKILL.")
 
         if process.poll() is None:
             process.wait()
@@ -167,6 +217,8 @@ class InstanceService:
             del self.processes[instance_num]
         if instance_num in self.pids:
             del self.pids[instance_num]
+        if instance_num in self.pgids:
+            del self.pgids[instance_num]
 
 
     def _prepare_home(self, home_path: Path) -> None:
