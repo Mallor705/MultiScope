@@ -15,3 +15,14 @@ def run_host_command(command: List[str], **kwargs) -> subprocess.CompletedProces
     base_command = ["flatpak-spawn", "--host"]
     full_command = base_command + command
     return subprocess.run(full_command, **kwargs)
+
+def run_host_command_async(command: List[str], **kwargs) -> subprocess.Popen:
+    """
+    Executes a command asynchronously on the host system using 'flatpak-spawn --host'.
+
+    Returns:
+        subprocess.Popen: The Popen object for the spawned process.
+    """
+    base_command = ["flatpak-spawn", "--host"]
+    full_command = base_command + command
+    return subprocess.Popen(full_command, **kwargs)
