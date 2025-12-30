@@ -2,38 +2,36 @@
 set -e
 
 echo "═══════════════════════════════════════════════════════════"
-echo "  LIMPEZA COMPLETA"
+echo "  🧹 Cleaning up..."
 echo "═══════════════════════════════════════════════════════════"
 echo ""
 
-# Passo 1: Matar processos
-echo "1️⃣  Matando todos os processos Python..."
-killall -9 python 2>/dev/null || true
-killall -9 python3 2>/dev/null || true
+# Passo 1: Stop processes
+echo "1️⃣  Stoping processes..."
 pkill -9 -f multiscope 2>/dev/null || true
 pkill -9 -f gamescope 2>/dev/null || true
 pkill -9 -f wine 2>/dev/null || true
 sleep 1
-echo "   ✅ Processos finalizados"
+echo "   ✅ Processes stopped"
 
-# Passo 2: Limpar cache
-echo "2️⃣  Limpar cache..."
+# Passo 2: Cleaning cache
+echo "2️⃣  Cleaning cache..."
 find . -type d -name "__pycache__" -exec rm -rf {} \;
 sleep 1
-echo "   ✅ Cache limpo"
+echo "   ✅ Cache cleaned"
 
-# Passo 3: Limpar arquivos de build
-echo "3️⃣  Limpar arquivos de build..."
+# Passo 3: Cleaning files build
+echo "3️⃣  Cleaning files build..."
 rm -rf build dist AppDir .venv squashfs-root .flatpak-builder build-dir flatpak-repo
 rm -rf *.spec
 rm -rf *.AppImage
 rm -rf *.log
 rm -rf *.flatpak
 sleep 1
-echo "   ✅ Arquivos de build limpos"
+echo "   ✅ Files cleaned"
 
-# Passo 4: Finalizar
+# Passo 4: Finalizing
 echo ""
 echo "═══════════════════════════════════════════════════════════"
-echo "  ✅ TUDO PRONTO!"
+echo "  ✅ CLEANED!"
 echo "═══════════════════════════════════════════════════════════"
