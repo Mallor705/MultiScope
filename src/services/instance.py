@@ -7,7 +7,7 @@ import subprocess
 import time
 from pathlib import Path
 from typing import List, Optional
-from ..core.utils import is_flatpak, run_host_command
+from ..core.utils import is_flatpak, run_host_command, run_host_command_async
 from ..core.config import Config
 from ..core.exceptions import DependencyError, VirtualDeviceError
 from ..core.logger import Logger
@@ -82,28 +82,63 @@ class InstanceService:
         )
         base_command = cmd_builder.build_command()
 
-        cmd: List[str] = []
-        if self.is_flatpak:
-            cmd = ["flatpak-spawn", "--host"] + base_command
-        else:
-            cmd = base_command
-
         log_file = Config.LOG_DIR / f"steam_instance_{instance_num}.log"
         self.logger.info(f"Launching instance {instance_num} (Log: {log_file})")
-        self.logger.info(f"Instance {instance_num}: Full command: {shlex.join(cmd)}")
 
         try:
-            process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                env=env,
-                cwd=Path.home(),  # Launch from the user's real home directory
-                preexec_fn=os.setpgrp,
-            )
+            process: subprocess.Popen
+            pgid = -1
+
+            if self.is_flatpak:
+                escaped_command = shlex.join(base_command)
+                shell_command = f"set -m; echo $$; exec {escaped_command}"
+
+                self.logger.info(f"Instance {instance_num}: Launching on host via shell: {shell_command}")
+
+                process = run_host_command_async(
+                    ["bash", "-c", shell_command],
+                    stdout=subprocess.PIPE,  # Capture stdout to read the PGID
+                    stderr=subprocess.DEVNULL,
+                    env=env,
+                    cwd=Path.home(),
+                )
+
+                # Read the PGID from the host shell script's stdout
+                pgid_str = ""
+                if process.stdout:
+                    # Read the first line of output, which should be the PGID
+                    pgid_str = process.stdout.readline().decode().strip()
+
+                if pgid_str.isdigit():
+                    pgid = int(pgid_str)
+                    self.logger.info(
+                        f"Instance {instance_num} started on host with PID {process.pid} "
+                        f"and captured host PGID: {pgid}"
+                    )
+                else:
+                    self.logger.error(f"Instance {instance_num}: Failed to capture host PGID. Read: '{pgid_str}'")
+                    process.terminate()
+                    raise RuntimeError(f"Failed to get host PGID for instance {instance_num}")
+
+            else:
+                # When not in Flatpak, launch the process directly and create a process group
+                self.logger.info(f"Instance {instance_num}: Full command: {shlex.join(base_command)}")
+                process = subprocess.Popen(
+                    base_command,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    env=env,
+                    cwd=Path.home(),
+                    preexec_fn=os.setpgrp,
+                )
+                # The PGID is the same as the PID because os.setpgrp() makes the process the group leader.
+                pgid = process.pid
+                self.logger.info(f"Instance {instance_num} started with PID: {process.pid} and PGID: {pgid}")
+
             self.pids[instance_num] = process.pid
+            self.pgids[instance_num] = pgid
             self.processes[instance_num] = process
-            self.logger.info(f"Instance {instance_num} started with PID: {process.pid}")
+
         except Exception as e:
             self.logger.error(f"Failed to launch instance {instance_num}: {e}")
 
@@ -158,7 +193,11 @@ class InstanceService:
         self.logger.info(f"Terminating instance {process.pid}...")
 
         if process.poll() is None:
+            # Get the appropriate process/group ID for termination.
+            # For Flatpak, this is the host PGID we captured.
+            # For native, it's the PGID we created.
             pgid = self.pgids.get(instance_num)
+
             if pgid:
                 if self.is_flatpak:
                     self.logger.info(f"Sending SIGTERM to host process group {pgid} for instance {instance_num}")
@@ -168,21 +207,24 @@ class InstanceService:
                         self.logger.info(f"Sending SIGTERM to process group {pgid} for instance {instance_num}")
                         os.killpg(pgid, signal.SIGTERM)
                     except ProcessLookupError:
-                        self.logger.info(f"Process group for PID {process.pid} not found for instance {instance_num}.")
+                        self.logger.warning(f"Process group {pgid} not found for instance {instance_num}.")
 
-            try:
-                process.wait(timeout=10)
-                self.logger.info(f"Instance {instance_num} terminated gracefully.")
-            except subprocess.TimeoutExpired:
-                self.logger.warning(f"Instance {instance_num} did not terminate after 10s. Sending SIGKILL.")
-                if pgid:
+                try:
+                    process.wait(timeout=10)
+                    self.logger.info(f"Instance {instance_num} terminated gracefully.")
+                except subprocess.TimeoutExpired:
+                    self.logger.warning(f"Instance {instance_num} did not terminate after 10s. Sending SIGKILL.")
                     if self.is_flatpak:
                         run_host_command(["kill", "-s", "SIGKILL", f"-{pgid}"])
                     else:
                         try:
                             os.killpg(pgid, signal.SIGKILL)
                         except ProcessLookupError:
-                            self.logger.info(f"Process group for PID {process.pid} not found when sending SIGKILL.")
+                            self.logger.warning(
+                                f"Process group {pgid} not found when sending SIGKILL for instance {instance_num}."
+                            )
+            else:
+                self.logger.warning(f"No PGID found for instance {instance_num}, cannot send termination signal.")
 
         if process.poll() is None:
             process.wait()
