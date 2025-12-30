@@ -1,8 +1,11 @@
 #!/bin/bash
 
-# MultiScope Flatpak Build Script
 set -e
 
+./clean.sh
+sleep 1
+
+# MultiScope Flatpak Build Script
 echo "🚀 Starting MultiScope Flatpak build..."
 
 # Check if flatpak-builder is installed
@@ -36,7 +39,6 @@ flatpak-builder --run build-dir io.github.mallor.MultiScope.yaml multiscope --he
 echo ""
 echo "🎉 Flatpak build successful!"
 echo ""
-
 
 # MultiScope Flatpak Packaging Script
 echo "📦 Starting MultiScope Flatpak packaging..."
@@ -73,22 +75,15 @@ echo "✅ Flatpak package created successfully!"
 echo "📦 File: $BUNDLE_NAME"
 echo "📏 Size: $BUNDLE_SIZE"
 echo ""
-echo "🚀 Distribution instructions:"
 echo ""
-echo "To install on any system:"
-echo "  flatpak install $BUNDLE_NAME"
 echo ""
-echo "To install without system prompts:"
-echo "  flatpak install --user $BUNDLE_NAME"
 echo ""
-echo "To run after installation:"
-echo "  flatpak run $APP_ID"
+flatpak uninstall $APP_ID
 echo ""
-echo "To uninstall:"
-echo "  flatpak uninstall $APP_ID"
+echo "Installing..."
 echo ""
-echo "📤 To publish to Flathub:"
-echo "  1. Fork https://github.com/flathub/flathub"
-echo "  2. Add your manifest: $APP_ID.yaml"
-echo "  3. Submit pull request"
+flatpak install --user $BUNDLE_NAME
 echo ""
+echo "Running..."
+echo ""
+flatpak run $APP_ID
