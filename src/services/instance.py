@@ -7,7 +7,7 @@ import subprocess
 import time
 from pathlib import Path
 from typing import List, Optional
-
+from ..core.utils import is_flatpak, run_host_command
 from ..core.config import Config
 from ..core.exceptions import DependencyError, VirtualDeviceError
 from ..core.logger import Logger
@@ -33,11 +33,7 @@ class InstanceService:
         self.pgids: dict[int, int] = {}
         self.processes: dict[int, subprocess.Popen] = {}
         self.termination_in_progress = False
-        self.is_flatpak = self._is_flatpak()
-
-    def _is_flatpak(self) -> bool:
-        """Checks if the application is running inside a Flatpak."""
-        return os.path.exists("/.flatpak-info")
+        self.is_flatpak = is_flatpak()
 
     def validate_dependencies(self, use_gamescope: bool = True) -> None:
         """Validates if all necessary commands are available on the system."""
@@ -49,10 +45,9 @@ class InstanceService:
         for cmd_name in required_commands:
             # If in Flatpak, check on the host. Otherwise, check locally.
             if self.is_flatpak:
-                check_cmd = ["flatpak-spawn", "--host", "which", cmd_name]
                 try:
                     # We check the return code. A non-zero indicates the command is not found.
-                    subprocess.run(check_cmd, check=True, capture_output=True)
+                    run_host_command(["which", cmd_name], check=True, capture_output=True)
                 except subprocess.CalledProcessError:
                     raise DependencyError(f"Required command '{cmd_name}' not found on the host system")
             else:
@@ -188,7 +183,7 @@ class InstanceService:
             if pgid:
                 if self.is_flatpak:
                     self.logger.info(f"Sending SIGTERM to host process group {pgid} for instance {instance_num}")
-                    subprocess.run(["flatpak-spawn", "--host", "kill", "-s", "SIGTERM", f"-{pgid}"])
+                    run_host_command(["kill", "-s", "SIGTERM", f"-{pgid}"])
                 else:
                     try:
                         self.logger.info(f"Sending SIGTERM to process group {pgid} for instance {instance_num}")
@@ -203,7 +198,7 @@ class InstanceService:
                 self.logger.warning(f"Instance {instance_num} did not terminate after 10s. Sending SIGKILL.")
                 if pgid:
                     if self.is_flatpak:
-                        subprocess.run(["flatpak-spawn", "--host", "kill", "-s", "SIGKILL", f"-{pgid}"])
+                        run_host_command(["kill", "-s", "SIGKILL", f"-{pgid}"])
                     else:
                         try:
                             os.killpg(pgid, signal.SIGKILL)
