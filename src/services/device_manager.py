@@ -3,6 +3,7 @@ import re
 import subprocess
 from screeninfo import get_monitors
 from ..models.profile import Profile
+from ..core.utils import is_flatpak, run_host_command
 from typing import Dict, List, Tuple, Optional, Union
 
 
@@ -122,6 +123,7 @@ class DeviceManager:
     def get_audio_devices(self) -> List[Dict[str, str]]:
         """
         Detects available audio output devices (sinks) using `pactl`.
+        It uses `flatpak-spawn --host` when running inside a Flatpak.
 
         Returns:
             List[Dict[str, str]]: A list of dictionaries, where each
@@ -129,7 +131,12 @@ class DeviceManager:
             (PulseAudio name) and 'name' (human-readable description).
         """
         audio_sinks = []
-        pactl_output = self._run_command("pactl list sinks")
+        command = "pactl list sinks"
+
+        if is_flatpak():
+            pactl_output = run_host_command(command.split(), capture_output=True, text=True, check=True).stdout.strip()
+        else:
+            pactl_output = self._run_command(command)
         desc, name = None, None
 
         for line in pactl_output.splitlines():
