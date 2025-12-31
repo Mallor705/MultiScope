@@ -2,18 +2,27 @@
 
 cd "$(dirname "$0")"
 
-# Compile GResource bundle
-(cd src/gui/resources && glib-compile-resources --target=compiled.gresource resources.xml)
+# Compile GResource
+echo "📦 Compiling GResource..."
+glib-compile-resources \
+  --target=src/gui/resources/compiled.gresource \
+  --sourcedir=src/gui/resources \
+  src/gui/resources/resources.xml
 
-# Force a clean venv
-if [ -d ".venv" ]; then
-    rm -rf .venv
+# Create venv if it doesn't exist
+if [ ! -d ".venv" ]; then
+    echo "📦 Creating virtual environment..."
+    python3 -m venv .venv
 fi
 
-python3 -m venv .venv
-
+# Activate virtual environment
+echo "🔧 Activating virtual environment..."
 source .venv/bin/activate
 
-pip install --verbose -r requirements.txt
+# Install dependencies
+echo "📥 Installing dependencies..."
+pip install -r requirements.txt
 
+# Run application
+echo "🚀 Running application..."
 python3 multiscope.py "$@"

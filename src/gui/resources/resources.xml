@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/org/gnome/shell/theme">
-  </gresource>
+    <gresource prefix="/io/github/mallor/MultiScope">
+        <file>icons/check-icon.svg</file>
+        <file>icons/alert-icon.svg</file>
+    </gresource>
 </gresources>
