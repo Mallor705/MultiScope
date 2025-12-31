@@ -237,7 +237,14 @@ class MultiScopeWindow(Adw.ApplicationWindow):
 
 class MultiScopeApplication(Adw.Application):
     def __init__(self, **kwargs):
-        super().__init__(application_id="com.github.mallor705.multiscope", **kwargs)
+        super().__init__(application_id="io.github.mallor.MultiScope", **kwargs)
+
+        # Load resources
+        resource_path = Path(__file__).parent / "resources" / "compiled.gresource"
+        if resource_path.exists():
+            resources = Gio.Resource.load(str(resource_path))
+            Gio.Resource._register(resources)
+
         self.connect("activate", self.on_activate)
 
     def on_activate(self, app):

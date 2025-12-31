@@ -25,6 +25,13 @@ source .venv/bin/activate
 echo "📥 Installing dependencies..."
 pip install -r requirements.txt
 
+# Compile GResource
+echo "📦 Compiling GResource..."
+glib-compile-resources \
+  --target=src/gui/resources/compiled.gresource \
+  --sourcedir=src/gui/resources \
+  src/gui/resources/resources.xml
+
 # Install PyInstaller if not present
 if ! pip show pyinstaller >/dev/null 2>&1; then
     echo "📦 Installing PyInstaller..."
