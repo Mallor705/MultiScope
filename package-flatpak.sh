@@ -3,6 +3,13 @@
 # MultiScope Flatpak Build Script
 set -e
 
+# Compile GResource
+echo "📦 Compiling GResource..."
+glib-compile-resources \
+  --target=src/gui/resources/compiled.gresource \
+  --sourcedir=src/gui/resources \
+  src/gui/resources/resources.xml
+
 echo "🚀 Starting MultiScope Flatpak build..."
 
 # Check if flatpak-builder is installed
@@ -16,9 +23,9 @@ fi
 
 # Check if required runtimes are installed
 echo "🔍 Checking for required Flatpak runtimes..."
-if ! flatpak list --runtime | grep -q "org.gnome.Platform.*48"; then
+if ! flatpak list --runtime | grep -q "org.gnome.Platform.*49"; then
     echo "📦 Installing GNOME Platform runtime..."
-    flatpak install -y flathub org.gnome.Platform//48 org.gnome.Sdk//48
+    flatpak install -y flathub org.gnome.Platform//49 org.gnome.Sdk//49
 fi
 
 # Clean previous builds
@@ -45,12 +52,6 @@ echo "📦 Starting MultiScope Flatpak packaging..."
 APP_ID="io.github.mallor.MultiScope"
 REPO_DIR="flatpak-repo"
 BUNDLE_NAME="MultiScope.flatpak"
-
-# Build first if needed
-if [ ! -d "build-dir" ]; then
-    echo "🔨 Building application first..."
-    ./build-flatpak.sh
-fi
 
 # Create repository if it doesn't exist
 if [ ! -d "$REPO_DIR" ]; then
