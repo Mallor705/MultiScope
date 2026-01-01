@@ -5,6 +5,8 @@
 
 set -e  # Exit on any error
 
+./clean.sh
+
 echo "🚀 Starting MultiScope Build Process..."
 
 # Get script directory
@@ -80,6 +82,15 @@ if scripts_path.exists():
     for js_file in scripts_path.glob('*.js'):
         js_files.append((str(js_file), 'scripts'))
 
+# Collect GResource file
+gresource_files = []
+gresource_file = gui_path / 'resources' / 'compiled.gresource'
+if gresource_file.exists():
+    gresource_files.append((str(gresource_file), 'src/gui/resources'))
+    print(f"  ✓ Found: {gresource_file}")
+else:
+    print(f"  ✗ Missing: {gresource_file}")
+
 # Get GObject Introspection typelib path
 try:
     gi_typelib_path = subprocess.check_output(
@@ -145,7 +156,7 @@ except:
     print("Warning: Could not detect GTK library path")
 
 # Collect other resource files
-data_files = css_files + js_files + typelib_files
+data_files = css_files + js_files + gresource_files + typelib_files
 
 # Add hidden imports for PyInstaller
 hidden_imports = [
