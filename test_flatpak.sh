@@ -2,9 +2,6 @@
 
 set -e
 
-./clean.sh
-sleep 1
-
 ./package-flatpak.sh
 
 APP_ID="io.github.mallor.MultiScope"

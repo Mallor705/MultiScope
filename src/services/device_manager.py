@@ -134,8 +134,11 @@ class DeviceManager:
         command = "LANG=C pactl list sinks"
 
         if is_flatpak():
-            pactl_output = run_host_command(command.split(), capture_output=True, text=True, check=True).stdout.strip()
+            # When using flatpak-spawn, we need to wrap the command in `sh -c`
+            flatpak_command = ["sh", "-c", command]
+            pactl_output = run_host_command(flatpak_command, capture_output=True, text=True, check=True).stdout.strip()
         else:
+            # _run_command uses shell=True, which handles the env var correctly.
             pactl_output = self._run_command(command)
         desc, name = None, None
 

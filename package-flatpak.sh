@@ -3,6 +3,8 @@
 # MultiScope Flatpak Build Script
 set -e
 
+./clean.sh
+
 # Compile GResource
 echo "📦 Compiling GResource..."
 glib-compile-resources \
