@@ -87,8 +87,8 @@ class CommandBuilder:
             cmd.append("-b")  # Borderless
 
         if should_add_grab_flags:
-            self.logger.info(f"Instance {self.instance_num}: Using dedicated mouse/keyboard. Grabbing input.")
-            cmd.extend(["--grab", "--force-grab-cursor"])
+            self.logger.info(f"Instance {self.instance_num}: Using dedicated mouse. Grabbing input.")
+            cmd.append("--force-grab-cursor")
 
         return cmd
 

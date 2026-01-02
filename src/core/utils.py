@@ -38,9 +38,8 @@ def set_host_env_vars(env_vars: Dict[str, str]) -> None:
     command_parts = []
     for key, value in env_vars.items():
         command_parts.append(f"export {key}={shlex.quote(value)}")
-    
+
     command_string = "; ".join(command_parts)
-    
+
     # We don't need to capture output or check for errors here.
-    # If the command fails, the Steam instance will likely fail to start with a clear error.
     run_host_command(['sh', '-c', command_string], check=False)

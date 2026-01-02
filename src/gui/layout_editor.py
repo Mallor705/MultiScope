@@ -463,7 +463,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
             # mouse_row = create_device_row("Mouse", "mouse")
             # keyboard_row = create_device_row("Keyboard", "keyboard")
 
-            grab_input_switch = Adw.SwitchRow(title="Grab Mouse and Keyboard")
+            grab_input_switch = Adw.SwitchRow(title="Grab Mouse")
             grab_input_switch.get_style_context().add_class("custom-switch")
             grab_input_switch.connect("notify::active", self._on_grab_input_toggled, i)
             expander.add_row(grab_input_switch)
