@@ -90,3 +90,19 @@ Para agregar aplicaciones a tu instancia, ve a `Agregar un juego` y haz clic en 
 Esto te permite ejecutar aplicaciones directamente desde la instancia, haciendo posible tener una configuración única por instancia para esa aplicación. Esto sucede porque cada instancia tiene su propio directorio `HOME` único. Se pueden encontrar en `~/.local/share/multiscope/home_{n}`.
 
 Un buen ejemplo de uso es [mangojuice](https://github.com/radiolamp/mangojuice); si quieres usarlo con configuraciones personalizadas, necesitarás ejecutarlo y configurarlo para cada instancia individualmente.
+
+## 8. Compatibilidad con múltiples GPU
+
+> [!NOTE]
+> Esto debe añadirse directamente a los argumentos del juego, no a las variables de entorno.
+
+MultiScope permite ejecutar varios juegos en diferentes GPU.
+
+Añade la siguiente línea a los argumentos de Steam de tu juego:
+
+```bash
+DRI_PRIME=1!
+
+```
+
+Esto hace que se use la GPU 1 en el juego. Puedes ajustar los valores según la configuración de tu sistema.

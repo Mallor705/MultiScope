@@ -90,3 +90,19 @@ To add applications to your instance, go to `Add a Game` and click `Add a Non-St
 This allows you to run applications directly from the instance, enabling a unique configuration per instance for that application. This is because each instance has its own unique `HOME` directory. They can be found at `~/.local/share/multiscope/home_{n}`.
 
 A good example is [mangojuice](https://github.com/radiolamp/mangojuice); if you want to use it with custom settings, you will need to run and configure it for each instance individually.
+
+## 8. Multi GPU Support
+
+> [!NOTE]
+> This should be added directly to the game's arguments, do not add it to the environment variables.
+
+MultiScope supports running multiple games on different GPUs.
+
+Add the following line to your game's Steam arguments:
+
+```bash
+DRI_PRIME=1!
+
+```
+
+This makes GPU 1 be used in the game. You can adjust the numbers according to your system configuration.
