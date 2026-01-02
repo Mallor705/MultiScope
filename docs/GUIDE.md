@@ -44,12 +44,12 @@ Note: Instance auto-tiling only works with `KDE Plasma` environments.
 For each instance, you can configure the following options:
 
 - **Gamepad:** Assign a specific controller to the instance.
-- **Capture Mouse & Keyboard:** Dedicate the mouse and keyboard to a single instance. For now, only one instance at a time can use the mouse and keyboard.
+- **Capture Mouse:** Dedicate the mouse to a single instance. For now, only one instance at a time can use the mouse and keyboard.
 - **Audio Device:** Select a specific audio output device for the instance.
 - **Refresh Rate:** Set the refresh rate for the instance. Useful if you want to cap FPS or use a specific refresh rate.
 - **Environment Variables:** Define specific environment variables for the instance.
 
-<img width="637" height="448" alt="player_config" src="https://github.com/user-attachments/assets/d8aabe8a-c194-46b1-94d6-9edf106dc8c8" />
+<img width="595" height="409" alt="player_config" src="https://github.com/user-attachments/assets/f6e38bea-1685-4d63-835a-464305b71cee" />
 
 ## 4. Starting an Instance
 
@@ -59,7 +59,7 @@ Each instance can be started individually via its **"Start"** button. To run mul
 
 Only instances that already have Steam installed can be launched with the **"Play"** button. You can verify this by the checkmark icon on the instance. If the icon is not present, install Steam by clicking that instance's **"Start"** button. This allows for quick and direct configuration, game, or application setup for a specific instance.
 
-<img width="708" height="185" alt="instance_config" src="https://github.com/user-attachments/assets/aaec6105-babe-4017-a130-1877f2aaf8ef" />
+<img width="651" height="178" alt="instance_config" src="https://github.com/user-attachments/assets/9cff5635-1f4b-4571-bd5a-8816d9a59376" />
 
 ## 5. Steam Big Picture Mode (Optional)
 

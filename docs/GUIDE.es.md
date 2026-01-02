@@ -44,12 +44,12 @@ Nota: La organización automática de las instancias solo funciona con entornos 
 Para cada instancia, puedes configurar las siguientes opciones:
 
 - **Control (Gamepad):** Asignar un control específico a la instancia.
-- **Capturar Mouse y Teclado:** Dedicar el mouse y el teclado a una sola instancia. Por ahora, solo una instancia a la vez puede usar el mouse y el teclado.
+- **Capturar Mouse:** Dedicar el mouse a una sola instancia. Por ahora, solo una instancia a la vez puede usar el mouse y el teclado.
 - **Dispositivo de audio:** Seleccionar un dispositivo de salida de audio específico para la instancia.
 - **Tasa de actualización (Refresh Rate):** Definir la tasa de actualización para la instancia. Es útil si quieres limitar los FPS o usar una tasa de actualización específica.
 - **Variables de entorno (Environment Variables):** Definir variables de entorno específicas para la instancia.
 
-<img width="637" height="448" alt="player_config" src="https://github.com/user-attachments/assets/d8aabe8a-c194-46b1-94d6-9edf106dc8c8" />
+<img width="595" height="409" alt="player_config" src="https://github.com/user-attachments/assets/f6e38bea-1685-4d63-835a-464305b71cee" />
 
 ## 4. Iniciar una instancia
 
@@ -59,7 +59,7 @@ Cada instancia puede iniciarse individualmente con su botón **"Iniciar"**. Para
 
 Solo las instancias que ya tienen Steam instalado pueden iniciarse con el botón **"Play"**. Puedes verificarlo por el ícono de palomita (✓) en la instancia. Si el ícono no está presente, instala Steam haciendo clic en el botón **"Iniciar"** de esa instancia. Esto permite configurar, agregar juegos o aplicaciones de manera rápida y directa en una instancia específica.
 
-<img width="708" height="185" alt="instance_config" src="https://github.com/user-attachments/assets/aaec6105-babe-4017-a130-1877f2aaf8ef" />
+<img width="651" height="178" alt="instance_config" src="https://github.com/user-attachments/assets/9cff5635-1f4b-4571-bd5a-8816d9a59376" />
 
 ## 5. Modo Big Picture de Steam (Opcional)
 

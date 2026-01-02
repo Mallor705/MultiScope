@@ -23,7 +23,8 @@
 O **MultiScope** é uma ferramenta de código aberto para Linux/SteamOS que permite criar e gerenciar múltiplas instâncias do `gamescope` e `steam` simultaneamente. Isso possibilita que vários jogadores aproveitem sua biblioteca de jogos em um único computador, seja em tela dividida ou cada um com sua própria tela, além de saída de áudio e dispositivos de entrada dedicados.
 
 ---
-<img width="800" height="729" alt="multiscope-ui" src="https://github.com/user-attachments/assets/aea8a9e3-7c11-4978-9141-572d2dce9613" />
+
+<img width="850" height="650" alt="multiscope_ui" src="https://github.com/user-attachments/assets/b4618997-7136-44b4-9398-7b0a569a641e" />
 
 ## ✨ Principais Funcionalidades
 

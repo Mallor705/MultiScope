@@ -24,7 +24,7 @@
 
 ---
 
-<img width="800" height="729" alt="multiscope-ui" src="https://github.com/user-attachments/assets/aea8a9e3-7c11-4978-9141-572d2dce9613" />
+<img width="850" height="650" alt="multiscope_ui" src="https://github.com/user-attachments/assets/b4618997-7136-44b4-9398-7b0a569a641e" />
 
 ## ✨ Key Features
 

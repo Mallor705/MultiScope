@@ -43,12 +43,12 @@ Nota: O auto-tiling das instâncias funciona apenas com ambientes `KDE Plasma`.
 Para cada instância, você pode configurar as seguintes opções:
 
 - **Controle (Gamepad):** Atribuir um controle específico à instância.
-- **Capturar Mouse e Teclado:** Dedicar o mouse e o teclado a uma única instância. Por enquanto, apenas uma instância por vez pode usar o mouse e o teclado.
+- **Capturar Mouse:** Dedicar o mouse a uma única instância. Por enquanto, apenas uma instância por vez pode usar o mouse e o teclado.
 - **Dispositivo de Áudio:** Selecionar um dispositivo de saída de áudio específico para a instância.
 - **Taxa de Atualização (Refresh Rate):** Definir a taxa de atualização para a instância. Util se você quer travar o FPS ou usar uma taxa de atualização específica.
 - **Variável de Ambiente (Environment Variables):** Definir variáveis de ambiente específicas para a instância.
 
-<img width="637" height="448" alt="player_config" src="https://github.com/user-attachments/assets/d8aabe8a-c194-46b1-94d6-9edf106dc8c8" />
+<img width="595" height="409" alt="player_config" src="https://github.com/user-attachments/assets/f6e38bea-1685-4d63-835a-464305b71cee" />
 
 ## 4. Iniciando uma Instância
 
@@ -58,7 +58,7 @@ Cada instância pode ser iniciada individualmente pelo seu botão **"Start"**. P
 
 Apenas instâncias que já possuem o Steam instalado podem ser iniciadas com o **"Play"**. Você pode verificar isso pelo ícone de visto (check) na instância. Se o ícone não estiver presente, instale o Steam clicando no botão **"Start"** daquela instância. Isso permite configurar, adicionar jogos ou aplicativos de maneira rápida e direta em uma instância específica.
 
-<img width="708" height="185" alt="instance_config" src="https://github.com/user-attachments/assets/aaec6105-babe-4017-a130-1877f2aaf8ef" />
+<img width="651" height="178" alt="instance_config" src="https://github.com/user-attachments/assets/9cff5635-1f4b-4571-bd5a-8816d9a59376" />
 
 ## 5. Modo Big Picture do Steam (Opicional)
 
