@@ -131,7 +131,7 @@ class DeviceManager:
             (PulseAudio name) and 'name' (human-readable description).
         """
         audio_sinks = []
-        command = "pactl list sinks"
+        command = "LANG=C pactl list sinks"
 
         if is_flatpak():
             pactl_output = run_host_command(command.split(), capture_output=True, text=True, check=True).stdout.strip()
