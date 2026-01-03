@@ -77,9 +77,20 @@ Repite este proceso para todas las instancias que desees iniciar en Modo Big Pic
 
 ¡Disfruta tu sesión de juego!
 
+### Atajos de teclado:
+
+  Super + F                      alternar fullscreen
+  Super + N                      alternar filtro de vecinos más cercanos
+  Super + U                      alternar FSR upscaling
+  Super + Y                      alternar NIS upscaling
+  Super + I                      aumentar la nitidez de FSR en 1
+  Super + O                      disminuir la nitidez de FSR en 1
+  Super + S                      tomar una captura de pantalla
+  Super + G                      alternar captura de teclado
+
 # Opcional
 
-## 7. Aplicaciones
+## Aplicaciones
 
 Para agregar aplicaciones a tu instancia, ve a `Agregar un juego` y haz clic en `Agregar un juego que no es de Steam...`. Selecciona la aplicación que deseas agregar.
 
@@ -91,7 +102,7 @@ Esto te permite ejecutar aplicaciones directamente desde la instancia, haciendo 
 
 Un buen ejemplo de uso es [mangojuice](https://github.com/radiolamp/mangojuice); si quieres usarlo con configuraciones personalizadas, necesitarás ejecutarlo y configurarlo para cada instancia individualmente.
 
-## 8. Compatibilidad con múltiples GPU
+## Compatibilidad con múltiples GPU
 
 > [!NOTE]
 > Esto debe añadirse directamente a los argumentos del juego, no a las variables de entorno.

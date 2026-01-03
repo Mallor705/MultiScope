@@ -77,9 +77,20 @@ When all your instances are configured and running, you can start playing! Each 
 
 Enjoy your gaming session!
 
+### Keyboard shortcuts:
+
+  Super + F                      toggle fullscreen
+  Super + N                      toggle nearest neighbour filtering
+  Super + U                      toggle FSR upscaling
+  Super + Y                      toggle NIS upscaling
+  Super + I                      increase FSR sharpness by 1
+  Super + O                      decrease FSR sharpness by 1
+  Super + S                      take a screenshot
+  Super + G                      toggle keyboard grab
+
 # Optional
 
-## 7. Applications (Optional)
+## Applications
 
 To add applications to your instance, go to `Add a Game` and click `Add a Non-Steam Game...`. Select the application you wish to add.
 
@@ -91,7 +102,7 @@ This allows you to run applications directly from the instance, enabling a uniqu
 
 A good example is [mangojuice](https://github.com/radiolamp/mangojuice); if you want to use it with custom settings, you will need to run and configure it for each instance individually.
 
-## 8. Multi GPU Support
+## Multi GPU Support
 
 > [!NOTE]
 > This should be added directly to the game's arguments, do not add it to the environment variables.

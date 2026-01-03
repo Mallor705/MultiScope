@@ -76,9 +76,20 @@ Quando todas as suas instâncias estiverem configuradas e em execução, você p
 
 Divirta-se em sua sessão de jogos!
 
+### Atalhos de teclado:
+
+  Super + F                      Alternar fullscreen
+  Super + N                      Alternar filtro de vizinho mais próximo
+  Super + U                      Alternar FSR upscaling
+  Super + Y                      Alternar NIS upscaling
+  Super + I                      Aumentar a nitidez do FSR em 1
+  Super + O                      Diminuir a nitidez do FSR em 1
+  Super + S                      Tirar uma captura de tela
+  Super + G                      Alternar captura de teclado
+
 # Opcional
 
-## 7. Aplicativos
+## Aplicativos
 
 Para adicionar aplicativos à sua instância, vá em `Adicionar Jogo` e clique em `Adicionar um jogo não Steam...`. Selecione o aplicativo que deseja adicionar.
 
@@ -90,7 +101,7 @@ Isso permite que você execute aplicativos diretamente da instância, assim é p
 
 Um bom exemplo de uso é o [mangojuice](https://github.com/radiolamp/mangojuice); caso queira usá-lo com configurações personalizadas você precisará executar e configurá-lo para cada instância individualmente.
 
-## 8. Suporte a Multiplas GPUs
+## Suporte a Multiplas GPUs
 
 > [!NOTE]
 > Isso deve ser adicionado diretamente no argumento dos jogos, não adicione isso ao enviroments variables.
