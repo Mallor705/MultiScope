@@ -51,7 +51,7 @@
   </provides>
 
   <releases>
-    <release version="0.9.0" date="2026-02-01">
+    <release version="@@VERSION@@" date="@@DATE@@">
       <description>
         <p>This is the first stable version of MultiScope, now with Flatpak and AppImage support.</p>
       </description>
