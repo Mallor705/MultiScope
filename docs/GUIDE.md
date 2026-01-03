@@ -4,6 +4,17 @@
 
 Welcome to the MultiScope guide! This document will walk you through the process of setting up and using the MultiScope application to run multiple Steam instances.
 
+> [!NOTE]
+> To use MultiScope, it's necessary to add your user to the `input` group to allow the program to manage input devices.
+> ```bash
+> sudo usermod -aG input $USER
+> ```
+> in the Bazzite:
+> ```bash
+> ujust add-user-to-input-group
+> ```
+> **Restart the system for the changes to take effect.**
+
 ## 1. Number of Instances
 
 First, you need to decide how many Steam instances you want to run. MultiScope supports up to 8 instances total.

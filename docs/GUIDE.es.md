@@ -4,6 +4,18 @@
 
 ¡Bienvenido a la guía de MultiScope! Este documento te guiará por el proceso de configuración y uso de la aplicación MultiScope para ejecutar múltiples instancias de Steam.
 
+> [!NOTE]
+> Para usar MultiScope, es necesario agregar su usuario al grupo `input` para permitir que el programa gestione los dispositivos de entrada.
+>
+> ```bash
+> sudo usermod -aG input $USER
+> ```
+> en el Bazzite:
+> ```bash
+> ujust add-user-to-input-group
+> ```
+> **Reinicie el sistema para que los cambios surtan efecto.**
+
 ## 1. Número de instancias
 
 Primero, necesitas decidir cuántas instancias de Steam deseas ejecutar. MultiScope soporta hasta 8 instancias en total.

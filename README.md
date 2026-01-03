@@ -44,14 +44,6 @@ MultiScope is designed as a flexible solution for simultaneous multi-gaming on L
 
 ## 📦 Installation
 
-> [!NOTE]
-> To use MultiScope, it's necessary to add your user to the `input` group to allow the program to manage input devices.
->
-> ```bash
-> sudo usermod -aG input $USER
-> ```
-> **Restart the system for the changes to take effect.**
-
 ### Flatpak (Recommended)
 The recommended way to install MultiScope is via Flatpak, which provides a sandboxed environment and easier updates. You can install it from Flathub (once available) or from a `.flatpak` file from the [releases page](https://github.com/Mallor705/MultiScope/releases).
 
