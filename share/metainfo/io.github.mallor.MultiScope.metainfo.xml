@@ -28,7 +28,7 @@
   <launchable type="desktop-id">io.github.mallor.MultiScope.desktop</launchable>
 
   <screenshots>
-    <screenshot>
+    <screenshot type="default">
       <image>https://raw.githubusercontent.com/Mallor705/MultiScope/master/share/screenshots/multiscope-ui.png</image>
       <caption>Main application window</caption>
     </screenshot>
@@ -48,6 +48,10 @@
 
   <provides>
     <binary>multiscope</binary>
+    <input>pointer</input>
+    <input>keyboard</input>
+    <input>gamepad</input>
+    <input>joystick</input>
   </provides>
 
   <releases>
