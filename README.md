@@ -138,7 +138,13 @@ cd MultiScope
 
 ### Building from Source
 
-The `scripts/build.sh` script compiles the application into a standalone executable using PyInstaller. The final binary will be placed in the `dist/` directory.
+MultiScope provides a Makefile to manage builds and versioning. You can build the application using the following command:
+
+```bash
+make build
+```
+
+Alternatively, you can use the build script directly:
 
 ```bash
 ./scripts/build.sh
@@ -149,12 +155,24 @@ The `scripts/build.sh` script compiles the application into a standalone executa
 The `scripts/package-appimage.sh` script automates the process of creating an AppImage. It first runs the build script and then uses `linuxdeploy` to package the application into a distributable `.appimage` file.
 
 ```bash
+make appimage
+```
+
+Or using the script directly:
+
+```bash
 ./scripts/package-appimage.sh
 ```
 
 ### Packaging a Flatpak
 
 The `scripts/package-flatpak.sh` script automates the process of creating a Flatpak. It will build the application and then package it into a `.flatpak` file.
+
+```bash
+make flatpak
+```
+
+Or using the script directly:
 
 ```bash
 ./scripts/package-flatpak.sh
