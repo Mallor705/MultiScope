@@ -92,15 +92,30 @@ Repite este proceso para todas las instancias que desees iniciar en Modo Big Pic
 ¡Disfruta tu sesión de juego!
 
 ### Atajos de teclado:
-
-  Super + F                      alternar fullscreen
-  Super + N                      alternar filtro de vecinos más cercanos
-  Super + U                      alternar FSR upscaling
-  Super + Y                      alternar NIS upscaling
-  Super + I                      aumentar la nitidez de FSR en 1
-  Super + O                      disminuir la nitidez de FSR en 1
-  Super + S                      tomar una captura de pantalla
-  Super + G                      alternar captura de teclado
+```
+Super + F       Activar pantalla completa
+```
+```
+Super + N       Activar filtro de vecino más cercano
+```
+```
+Super + U       Activar upscaling FSR
+```
+```
+Super + Y       Activar upscaling NIS
+```
+```
+Super + I       Aumentar nitidez FSR en 1
+```
+```
+Super + O       Disminuir nitidez FSR en 1
+```
+```
+Super + S       Hacer captura de pantalla
+```
+```
+Super + G       Activar captura de teclado
+```
 
 # Opcional
 

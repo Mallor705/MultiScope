@@ -70,7 +70,7 @@ flatpak install flathub io.github.mall0r.Twinverse
 2. **Instale o Flatpak:**
    Você pode instalar o Flatpak com o seguinte comando:
    ```bash
-   flatpak install Twinverse.flatpak
+   flatpak install --user Twinverse-*.flatpak
    ```
 
 ### AppImage

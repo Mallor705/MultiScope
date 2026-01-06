@@ -90,17 +90,31 @@ When all your instances are configured and running, you can start playing! Each 
 
 Enjoy your gaming session!
 
-### Keyboard shortcuts:
-
-  Super + F                      toggle fullscreen
-  Super + N                      toggle nearest neighbour filtering
-  Super + U                      toggle FSR upscaling
-  Super + Y                      toggle NIS upscaling
-  Super + I                      increase FSR sharpness by 1
-  Super + O                      decrease FSR sharpness by 1
-  Super + S                      take a screenshot
-  Super + G                      toggle keyboard grab
-
+## Keyboard shortcuts:
+```
+Super + F      Toggle fullscreen
+```
+```
+Super + N      Toggle nearest neighbour filtering
+```
+```
+Super + U      Toggle FSR upscaling
+```
+```
+Super + Y      Toggle NIS upscaling
+```
+```
+Super + I      Increase FSR sharpness by 1
+```
+```
+Super + O      Decrease FSR sharpness by 1
+```
+```
+Super + S      Take a screenshot
+```
+```
+Super + G      Toggle keyboard grab
+```
 # Optional
 
 ## Applications

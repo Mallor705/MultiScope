@@ -92,15 +92,30 @@ Quando todas as suas instâncias estiverem configuradas e em execução, você p
 Divirta-se em sua sessão de jogos!
 
 ### Atalhos de teclado:
-
-  Super + F                      Alternar fullscreen
-  Super + N                      Alternar filtro de vizinho mais próximo
-  Super + U                      Alternar FSR upscaling
-  Super + Y                      Alternar NIS upscaling
-  Super + I                      Aumentar a nitidez do FSR em 1
-  Super + O                      Diminuir a nitidez do FSR em 1
-  Super + S                      Tirar uma captura de tela
-  Super + G                      Alternar captura de teclado
+```
+Super + F       Alternar tela cheia
+```
+```
+Super + N       Alternar filtragem por vizinho mais próximo
+```
+```
+Super + U       Alternar e aumentar a escala FSR
+```
+```
+Super + Y       Alternar e aumentar a escala NIS
+```
+```
+Super + I       Aumentar a nitidez FSR em 1
+```
+```
+Super + O       Diminuir a nitidez FSR em 1
+```
+```
+Super + S       Tirar uma captura de tela
+```
+```
+Super + G       Alternar captura de tela com o teclado
+```
 
 # Opcional
 
