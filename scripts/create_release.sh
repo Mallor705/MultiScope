@@ -19,33 +19,33 @@ print_error() {
 # Função para verificar dependências
 check_dependencies() {
     print_header "Verificando Dependências"
-    
+
     local missing_deps=()
-    
+
     for cmd in git python3; do
         if ! command -v "$cmd" &> /dev/null; then
             missing_deps+=("$cmd")
         fi
     done
-    
+
     # Verifica se estamos em um repositório git
     if [[ ! -d ".git" ]]; then
         print_error "Não está em um repositório git"
         missing_deps+=("git-repo")
     fi
-    
+
     if [[ ${#missing_deps[@]} -gt 0 ]]; then
         print_error "Dependências ausentes: ${missing_deps[*]}"
         exit 1
     fi
-    
+
     print_success "Todas dependências verificadas"
 }
 
 # Função para obter a versão atual
 get_current_version() {
-    if [[ -f "VERSION" ]]; then
-        cat VERSION
+    if [[ -f "version" ]]; then
+        cat version
     else
         echo "0.9.0"  # Versão padrão
     fi
@@ -64,21 +64,21 @@ check_git_status() {
 create_release() {
     local version="$1"
     local release_type="$2"
-    
+
     print_header "Criando Release $version ($release_type)"
-    
+
     # Atualiza a versão
     python scripts/version_manager.py "$version"
-    
+
     # Commit das alterações de versionamento
     print_header "Fazendo commit das alterações"
-    git add VERSION share/metainfo/io.github.mallor.MultiScope.metainfo.xml README.md docs/README.pt-br.md docs/README.es.md scripts/package-appimage.sh
+    git add version share/metainfo/io.github.mallor.MultiScope.metainfo.xml README.md docs/README.pt-br.md docs/README.es.md scripts/package-appimage.sh
     git commit -m "Bump version to $version"
-    
+
     # Cria tag
     print_header "Criando tag"
     git tag "v$version"
-    
+
     print_success "Release $version criada com sucesso!"
     echo ""
     echo "Próximos passos:"
@@ -100,7 +100,7 @@ Uso: $0 [OPÇÕES] [VERSÃO]
 
 Opções:
   --major          Cria uma release major (x.0.0)
-  --minor          Cria uma release minor (0.y.0)  
+  --minor          Cria uma release minor (0.y.0)
   --patch          Cria uma release patch (0.0.z)
   --custom <ver>   Cria uma release com versão personalizada
   --help, -h       Mostra esta ajuda
@@ -118,12 +118,12 @@ EOF
 increment_version() {
     local version="$1"
     local part="$2"
-    
+
     IFS='.' read -ra parts <<< "$version"
     local major="${parts[0]}"
     local minor="${parts[1]}"
     local patch="${parts[2]}"
-    
+
     case "$part" in
         "major")
             major=$((major + 1))
@@ -138,7 +138,7 @@ increment_version() {
             patch=$((patch + 1))
             ;;
     esac
-    
+
     echo "${major}.${minor}.${patch}"
 }
 

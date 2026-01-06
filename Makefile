@@ -40,7 +40,7 @@ endif
 # Incrementar versão major
 bump-major:
 	@echo "Incrementando versão major..."
-	@current_version=$$(cat VERSION); \
+	@current_version=$$(cat version); \
 	major=$$(echo $$current_version | cut -d. -f1); \
 	minor=0; \
 	patch=0; \
@@ -50,7 +50,7 @@ bump-major:
 # Incrementar versão minor
 bump-minor:
 	@echo "Incrementando versão minor..."
-	@current_version=$$(cat VERSION); \
+	@current_version=$$(cat version); \
 	major=$$(echo $$current_version | cut -d. -f1); \
 	minor=$$(echo $$current_version | cut -d. -f2); \
 	patch=0; \
@@ -60,7 +60,7 @@ bump-minor:
 # Incrementar versão patch
 bump-patch:
 	@echo "Incrementando versão patch..."
-	@current_version=$$(cat VERSION); \
+	@current_version=$$(cat version); \
 	major=$$(echo $$current_version | cut -d. -f1); \
 	minor=$$(echo $$current_version | cut -d. -f2); \
 	patch=$$(echo $$current_version | cut -d. -f3); \
