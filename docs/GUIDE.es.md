@@ -25,7 +25,7 @@ Primero, necesitas decidir cuántas instancias de Steam deseas ejecutar. Twinver
 
 Usa el selector numérico "Número de instancias" para definir la cantidad deseada.
 
-<img width="708" height="127" alt="general-layout" src="https://raw.githubusercontent.com/Mallor705/Twinverse/master/share/screenshots/general-layout.png" />
+<img width="708" height="127" alt="general-layout" src="https://raw.githubusercontent.com/mall0r/Twinverse/master/share/screenshots/general-layout.png" />
 
 ## 2. Modo de pantalla
 
@@ -34,7 +34,7 @@ Puedes elegir entre dos modos de pantalla:
 - **Pantalla completa (Fullscreen):** Cada instancia se ejecutará en un monitor separado.
 - **Pantalla dividida (Splitscreen):** Las instancias se distribuirán en un solo monitor, ya sea horizontal o verticalmente.
 
-<img width="708" height="204" alt="screen-settings" src="https://raw.githubusercontent.com/Mallor705/Twinverse/master/share/screenshots/screen-settings.png" />
+<img width="708" height="204" alt="screen-settings" src="https://raw.githubusercontent.com/mall0r/Twinverse/master/share/screenshots/screen-settings.png" />
 
 ### Opciones de Pantalla dividida
 
@@ -47,8 +47,8 @@ Las posiciones y los formatos varían automáticamente según el número de inst
 
 Nota: La organización automática de las instancias solo funciona con entornos `KDE Plasma`.
 
-<img width="1280" height="720" alt="horizontal-game" src="https://raw.githubusercontent.com/Mallor705/Twinverse/master/share/screenshots/horizontal-game.png" />
-<img width="1280" height="720" alt="vertical-game" src="https://raw.githubusercontent.com/Mallor705/Twinverse/master/share/screenshots/vertical-game.png" />
+<img width="1280" height="720" alt="horizontal-game" src="https://raw.githubusercontent.com/mall0r/Twinverse/master/share/screenshots/horizontal-game.png" />
+<img width="1280" height="720" alt="vertical-game" src="https://raw.githubusercontent.com/mall0r/Twinverse/master/share/screenshots/vertical-game.png" />
 
 ## 3. Configuración de la instancia
 
@@ -60,7 +60,7 @@ Para cada instancia, puedes configurar las siguientes opciones:
 - **Tasa de actualización (Refresh Rate):** Definir la tasa de actualización para la instancia. Es útil si quieres limitar los FPS o usar una tasa de actualización específica.
 - **Variables de entorno (Environment Variables):** Definir variables de entorno específicas para la instancia.
 
-<img width="595" height="409" alt="player-config" src="https://raw.githubusercontent.com/Mallor705/Twinverse/master/share/screenshots/player-config.png" />
+<img width="595" height="409" alt="player-config" src="https://raw.githubusercontent.com/mall0r/Twinverse/master/share/screenshots/player-config.png" />
 
 ## 4. Iniciar una instancia
 
@@ -70,7 +70,7 @@ Cada instancia puede iniciarse individualmente con su botón **"Iniciar"**. Para
 
 Solo las instancias que ya tienen Steam instalado pueden iniciarse con el botón **"Play"**. Puedes verificarlo por el ícono de palomita (✓) en la instancia. Si el ícono no está presente, instala Steam haciendo clic en el botón **"Iniciar"** de esa instancia. Esto permite configurar, agregar juegos o aplicaciones de manera rápida y directa en una instancia específica.
 
-<img width="651" height="178" alt="instance-config" src="https://raw.githubusercontent.com/Mallor705/Twinverse/master/share/screenshots/instance-config.png" />
+<img width="651" height="178" alt="instance-config" src="https://raw.githubusercontent.com/mall0r/Twinverse/master/share/screenshots/instance-config.png" />
 
 ## 5. Modo Big Picture de Steam (Opcional)
 
@@ -80,7 +80,7 @@ Para hacerlo, ve a `Configuración > Interfaz` y marca la casilla para `Iniciar 
 
 Repite este proceso para todas las instancias que desees iniciar en Modo Big Picture.
 
-<img width="850" height="722" alt="enable-bigpicture" src="https://raw.githubusercontent.com/Mallor705/Twinverse/master/share/screenshots/enable-bigpicture.png" />
+<img width="850" height="722" alt="enable-bigpicture" src="https://raw.githubusercontent.com/mall0r/Twinverse/master/share/screenshots/enable-bigpicture.png" />
 
 ## 6. Jugar
 
@@ -105,7 +105,7 @@ Repite este proceso para todas las instancias que desees iniciar en Modo Big Pic
 
 Para agregar aplicaciones a tu instancia, ve a `Agregar un juego` y haz clic en `Agregar un juego que no es de Steam...`. Selecciona la aplicación que deseas agregar.
 
-<img width="364" height="142" alt="add-game" src="https://raw.githubusercontent.com/Mallor705/Twinverse/master/share/screenshots/add-game.png" />
+<img width="364" height="142" alt="add-game" src="https://raw.githubusercontent.com/mall0r/Twinverse/master/share/screenshots/add-game.png" />
 
 ### ¿Por qué hacer esto?
 

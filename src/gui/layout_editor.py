@@ -489,10 +489,10 @@ class LayoutSettingsPage(Adw.PreferencesPage):
             row_dict["status_icon"] = None
 
         if is_verified:
-            icon = Gtk.Image.new_from_resource("/io/github/mallor/Twinverse/icons/check-icon.svg")
+            icon = Gtk.Image.new_from_resource("/io/github/mall0r/Twinverse/icons/check-icon.svg")
             icon.get_style_context().add_class("verification-passed-icon")
         else:
-            icon = Gtk.Image.new_from_resource("/io/github/mallor/Twinverse/icons/alert-icon.svg")
+            icon = Gtk.Image.new_from_resource("/io/github/mall0r/Twinverse/icons/alert-icon.svg")
             icon.get_style_context().add_class("verification-failed-icon")
 
         row_dict["expander"].add_suffix(icon)

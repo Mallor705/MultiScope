@@ -1,4 +1,4 @@
-app-id: io.github.mallor.Twinverse
+app-id: io.github.mall0r.Twinverse
 runtime: org.gnome.Platform
 runtime-version: '49'
 sdk: org.gnome.Sdk
@@ -62,15 +62,15 @@ modules:
       - chmod +x /app/bin/twinverse
 
       # Install desktop file and icon
-      - install -Dm644 share/applications/io.github.mallor.Twinverse.desktop /app/share/applications/io.github.mallor.Twinverse.desktop
-      - install -Dm644 share/icons/hicolor/scalable/apps/io.github.mallor.Twinverse.svg /app/share/icons/hicolor/scalable/apps/io.github.mallor.Twinverse.svg
+      - install -Dm644 share/applications/io.github.mall0r.Twinverse.desktop /app/share/applications/io.github.mall0r.Twinverse.desktop
+      - install -Dm644 share/icons/hicolor/scalable/apps/io.github.mall0r.Twinverse.svg /app/share/icons/hicolor/scalable/apps/io.github.mall0r.Twinverse.svg
 
       # Update desktop file with correct app-id
-      - desktop-file-edit --set-key=Icon --set-value=io.github.mallor.Twinverse /app/share/applications/io.github.mallor.Twinverse.desktop
-      - desktop-file-edit --set-key=Exec --set-value=twinverse /app/share/applications/io.github.mallor.Twinverse.desktop
+      - desktop-file-edit --set-key=Icon --set-value=io.github.mall0r.Twinverse /app/share/applications/io.github.mall0r.Twinverse.desktop
+      - desktop-file-edit --set-key=Exec --set-value=twinverse /app/share/applications/io.github.mall0r.Twinverse.desktop
 
       # Install metainfo
-      - install -Dm644 share/metainfo/io.github.mallor.Twinverse.metainfo.xml /app/share/metainfo/io.github.mallor.Twinverse.metainfo.xml
+      - install -Dm644 share/metainfo/io.github.mall0r.Twinverse.metainfo.xml /app/share/metainfo/io.github.mall0r.Twinverse.metainfo.xml
 
     sources:
       - type: dir

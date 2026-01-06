@@ -73,7 +73,7 @@ release-major: check-deps git-status
 	echo "Updating version from $$current_version to $$new_version"; \
 	python scripts/version_manager.py $$new_version; \
 	echo "Committing version changes"; \
-	git add $(VERSION_FILE) share/metainfo/io.github.mallor.Twinverse.metainfo.xml README.md docs/README.pt-br.md docs/README.es.md scripts/package-appimage.sh io.github.mallor.Twinverse.yaml scripts/package-flatpak.sh; \
+	git add $(VERSION_FILE) share/metainfo/io.github.mall0r.Twinverse.metainfo.xml README.md docs/README.pt-br.md docs/README.es.md scripts/package-appimage.sh io.github.mall0r.Twinverse.yaml scripts/package-flatpak.sh; \
 	git commit -m "Bump version to $$new_version"; \
 	git tag "v$$new_version"; \
 	echo "Release $$new_version created successfully!"; \
@@ -92,7 +92,7 @@ release-minor: check-deps git-status
 	echo "Updating version from $$current_version to $$new_version"; \
 	python scripts/version_manager.py $$new_version; \
 	echo "Committing version changes"; \
-	git add $(VERSION_FILE) share/metainfo/io.github.mallor.Twinverse.metainfo.xml README.md docs/README.pt-br.md docs/README.es.md scripts/package-appimage.sh io.github.mallor.Twinverse.yaml scripts/package-flatpak.sh; \
+	git add $(VERSION_FILE) share/metainfo/io.github.mall0r.Twinverse.metainfo.xml README.md docs/README.pt-br.md docs/README.es.md scripts/package-appimage.sh io.github.mall0r.Twinverse.yaml scripts/package-flatpak.sh; \
 	git commit -m "Bump version to $$new_version"; \
 	git tag "v$$new_version"; \
 	echo "Release $$new_version created successfully!"; \
@@ -111,7 +111,7 @@ release-patch: check-deps git-status
 	echo "Updating version from $$current_version to $$new_version"; \
 	python scripts/version_manager.py $$new_version; \
 	echo "Committing version changes"; \
-	git add $(VERSION_FILE) share/metainfo/io.github.mallor.Twinverse.metainfo.xml README.md docs/README.pt-br.md docs/README.es.md scripts/package-appimage.sh io.github.mallor.Twinverse.yaml scripts/package-flatpak.sh; \
+	git add $(VERSION_FILE) share/metainfo/io.github.mall0r.Twinverse.metainfo.xml README.md docs/README.pt-br.md docs/README.es.md scripts/package-appimage.sh io.github.mall0r.Twinverse.yaml scripts/package-flatpak.sh; \
 	git commit -m "Bump version to $$new_version"; \
 	git tag "v$$new_version"; \
 	echo "Release $$new_version created successfully!"; \
@@ -134,7 +134,7 @@ endif
 		echo "Updating version from $$current_version to $(v)" && \
 		python scripts/version_manager.py $(v) && \
 		echo "Committing version changes" && \
-		git add $(VERSION_FILE) share/metainfo/io.github.mallor.Twinverse.metainfo.xml README.md docs/README.pt-br.md docs/README.es.md scripts/package-appimage.sh io.github.mallor.Twinverse.yaml scripts/package-flatpak.sh && \
+		git add $(VERSION_FILE) share/metainfo/io.github.mall0r.Twinverse.metainfo.xml README.md docs/README.pt-br.md docs/README.es.md scripts/package-appimage.sh io.github.mall0r.Twinverse.yaml scripts/package-flatpak.sh && \
 		git commit -m "Bump version to $(v)" && \
 		git tag "v$(v)" && \
 		echo "Release $(v) created successfully!" && \

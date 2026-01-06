@@ -215,11 +215,11 @@ echo "📋 Copying desktop file and icon..."
 mkdir -p AppDir/usr/share/applications
 mkdir -p AppDir/usr/share/icons/hicolor/scalable/apps
 mkdir -p AppDir/usr/share/metainfo
-cp share/applications/io.github.mallor.Twinverse.desktop AppDir/usr/share/applications/
-cp share/icons/hicolor/scalable/apps/io.github.mallor.Twinverse.svg AppDir/usr/share/icons/hicolor/scalable/apps/
-cp share/icons/hicolor/scalable/apps/io.github.mallor.Twinverse.svg AppDir/io.github.mallor.Twinverse.svg
-cp share/applications/io.github.mallor.Twinverse.desktop AppDir/io.github.mallor.Twinverse.desktop
-cp share/metainfo/io.github.mallor.Twinverse.metainfo.xml AppDir/usr/share/metainfo/
+cp share/applications/io.github.mall0r.Twinverse.desktop AppDir/usr/share/applications/
+cp share/icons/hicolor/scalable/apps/io.github.mall0r.Twinverse.svg AppDir/usr/share/icons/hicolor/scalable/apps/
+cp share/icons/hicolor/scalable/apps/io.github.mall0r.Twinverse.svg AppDir/io.github.mall0r.Twinverse.svg
+cp share/applications/io.github.mall0r.Twinverse.desktop AppDir/io.github.mall0r.Twinverse.desktop
+cp share/metainfo/io.github.mall0r.Twinverse.metainfo.xml AppDir/usr/share/metainfo/
 
 # 14. Run linuxdeploy to finalize (without strip) and create AppImage
 echo "🔧 Running linuxdeploy..."

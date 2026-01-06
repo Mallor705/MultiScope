@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # ===== CONFIGURATION =====
-readonly APP_ID="io.github.mallor.Twinverse"
+readonly APP_ID="io.github.mall0r.Twinverse"
 readonly MANIFEST="$APP_ID.yaml"
 readonly BUILD_DIR="build-dir"
 readonly REPO_DIR="flatpak-repo"
@@ -133,7 +133,7 @@ create_bundle() {
     print_header "Creating Bundle"
 
     # ★ FIX: Read version from metainfo.xml file ★
-    local metainfo_path="share/metainfo/io.github.mallor.Twinverse.metainfo.xml"
+    local metainfo_path="share/metainfo/io.github.mall0r.Twinverse.metainfo.xml"
     local version
     version=$(grep -oP '<release version="\K[^"]+' "$metainfo_path" | head -1)
 

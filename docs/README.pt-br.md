@@ -3,12 +3,12 @@
 # Twinverse
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Mallor705/Twinverse/master/share/icons/hicolor/scalable/apps/io.github.mallor.Twinverse.svg" alt="Twinverse Logo" width="128" height="128">
+  <img src="https://raw.githubusercontent.com/mall0r/Twinverse/master/share/icons/hicolor/scalable/apps/io.github.mall0r.Twinverse.svg" alt="Twinverse Logo" width="128" height="128">
 </p>
 
 <p align="center">
-  <a href="https://github.com/Mallor705/Twinverse/releases"><img src="https://img.shields.io/badge/Version-0.9.0-blue.svg" alt="Version"/></a>
-  <a href="https://github.com/Mallor705/Twinverse/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-green.svg" alt="License"/></a>
+  <a href="https://github.com/mall0r/Twinverse/releases"><img src="https://img.shields.io/badge/Version-0.9.0-blue.svg" alt="Version"/></a>
+  <a href="https://github.com/mall0r/Twinverse/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-green.svg" alt="License"/></a>
   <a href="https://www.gtk.org/"><img src="https://img.shields.io/badge/GTK-4.0+-orange.svg" alt="GTK Version"/></a>
   <a href="https://gnome.pages.gitlab.gnome.org/libadwaita/"><img src="https://img.shields.io/badge/libadwaita-1.0+-purple.svg" alt="libadwaita Version"/></a>
 </p>
@@ -25,7 +25,7 @@ O **Twinverse** é uma ferramenta para Linux/SteamOS que permite criar e gerenci
 ---
 
 <p align="center">
-  <img alt="twinverse_ui" src="https://raw.githubusercontent.com/Mallor705/Twinverse/master/share/screenshots/twinverse-ui.png" />
+  <img alt="twinverse_ui" src="https://raw.githubusercontent.com/mall0r/Twinverse/master/share/screenshots/twinverse-ui.png" />
 </p>
 
 ## ✨ Principais Funcionalidades
@@ -51,18 +51,18 @@ O Twinverse foi projetado para ser uma solução flexível para múltiplos jogos
 ## 📦 Instalação
 
 ### Flatpak (Recomendado)
-A maneira recomendada de instalar o Twinverse é via Flatpak, que oferece um ambiente em sandbox e atualizações mais fáceis. Você pode instalá-lo do Flathub (assim que estiver disponível) ou de um arquivo `.flatpak` da [página de releases](https://github.com/Mallor705/Twinverse/releases).
+A maneira recomendada de instalar o Twinverse é via Flatpak, que oferece um ambiente em sandbox e atualizações mais fáceis. Você pode instalá-lo do Flathub (assim que estiver disponível) ou de um arquivo `.flatpak` da [página de releases](https://github.com/mall0r/Twinverse/releases).
 
 **Opção 1: Instalar do Flathub (Em Breve)**
 Assim que o Twinverse estiver disponível no Flathub, você poderá instalá-lo usando os seguintes comandos:
 ```bash
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flatpak install flathub io.github.mallor.Twinverse
+flatpak install flathub io.github.mall0r.Twinverse
 ```
 
 **Opção 2: Instalar de um arquivo .flatpak**
 1. **Baixe o último arquivo .flatpak:**
-   Acesse a página de [**Releases**](https://github.com/Mallor705/Twinverse/releases) e baixe o último arquivo `.flatpak`.
+   Acesse a página de [**Releases**](https://github.com/mall0r/Twinverse/releases) e baixe o último arquivo `.flatpak`.
 
 2. **Instale o Flatpak:**
    Você pode instalar o Flatpak com o seguinte comando:
@@ -74,7 +74,7 @@ flatpak install flathub io.github.mallor.Twinverse
 Alternativamente, você pode usar a versão AppImage. Este arquivo único funciona na maioria das distribuições Linux modernas sem a necessidade de instalação no sistema.
 
 1.  **Baixe o AppImage mais recente:**
-    Acesse a página de [**Releases**](https://github.com/Mallor705/Twinverse/releases) e baixe o arquivo `.AppImage` mais recente.
+    Acesse a página de [**Releases**](https://github.com/mall0r/Twinverse/releases) e baixe o arquivo `.AppImage` mais recente.
 
 2.  **Torne-o Executável:**
     Após o download, clique com o botão direito no arquivo, vá para "Propriedades" e marque a caixa "Permitir a execução do arquivo como programa". Alternativamente, você pode usar o terminal:
@@ -103,7 +103,7 @@ Para que o auto-tiling das janelas funcione bem, é recomendado usar KDE Plasma 
 
 O Twinverse está em desenvolvimento ativo, alguns bugs ainda podem ser encontrados.
 
-Caso tenha problemas, sinta-se a vontade para compartilhar seu feedback e reportar bugs em [Issues](https://github.com/Mallor705/Twinverse/issues/new).
+Caso tenha problemas, sinta-se a vontade para compartilhar seu feedback e reportar bugs em [Issues](https://github.com/mall0r/Twinverse/issues/new).
 
 ---
 
@@ -123,7 +123,7 @@ O script `run.sh` oferece uma maneira rápida de configurar um ambiente local e 
 
 ```bash
 # Clone o repositório
-git clone https://github.com/Mallor705/Twinverse.git
+git clone https://github.com/mall0r/Twinverse.git
 cd Twinverse
 
 # Execute o script de execução

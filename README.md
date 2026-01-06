@@ -3,12 +3,12 @@
 # Twinverse
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Mallor705/Twinverse/master/share/icons/hicolor/scalable/apps/io.github.mallor.Twinverse.svg" alt="Twinverse Logo" width="128" height="128">
+  <img src="https://raw.githubusercontent.com/mall0r/Twinverse/master/share/icons/hicolor/scalable/apps/io.github.mall0r.Twinverse.svg" alt="Twinverse Logo" width="128" height="128">
 </p>
 
 <p align="center">
-  <a href="https://github.com/Mallor705/Twinverse/releases"><img src="https://img.shields.io/badge/Version-0.9.0-blue.svg" alt="Version"/></a>
-  <a href="https://github.com/Mallor705/Twinverse/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-green.svg" alt="License"/></a>
+  <a href="https://github.com/mall0r/Twinverse/releases"><img src="https://img.shields.io/badge/Version-0.9.0-blue.svg" alt="Version"/></a>
+  <a href="https://github.com/mall0r/Twinverse/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-green.svg" alt="License"/></a>
   <a href="https://www.gtk.org/"><img src="https://img.shields.io/badge/GTK-4.0+-orange.svg" alt="GTK Version"/></a>
   <a href="https://gnome.pages.gitlab.gnome.org/libadwaita/"><img src="https://img.shields.io/badge/libadwaita-1.0+-purple.svg" alt="libadwaita Version"/></a>
 </p>
@@ -25,7 +25,7 @@
 ---
 
 <p align="center">
-  <img alt="twinverse_ui" src="https://raw.githubusercontent.com/Mallor705/Twinverse/master/share/screenshots/twinverse-ui.png" />
+  <img alt="twinverse_ui" src="https://raw.githubusercontent.com/mall0r/Twinverse/master/share/screenshots/twinverse-ui.png" />
 </p>
 
 ## ✨ Key Features
@@ -52,20 +52,20 @@ Twinverse is designed as a flexible solution for simultaneous multi-gaming on Li
 
 ### Flatpak (Recommended)
 
-The recommended way to install Twinverse is via Flatpak, which provides a sandboxed environment and easier updates. You can install it from Flathub (once available) or from a `.flatpak` file from the [releases page](https://github.com/Mallor705/Twinverse/releases).
+The recommended way to install Twinverse is via Flatpak, which provides a sandboxed environment and easier updates. You can install it from Flathub (once available) or from a `.flatpak` file from the [releases page](https://github.com/mall0r/Twinverse/releases).
 
 **Option 1: Install from Flathub (Coming Soon)**
 Once Twinverse is available on Flathub, you can install it using the following commands:
 
 ```bash
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flatpak install flathub io.github.mallor.Twinverse
+flatpak install flathub io.github.mall0r.Twinverse
 ```
 
 **Option 2: Install from a .flatpak file**
 
 1. **Download the Latest .flatpak file:**
-   Go to the [**Releases**](https://github.com/Mallor705/Twinverse/releases) page and download the latest `.flatpak` file.
+   Go to the [**Releases**](https://github.com/mall0r/Twinverse/releases) page and download the latest `.flatpak` file.
 
 2. **Install the Flatpak:**
    You can install the Flatpak with the following command:
@@ -79,7 +79,7 @@ flatpak install flathub io.github.mallor.Twinverse
 Alternatively, you can use the AppImage version. This single file works on most modern Linux distributions without requiring system installation.
 
 1. **Download the Latest AppImage:**
-   Go to the [**Releases**](https://github.com/Mallor705/Twinverse/releases) page and download the latest `.AppImage` file.
+   Go to the [**Releases**](https://github.com/mall0r/Twinverse/releases) page and download the latest `.AppImage` file.
 
 2. **Make it Executable:**
    After downloading, right-click the file, go to "Properties," and check the "Allow executing file as program" box. Alternatively, you can use the terminal:
@@ -109,7 +109,7 @@ For window auto-tiling to work properly, it is recommended to use KDE Plasma 6.0
 
 Twinverse is under active development; some bugs may still be encountered.
 
-If you encounter issues, feel free to share your feedback and report bugs in the [Issues](https://github.com/Mallor705/Twinverse/issues/new) section.
+If you encounter issues, feel free to share your feedback and report bugs in the [Issues](https://github.com/mall0r/Twinverse/issues/new) section.
 
 ---
 
@@ -129,7 +129,7 @@ The `run.sh` script provides a quick way to set up a local environment and run t
 
 ```bash
 # Clone the repository
-git clone https://github.com/Mallor705/Twinverse.git
+git clone https://github.com/mall0r/Twinverse.git
 cd Twinverse
 
 # Run the launch script

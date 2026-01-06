@@ -85,11 +85,11 @@ def set_new_version(new_version):
     # List of files that contain the version
     files_to_update = [
         "scripts/package-appimage.sh",
-        "share/metainfo/io.github.mallor.Twinverse.metainfo.xml",
+        "share/metainfo/io.github.mall0r.Twinverse.metainfo.xml",
         "README.md",
         "docs/README.pt-br.md",
         "docs/README.es.md",
-        "io.github.mallor.Twinverse.yaml",  # Although it doesn't contain version directly, it may contain references
+        "io.github.mall0r.Twinverse.yaml",  # Although it doesn't contain version directly, it may contain references
         "scripts/package-flatpak.sh",
     ]
 

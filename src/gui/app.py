@@ -246,7 +246,7 @@ class TwinverseWindow(Adw.ApplicationWindow):
 
 class TwinverseApplication(Adw.Application):
     def __init__(self, **kwargs):
-        super().__init__(application_id="io.github.mallor.Twinverse", **kwargs)
+        super().__init__(application_id="io.github.mall0r.Twinverse", **kwargs)
         self.base_path = Utils.get_base_path()
 
         # Load resources
