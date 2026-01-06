@@ -100,7 +100,7 @@ For better system integration (e.g., adding a menu entry), you can use a tool li
 
 ## 📖 How to Use It?
 
-Access our [Guide](docs/GUIDE.md) for more information on how to use Twinverse.
+Access our [Guide](https://github.com/mall0r/Twinverse/blob/master/docs/GUIDE.md) for more information on how to use Twinverse.
 
 ---
 

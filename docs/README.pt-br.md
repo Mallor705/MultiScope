@@ -94,7 +94,7 @@ Para uma melhor integração com o sistema (por exemplo, adicionar uma entrada n
 
 ## 📖 Como Usar?
 
-Acesse nosso [Guia](./GUIDE.pt-br.md) para mais informações sobre como usar o Twinverse.
+Acesse nosso [Guide](https://github.com/mall0r/Twinverse/blob/master/docs/GUIDE.pt-br.md) para mais informações sobre como usar o Twinverse.
 
 ---
 
