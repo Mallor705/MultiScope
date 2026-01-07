@@ -14,14 +14,14 @@ help:
 	@echo "Available targets:"
 	@echo "  help              - Show this help"
 	@echo "  version           - Show current version"
-	@echo "  update-version    - Update version (usage: make update-version NEW_VERSION=1.2.3)"
+	@echo "  update-version    - Update version (usage: make update-version v=x.y.z)"
 	@echo "  bump-major        - Increment major version (x.0.0)"
 	@echo "  bump-minor        - Increment minor version (0.y.0)"
 	@echo "  bump-patch        - Increment patch version (0.0.z)"
 	@echo "  release-major     - Create a major release (x.0.0)"
 	@echo "  release-minor     - Create a minor release (0.y.0)"
 	@echo "  release-patch     - Create a patch release (0.0.z)"
-	@echo "  release-custom    - Create a custom release (usage: make release-custom NEW_VERSION=1.2.3)"
+	@echo "  release-custom    - Create a custom release (usage: make release-custom v=x.y.z)"
 	@echo "  check-deps        - Check required dependencies"
 	@echo "  git-status        - Check git repository status"
 	@echo ""
@@ -56,11 +56,11 @@ git-status:
 
 # Update version
 update-version:
-ifndef NEW_VERSION
-	$(error Please specify the new version: make update-version NEW_VERSION=1.2.3)
+ifndef v
+	$(error Please specify the new version: make update-version v=1.2.3)
 endif
-	@echo "Updating version from $(VERSION) to $(NEW_VERSION)"
-	@python scripts/version_manager.py $(NEW_VERSION)
+	@echo "Updating version from $(VERSION) to $(v)"
+	@python scripts/version_manager.py $(v)
 
 # Create major release
 release-major: check-deps git-status
@@ -121,12 +121,12 @@ release-patch: check-deps git-status
 
 # Create custom release
 release-custom:
-ifndef NEW_VERSION
-	$(error Please specify the new version: make release-custom NEW_VERSION=1.2.3)
+ifndef v
+	$(error Please specify the new version: make release-custom v=1.2.3)
 endif
 	@current_version=$$(cat $(VERSION_FILE)); \
-	if [ "$$current_version" = "$(NEW_VERSION)" ]; then \
-		echo "Version is already $(NEW_VERSION)"; \
+	if [ "$$current_version" = "$(v)" ]; then \
+		echo "Version is already $(v)"; \
 	else \
 		$(MAKE) check-deps && \
 		$(MAKE) git-status && \
