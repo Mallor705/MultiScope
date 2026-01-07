@@ -8,7 +8,7 @@
 
 Welcome to the Twinverse guide! This document will walk you through the process of setting up and using the Twinverse application to run multiple Steam instances.
 
-> [!NOTE]
+> [!IMPORTANT]
 > To use Twinverse, it's necessary to add your user to the `input` group to allow the program to manage input devices.
 > ```bash
 > sudo usermod -aG input $USER
@@ -31,6 +31,10 @@ Use the numeric selector "Number of Instances" to set the desired amount.
 <img width="708" height="127" alt="general-layout" src="https://raw.githubusercontent.com/mall0r/Twinverse/master/share/screenshots/general-layout.png" />
 
 ## 2. Screen Mode
+
+> [!NOTE]
+> For window auto-tiling to work properly, it is recommended to use KDE Plasma 6.0+.
+> In other DEs, you will need to move the windows yourself, everything else should work fine.
 
 You can choose between two screen modes:
 
@@ -117,18 +121,6 @@ Super + S      Take a screenshot
 Super + G      Toggle keyboard grab
 ```
 # Optional
-
-## Applications
-
-To add applications to your instance, go to `Add a Game` and click `Add a Non-Steam Game...`. Select the application you wish to add.
-
-<img width="364" height="142" alt="add-game" src="https://raw.githubusercontent.com/mall0r/Twinverse/master/share/screenshots/add-game.png" />
-
-### Why do this?
-
-This allows you to run applications directly from the instance, enabling a unique configuration per instance for that application. This is because each instance has its own unique `HOME` directory. They can be found at `~/.local/share/twinverse/home_{n}`.
-
-A good example is [mangojuice](https://github.com/radiolamp/mangojuice); if you want to use it with custom settings, you will need to run and configure it for each instance individually.
 
 ## Multi GPU Support
 

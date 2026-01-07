@@ -54,6 +54,12 @@ Twinverse is designed as a flexible solution for simultaneous multi-gaming on Li
 
 ## 📦 Installation
 
+> [!NOTE]
+> You need to have installed the `gamescope`, `steam` and `mangoapp` packages native to your distro.
+> SteamOS and Bazzite 
+
+Twinverse should work well on any system that supports `Gamescope` and `Steam`.
+
 ### Flatpak (Recommended)
 
 The recommended way to install Twinverse is via Flatpak, which provides a sandboxed environment and easier updates. You can install it from Flathub (once available) or from a `.flatpak` file from the [releases page](https://github.com/mall0r/Twinverse/releases).
@@ -80,6 +86,9 @@ flatpak install flathub io.github.mall0r.Twinverse
 
 ### AppImage
 
+> [!NOTE]
+> Make sure you have the `bubblewrap` package installed.
+
 Alternatively, you can use the AppImage version. This single file works on most modern Linux distributions without requiring system installation.
 
 1. **Download the Latest AppImage:**
@@ -105,14 +114,9 @@ Access our [Guide](https://github.com/mall0r/Twinverse/blob/master/docs/GUIDE.md
 
 ---
 
-## 🚀 Project Status and Compatibility
-
-You need to have the `steam` and `gamescope` packages native to your distro. Twinverse should work fine on systems that can already run `Gamescope` and `Steam` normally.
-
-For window auto-tiling to work properly, it is recommended to use KDE Plasma 6.0 or higher. In other DEs, you will need to move the windows yourself.
+## 👾 Bugs and Issues
 
 Twinverse is under active development; some bugs may still be encountered.
-
 If you encounter issues, feel free to share your feedback and report bugs in the [Issues](https://github.com/mall0r/Twinverse/issues/new) section.
 
 ---

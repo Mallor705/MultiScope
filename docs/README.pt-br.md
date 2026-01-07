@@ -24,7 +24,7 @@
   <a href="https://www.w3.org/Style/CSS/" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/CSS3-66309A?style=for-the-badge&logo=css3&logoColor=white" alt="CSS"/></a>
 </p>
 
-O **Twinverse** é uma ferramenta para Linux/SteamOS que permite criar e gerenciar múltiplas instâncias do `gamescope` e `steam` simultaneamente. Isso possibilita que vários jogadores aproveitem sua biblioteca de jogos em um único computador, seja em tela dividida ou cada um com sua própria tela, além de saída de áudio e dispositivos de entrada dedicados.
+O **Twinverse** é uma ferramenta código aberto para Linux/SteamOS que permite criar e gerenciar múltiplas instâncias do `gamescope` e `steam` simultaneamente. Isso possibilita que vários jogadores aproveitem sua biblioteca de jogos em um único computador, seja em tela dividida ou cada um com sua própria tela, além de saída de áudio e dispositivos de entrada dedicados.
 
 ---
 
@@ -54,7 +54,14 @@ O Twinverse foi projetado para ser uma solução flexível para múltiplos jogos
 
 ## 📦 Instalação
 
+> [!NOTE]
+> É necessário ter instalados os pacotes `gamescope`, `steam` e `mangoapp` nativos de sua distro.
+> SteamOS and Bazzite usually have all dependencies included by default.
+
+Twinverse deve funcionar bem em qualquer sistema que suporte `Gamescope` e `Steam`.
+
 ### Flatpak (Recomendado)
+
 A maneira recomendada de instalar o Twinverse é via Flatpak, que oferece um ambiente em sandbox e atualizações mais fáceis. Você pode instalá-lo do Flathub (assim que estiver disponível) ou de um arquivo `.flatpak` da [página de releases](https://github.com/mall0r/Twinverse/releases).
 
 **Opção 1: Instalar do Flathub (Em Breve)**
@@ -75,6 +82,10 @@ flatpak install flathub io.github.mall0r.Twinverse
    ```
 
 ### AppImage
+
+> [!NOTE]
+> Garanta que tenha instalado o pacote `bubblewrap`.
+
 Alternativamente, você pode usar a versão AppImage. Este arquivo único funciona na maioria das distribuições Linux modernas sem a necessidade de instalação no sistema.
 
 1.  **Baixe o AppImage mais recente:**
@@ -99,14 +110,9 @@ Acesse nosso [Guide](https://github.com/mall0r/Twinverse/blob/master/docs/GUIDE.
 
 ---
 
-## 🚀 Status e Compatibilidade do Projeto
+## 👾 Bugs e Issues
 
-É necessário ter os pacotes `steam` e `gamescope` nativos de sua distro. O Twinverse deve funcionar bem em sistemas que já conseguem executar o `Gamescope` e `Steam` normalmente.
-
-Para que o auto-tiling das janelas funcione bem, é recomendado usar KDE Plasma 6.0 ou superior. Em outras DE, será necessário mover as janelas você mesmo. 
-
-O Twinverse está em desenvolvimento ativo, alguns bugs ainda podem ser encontrados.
-
+O Twinverse está em desenvolvimento ativo; alguns bugs ainda podem ser encontrados.
 Caso tenha problemas, sinta-se a vontade para compartilhar seu feedback e reportar bugs em [Issues](https://github.com/mall0r/Twinverse/issues/new).
 
 ---

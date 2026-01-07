@@ -78,6 +78,7 @@ class CommandBuilder:
             "-h", str(height),
             "-o", refresh_rate_str,
             "-r", refresh_rate_str,
+            "--mangoapp",
         ]
 
         if not self.profile.is_splitscreen_mode:
@@ -95,7 +96,7 @@ class CommandBuilder:
         """Builds the base steam command."""
         if self.profile.use_gamescope:
             self.logger.info(f"Instance {self.instance_num}: Using Steam command with Gamescope flags.")
-            return ["steam", "-gamepadui"]
+            return ["steam", "-gamepadui", "-steamdeck", "-steamos3"]
         else:
             self.logger.info(f"Instance {self.instance_num}: Using plain Steam command.")
             return ["steam"]

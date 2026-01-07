@@ -8,7 +8,7 @@
 
 Bem-vindo ao guia do Twinverse! Este documento irá guiá-lo pelo processo de configuração e uso do aplicativo Twinverse para executar múltiplas instâncias do Steam.
 
-> [!NOTE]
+> [!IMPORTANT]
 > Para usar o Twinverse, é necessário adicionar seu usuário ao grupo `input` para permitir que o programa gerencie os dispositivos de entrada.
 >
 > ```bash
@@ -32,6 +32,10 @@ Use o seletor numérico "Número de Instâncias" para definir a quantidade desej
 <img width="708" height="127" alt="general-layout" src="https://raw.githubusercontent.com/mall0r/Twinverse/master/share/screenshots/general-layout.png" />
 
 ## 2. Modo de Tela
+
+> [!NOTE]
+> Para que o auto-tiling das janelas funcione bem, é recomendado usar KDE Plasma 6.0+. 
+> Em outras DE, será necessário mover as janelas você mesmo, todo o resto deve funcionar bem.
 
 Você pode escolher entre dois modos de tela:
 
