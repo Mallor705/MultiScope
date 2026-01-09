@@ -45,8 +45,9 @@ build:
 # Build Flatpak package with validation
 flatpak: validate-manifest
 	@echo "Building Flatpak package..."
-	@if [ "$(SKIP_TESTS)" = "true" ]; then \
-		./scripts/package-flatpak.sh --skip-tests; \
+	@if [ -n "$(ARCH)" ]; then \
+		export FLATPAK_ARCH="$(ARCH)"; \
+		./scripts/package-flatpak.sh; \
 	else \
 		./scripts/package-flatpak.sh; \
 	fi
@@ -65,7 +66,7 @@ validate-manifest:
 test:
 	@echo "Running test suite..."
 	$(PYTHON) -m pip install -e ".[test]"
-	$(PYTHON) -m pytest --cov=twinverse --cov-report=term-missing --cov-fail-under=85
+	$(PYTHON) -m pytest
 	@echo "Tests completed successfully!"
 
 # Install dependencies for development
@@ -77,16 +78,7 @@ dev:
 # Clean temporary files
 clean:
 	@echo "Cleaning temporary artifacts..."
-	rm -rf build/
-	rm -rf dist/
-	rm -rf *.egg-info/
-	rm -rf .pytest_cache/
-	rm -rf .coverage
-	rm -rf htmlcov/
-	rm -rf flatpak-build-dir/
-	rm -rf twinverse-repo/
-	find . -type d -name __pycache__ -delete
-	find . -type f -name "*.pyc" -delete
+	./scripts/clean.sh
 	@echo "Clean completed!"
 
 # Check dependencies

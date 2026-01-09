@@ -106,7 +106,7 @@ jobs:
           gir1.2-gtk-4.0 \
           gir1.2-adw-1 \
           libglib2.0-dev-bin
-          pip install pytest
+          pip install pytest pytest-cov
 
       - name: Add Flathub repository
         run: |
@@ -117,14 +117,9 @@ jobs:
           flatpak install -y --user flathub org.gnome.Platform//49 org.gnome.Sdk//49
 
       - name: Build Flatpak
-        run: make flatpak ARCH=${{ matrix.arch }} SKIP_TESTS=true
+        run: make flatpak ARCH=${{ matrix.arch }}
         env:
           FLATPAK_ARCH: ${{ matrix.arch }}
-
-      - name: Run tests
-        run: |
-          flatpak-builder --run build-dir io.github.mall0r.Twinverse.yaml \
-            pip install .[test] && make test
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6

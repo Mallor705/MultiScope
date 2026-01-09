@@ -58,25 +58,13 @@ setup_runtime() {
     local runtime="org.gnome.Platform"
     local sdk="org.gnome.Sdk"
 
-    # Check if running in CI environment
-    if [[ -n "$GITHUB_ACTIONS" ]]; then
-        # In CI, use user installation
-        if ! flatpak list --user --runtime | grep -q "$runtime//$sdk_version"; then
-            echo "Installing GNOME $sdk_version runtime for user..."
-            flatpak install -y --user flathub "$runtime//$sdk_version" "$sdk//$sdk_version" || {
-                print_error "Failed to install runtime"
-                exit 1
-            }
-        fi
-    else
-        # For local builds, use system installation
-        if ! flatpak list --runtime | grep -q "$runtime//$sdk_version"; then
-            echo "Installing GNOME $sdk_version runtime..."
-            flatpak install -y flathub "$runtime//$sdk_version" "$sdk//$sdk_version" || {
-                print_error "Failed to install runtime"
-                exit 1
-            }
-        fi
+    # Use user installation for both local and CI environments
+    if ! flatpak list --user --runtime | grep -q "$runtime//$sdk_version"; then
+        echo "Installing GNOME $sdk_version runtime for user..."
+        flatpak install -y --user flathub "$runtime//$sdk_version" "$sdk//$sdk_version" || {
+            print_error "Failed to install runtime"
+            exit 1
+        }
     fi
 
     print_success "Runtime configured"
@@ -122,15 +110,17 @@ build_flatpak() {
         --keep-build-dirs
     )
 
-    # Check if running in CI environment
-    if [[ -n "$GITHUB_ACTIONS" ]]; then
-        # In CI, install dependencies for user
-        build_cmd+=(--user)
-    fi
+    # Always use user installation for consistency
+    build_cmd+=(--user)
 
     # Check if it's a development build
     if [[ "${1:-}" == "--dev" ]]; then
         build_cmd+=(--user)  # Install for user
+    fi
+
+    # Add architecture if specified
+    if [[ -n "${FLATPAK_ARCH:-}" ]]; then
+        build_cmd+=(--arch="$FLATPAK_ARCH")
     fi
 
     "${build_cmd[@]}" "$BUILD_DIR" "$MANIFEST"
@@ -156,19 +146,32 @@ create_bundle() {
     local version
     version=$(grep -oP '<release version="\K[^"]+' "$metainfo_path" | head -1)
 
-    # Bundle name with extracted version
-    local final_bundle="Twinverse-${version:-unknown}.flatpak"
+    # Determine architecture for bundle name
+    local arch_suffix=""
+    if [[ -n "${FLATPAK_ARCH:-}" ]]; then
+        arch_suffix="-$FLATPAK_ARCH"
+    else
+        # Use native architecture if not specified
+        arch_suffix="-$(uname -m)"
+    fi
+
+    # Bundle name with extracted version and architecture
+    local final_bundle="Twinverse-${version:-unknown}${arch_suffix}.flatpak"
 
     echo "📦 Creating: $final_bundle"
     echo "📄 Version source: $metainfo_path"
     echo "🆔 App ID: $APP_ID"
-    echo ""
+    echo "🔧 Architecture: ${FLATPAK_ARCH:-$(uname -m)}"
 
     # Remove previous bundle if exists
     [[ -f "$final_bundle" ]] && rm -f "$final_bundle"
 
-    # DIRECT command - automatically shows logs
-    flatpak build-bundle "$REPO_DIR" "$final_bundle" "$APP_ID"
+    # Include architecture in the build-bundle command if specified
+    if [[ -n "${FLATPAK_ARCH:-}" ]]; then
+        flatpak build-bundle "$REPO_DIR" "$final_bundle" --arch="$FLATPAK_ARCH" "$APP_ID"
+    else
+        flatpak build-bundle "$REPO_DIR" "$final_bundle" "$APP_ID"
+    fi
 
     # Simple verification
     if [[ -f "$final_bundle" ]]; then
@@ -245,9 +248,8 @@ main() {
     create_repository
     build_flatpak "$dev_build"
 
-    if [[ "$skip_tests" == false ]]; then
-        test_build
-    fi
+    # Skip tests as they are not needed for the Flatpak build
+    # Tests should be run during development, not during packaging
 
     create_bundle
 

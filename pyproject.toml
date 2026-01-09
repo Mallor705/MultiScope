@@ -32,6 +32,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
+    "pre-commit",
     "pytest>=6.0.0",
     "pytest-cov>=2.12.0",
 ]
@@ -43,3 +44,16 @@ multi_line_output = 3
 [tool.black]
 line-length = 88
 target-version = ['py313']
+
+[tool.pytest.ini_options]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--ignore=build-dir",
+    "--ignore=.flatpak-builder",
+    "--ignore=flatpak-repo",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "serial: marks tests that must run sequentially",
+]

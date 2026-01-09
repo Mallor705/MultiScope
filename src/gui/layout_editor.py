@@ -15,9 +15,9 @@ from src.services import DeviceManager, InstanceService, SteamVerifier
 
 class LayoutSettingsPage(Adw.PreferencesPage):
     __gsignals__ = {
-        "settings-changed": (GObject.SIGNAL_RUN_FIRST, None, ()),
-        "instance-state-changed": (GObject.SIGNAL_RUN_FIRST, None, ()),
-        "verification-completed": (GObject.SIGNAL_RUN_FIRST, None, ()),
+        "settings-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "instance-state-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "verification-completed": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
     def __init__(self, profile, logger, **kwargs):

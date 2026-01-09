@@ -2,7 +2,8 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationError, validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic.functional_validators import field_validator
 
 from src.core import Config, Logger, ProfileNotFoundError
 
@@ -30,7 +31,7 @@ class SplitscreenConfig(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
     orientation: str = Field(alias="ORIENTATION")
 
-    @validator("orientation")
+    @field_validator("orientation")
     def validate_orientation(cls, v):
         if v not in ["horizontal", "vertical"]:
             raise ValueError("Orientation must be 'horizontal' or 'vertical'.")
