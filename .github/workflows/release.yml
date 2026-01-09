@@ -61,87 +61,8 @@ jobs:
       - name: Run static analysis
         run: pre-commit run --all-files
 
-  # Fase 2: Build apenas para x86_64
-  build:
-    needs: [analyze, semantic-version]
-    runs-on: ubuntu-latest
-    outputs:
-      artifact_name: flatpak-${{ needs.semantic-version.outputs.version }}-x86_64
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Update metainfo.xml with semantic version
-        run: |
-          VERSION="${{ needs.semantic-version.outputs.version }}"
-          # Remover o prefixo 'v' se presente e verificar se a versão é válida
-          VERSION_CLEAN=${VERSION#v}
-
-          # Verificar se VERSION_CLEAN é um número de versão válido (x.y.z)
-          if [[ $VERSION_CLEAN =~ ^[0-9]+\.[0-9]+\.[0-9]+.*$ ]]; then
-            # Atualizar o arquivo metainfo.xml com a versão do semantic-version
-            sed -i.bak "s/version=\"[0-9]*\.[0-9]*\.[0-9]*[^"]*\"/version=\"$VERSION_CLEAN\"/" share/metainfo/io.github.mall0r.Twinverse.metainfo.xml
-            echo "Updated metainfo.xml with semantic version: $VERSION_CLEAN"
-          else
-            # Fallback para 0.0.0 se a versão do semantic não for válida
-            sed -i.bak "s/version=\"[0-9]*\.[0-9]*\.[0-9]*[^"]*\"/version=\"0.0.0\"/" share/metainfo/io.github.mall0r.Twinverse.metainfo.xml
-            echo "Updated metainfo.xml with fallback version: 0.0.0 (semantic version was: $VERSION)"
-          fi
-
-      - name: Set artifact name
-        id: set_artifact_name
-        run: |
-          VERSION="${{ needs.semantic-version.outputs.version }}"
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Install Flatpak dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y flatpak \
-          flatpak-builder \
-          libgirepository1.0-dev \
-          libgirepository-2.0-dev \
-          make \
-          gcc \
-          libcairo2-dev \
-          pkg-config \
-          python3-dev \
-          libglib2.0-dev \
-          libxml2-dev \
-          libxslt1-dev \
-          libgtk-4-dev \
-          libadwaita-1-dev \
-          gir1.2-gtk-4.0 \
-          gir1.2-adw-1 \
-          libglib2.0-dev-bin
-          pip install pytest pytest-cov
-
-      - name: Add Flathub repository
-        run: |
-          flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-
-      - name: Install SDK and Platform
-        run: |
-          flatpak install -y --user flathub org.gnome.Platform//49 org.gnome.Sdk//49
-
-      - name: Build Flatpak
-        run: make flatpak
-        env:
-          FLATPAK_ARCH: x86_64
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: flatpak-${{ needs.semantic-version.outputs.version }}-x86_64
-          path: |
-            build-dir/*.flatpak
-            build-dir/*.json
-
-  # Fase 3: Versionamento semântico automático
-  semantic-version:
+  # Fase 2: Versionamento semântico automático
+  semantic:
     needs: analyze
     runs-on: ubuntu-latest
     outputs:
@@ -191,6 +112,13 @@ jobs:
             echo "EOF"
           } >> $GITHUB_ENV
 
+      - name: Update version file with semantic version
+        run: |
+          VERSION_CLEAN=${{ steps.version.outputs.version }}
+          # Remover o prefixo 'v' se presente
+          VERSION_CLEAN=${VERSION_CLEAN#v}
+          make update-version-force v=$VERSION_CLEAN
+
       - name: Create version tag
         if: github.ref == 'refs/heads/main'
         run: |
@@ -199,9 +127,88 @@ jobs:
           git tag -a ${{ env.version }} -m "Release ${{ env.version }}"
           git push origin ${{ env.version }}
 
+  # Fase 3: Build apenas para x86_64
+  build:
+    needs: [analyze, semantic]
+    runs-on: ubuntu-latest
+    outputs:
+      artifact_name: flatpak-${{ needs.semantic.outputs.version }}-x86_64
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Update metainfo.xml with semantic version
+        run: |
+          VERSION="${{ needs.semantic.outputs.version }}"
+          # Remover o prefixo 'v' se presente e verificar se a versão é válida
+          VERSION_CLEAN=${VERSION#v}
+
+          # Verificar se VERSION_CLEAN é um número de versão válido (x.y.z)
+          if [[ $VERSION_CLEAN =~ ^[0-9]+\.[0-9]+\.[0-9]+.*$ ]]; then
+            # Atualizar o arquivo metainfo.xml com a versão do semantic
+            sed -i.bak "s/version=\"[0-9]*\.[0-9]*\.[0-9]*[^"]*\"/version=\"$VERSION_CLEAN\"/" share/metainfo/io.github.mall0r.Twinverse.metainfo.xml
+            echo "Updated metainfo.xml with semantic version: $VERSION_CLEAN"
+          else
+            # Fallback para 0.0.0 se a versão do semantic não for válida
+            sed -i.bak "s/version=\"[0-9]*\.[0-9]*\.[0-9]*[^"]*\"/version=\"0.0.0\"/" share/metainfo/io.github.mall0r.Twinverse.metainfo.xml
+            echo "Updated metainfo.xml with fallback version: 0.0.0 (semantic version was: $VERSION)"
+          fi
+
+      - name: Set artifact name
+        id: set_artifact_name
+        run: |
+          VERSION="${{ needs.semantic.outputs.version }}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Install Flatpak dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak \
+          flatpak-builder \
+          libgirepository1.0-dev \
+          libgirepository-2.0-dev \
+          make \
+          gcc \
+          libcairo2-dev \
+          pkg-config \
+          python3-dev \
+          libglib2.0-dev \
+          libxml2-dev \
+          libxslt1-dev \
+          libgtk-4-dev \
+          libadwaita-1-dev \
+          gir1.2-gtk-4.0 \
+          gir1.2-adw-1 \
+          libglib2.0-dev-bin
+          pip install pytest pytest-cov
+
+      - name: Add Flathub repository
+        run: |
+          flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+      - name: Install SDK and Platform
+        run: |
+          flatpak install -y --user flathub org.gnome.Platform//49 org.gnome.Sdk//49
+
+      - name: Build Flatpak
+        run: make flatpak
+        env:
+          FLATPAK_ARCH: x86_64
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: flatpak-${{ needs.semantic.outputs.version }}-x86_64
+          path: |
+            build-dir/*.flatpak
+            build-dir/*.json
+
   # Fase 4: Criar release no GitHub
   create-release:
-    needs: [semantic-version, build]
+    needs: [semantic, build]
     runs-on: ubuntu-latest
 
     steps:
@@ -214,12 +221,18 @@ jobs:
           name: ${{ needs.build.outputs.artifact_name }}
           path: dist/x86_64
 
+      - name: Get version from version file
+        id: get_version
+        run: |
+          VERSION=$(cat version)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ needs.semantic-version.outputs.version }}
-          name: Release ${{ needs.semantic-version.outputs.version }}
-          body: ${{ needs.semantic-version.outputs.changelog }}
+          tag_name: v${{ steps.get_version.outputs.version }}
+          name: Release v${{ steps.get_version.outputs.version }}
+          body: ${{ needs.semantic.outputs.changelog }}
           files: |
             dist/x86_64/*.flatpak
             dist/x86_64/*.json
