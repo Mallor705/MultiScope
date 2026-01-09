@@ -24,6 +24,13 @@
       }
     ],
     [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "python scripts/version_manager.py ${nextRelease.version} && echo ${nextRelease.version} | sed 's/v//' > version",
+        "publishCmd": "make flatpak && make appimage"
+      }
+    ],
+    [
       "@semantic-release/git",
       {
         "assets": [
