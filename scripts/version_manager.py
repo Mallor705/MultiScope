@@ -6,10 +6,8 @@ This script automatically updates the version in all necessary files
 when a new version is defined.
 """
 
-import os
 import re
 import sys
-from datetime import datetime
 from pathlib import Path
 
 
@@ -111,7 +109,7 @@ def main():
     # Validate version format (x.y.z)
     version_pattern = r"^[0-9]+\.[0-9]+\.[0-9]+$"
     if not re.match(version_pattern, new_version):
-        print(f"Error: Invalid version format. Use x.y.z format (e.g., 0.11.2)")
+        print(f"Error: Invalid version format. Use x.y.z format (e.g., 0.11.2)")  # noqa: F541
         return 1
 
     if not set_new_version(new_version, force):

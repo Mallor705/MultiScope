@@ -2,8 +2,6 @@
 
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 
 @patch("gi.repository.Gtk")
 def test_gtk_components_load(mock_gtk):

@@ -1,16 +1,14 @@
 import os
 
 import gi
+from gi.repository import Adw, GObject, Gtk
 
 from src.core import Config
 from src.models import PlayerInstanceConfig, Profile, SplitscreenConfig
+from src.services import DeviceManager, InstanceService, SteamVerifier
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-
-from gi.repository import Adw, Gdk, GObject, Gtk
-
-from src.services import DeviceManager, InstanceService, SteamVerifier
 
 
 class LayoutSettingsPage(Adw.PreferencesPage):
@@ -407,23 +405,23 @@ class LayoutSettingsPage(Adw.PreferencesPage):
             checkbox.connect("toggled", self._on_player_selected_changed)
             expander.add_prefix(checkbox)
 
-            def create_device_row(title, device_type):
+            def create_device_row(title, device_type, target_expander):
                 devices = self.input_devices.get(device_type, [])
                 model = Gtk.StringList.new(["None"] + [d["name"] for d in devices])
                 row = Adw.ComboRow(title=title, model=model)
                 row.get_style_context().add_class(f"{device_type}-row")
                 row.connect("notify::selected-item", self._on_setting_changed)
-                expander.add_row(row)
+                target_expander.add_row(row)
                 return row
 
-            joystick_row = create_device_row("Gamepad", "joystick")
+            joystick_row = create_device_row("Gamepad", "joystick", expander)
             refresh_button = Gtk.Button.new_from_icon_name("view-refresh-symbolic")
             refresh_button.set_tooltip_text("Atualizar lista de dispositivos")
             refresh_button.get_style_context().add_class("flat")
             refresh_button.connect("clicked", self._on_refresh_joysticks_clicked, joystick_row)
             joystick_row.add_suffix(refresh_button)
-            # mouse_row = create_device_row("Mouse", "mouse")
-            # keyboard_row = create_device_row("Keyboard", "keyboard")
+            # mouse_row = create_device_row("Mouse", "mouse", expander)
+            # keyboard_row = create_device_row("Keyboard", "keyboard", expander)
 
             grab_input_switch = Adw.SwitchRow(title="Grab Mouse")
             grab_input_switch.get_style_context().add_class("custom-switch")

@@ -4,8 +4,8 @@
 def test_import_main_module():
     """Testa se o módulo principal pode ser importado."""
     try:
-        import twinverse
+        import twinverse  # noqa: F401
 
         assert True  # Se chegou até aqui, a importação funcionou
     except ImportError:
-        assert False, "Falha ao importar o módulo twinverse"
+        raise AssertionError("Falha ao importar o módulo twinverse")

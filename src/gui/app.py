@@ -1,19 +1,17 @@
 import sys
 import threading
 import time
-from pathlib import Path
 
 import gi
-
-gi.require_version("Gtk", "4.0")
-gi.require_version("Adw", "1")
-
-from gi.repository import Adw, Gdk, Gio, GLib, Gtk
+from gi.repository import Adw, Gio, GLib, Gtk
 
 from src.core import Config, Logger, Utils, VirtualDeviceError
 from src.gui.layout_editor import LayoutSettingsPage
 from src.models import Profile
 from src.services import InstanceService, KdeManager
+
+gi.require_version("Gtk", "4.0")
+gi.require_version("Adw", "1")
 
 
 class TwinverseWindow(Adw.ApplicationWindow):

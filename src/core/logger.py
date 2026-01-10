@@ -1,6 +1,5 @@
 import logging
 import sys
-from functools import lru_cache
 from pathlib import Path
 
 
@@ -66,12 +65,9 @@ class Logger:
 
         self._handlers_setup = True
 
-    @lru_cache(maxsize=128)
     def _should_log(self, level: int) -> bool:
         """
         Checks if a given log level is enabled for the logger.
-
-        This check is cached to improve performance for frequent logging calls.
 
         Args:
             level (int): The logging level to check (e.g., `logging.INFO`).

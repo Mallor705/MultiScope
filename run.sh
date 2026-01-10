@@ -21,7 +21,7 @@ source .venv/bin/activate
 
 # Install dependencies
 echo "📥 Installing dependencies..."
-pip install -r requirements.txt
+pip install .
 
 # Run application
 echo "🚀 Running application..."

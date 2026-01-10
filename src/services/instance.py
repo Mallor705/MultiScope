@@ -4,9 +4,8 @@ import shlex
 import shutil
 import signal
 import subprocess
-import time
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from src.core import Config, DependencyError, Logger, Utils, VirtualDeviceError
 from src.models import PlayerInstanceConfig, Profile
