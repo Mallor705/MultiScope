@@ -1,3 +1,11 @@
+"""
+Layout editor module for the Twinverse application.
+
+This module provides the UI for configuring the layout settings of the
+Twinverse application, including player instances, screen settings, and
+device configurations.
+"""
+
 import os
 
 import gi
@@ -12,6 +20,8 @@ gi.require_version("Adw", "1")
 
 
 class LayoutSettingsPage(Adw.PreferencesPage):
+    """A preferences page for configuring layout settings in the Twinverse application."""
+
     __gsignals__ = {
         "settings-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
         "instance-state-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
@@ -19,6 +29,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
     }
 
     def __init__(self, profile, logger, **kwargs):
+        """Initialize the layout settings page with a profile and logger."""
         super().__init__(**kwargs)
         self._is_loading = False
         self.profile = profile
@@ -90,6 +101,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         self.add(self.players_group)
 
     def load_profile_data(self):
+        """Load profile data and populate the UI elements."""
         self._is_loading = True
 
         adj = self.num_players_row.get_adjustment()
@@ -180,6 +192,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         combo_row.set_selected(0)
 
     def get_updated_data(self) -> Profile:
+        """Get updated profile data from the UI elements."""
         self.profile.num_players = int(self.num_players_row.get_value())
 
         self.profile.mode = self.screen_mode_row.get_selected_item().get_string().lower()
@@ -369,7 +382,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         return env
 
     def _on_refresh_joysticks_clicked(self, button, joystick_row):
-        """Refreshes the joystick list for a specific ComboRow."""
+        """Refresh the joystick list for a specific ComboRow."""
         self.logger.info("Refreshing joystick list...")
         selected_id = self._get_combo_row_device_id(joystick_row, self.input_devices.get("joystick", []))
 
@@ -385,6 +398,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         self._on_setting_changed()
 
     def rebuild_player_rows(self):
+        """Rebuild the player configuration rows in the UI."""
         for row_dict in self.player_rows:
             self.players_group.remove(row_dict["expander"])
         self.player_rows = []
@@ -461,6 +475,7 @@ class LayoutSettingsPage(Adw.PreferencesPage):
             )
 
     def _run_all_verifications(self):
+        """Run verifications for all instances."""
         for i in range(len(self.player_rows)):
             self._verify_instance(i)
 
@@ -493,9 +508,11 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         row_dict["status_icon"] = icon
 
     def get_instance_verification_status(self, instance_num: int) -> bool:
+        """Get the verification status for a specific instance."""
         return self.verification_statuses.get(instance_num, False)
 
     def get_selected_players(self) -> list[int]:
+        """Get a list of selected player indices."""
         return [i for i, r in enumerate(self.player_rows) if r["checkbox"].get_active()]
 
     def _get_combo_row_device_id(self, combo_row, device_list):
@@ -523,9 +540,11 @@ class LayoutSettingsPage(Adw.PreferencesPage):
         self.emit("instance-state-changed")
 
     def is_any_instance_running(self):
+        """Check if any instance is currently running."""
         return any(r["is_running"] for r in self.player_rows)
 
     def set_running_state(self, is_running):
+        """Set the running state for all player rows."""
         for row_data in self.player_rows:
             row_data["is_running"] = is_running
             button = row_data["launch_button"]

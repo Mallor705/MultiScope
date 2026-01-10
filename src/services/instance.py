@@ -1,3 +1,10 @@
+"""
+Instance management module for the Twinverse application.
+
+This module provides functionality to manage Steam instances, including launching,
+terminating, and configuring them with isolated environments.
+"""
+
 import copy
 import os
 import shlex
@@ -17,7 +24,7 @@ class InstanceService:
     """Service responsible for managing Steam instances."""
 
     def __init__(self, logger: Logger, kde_manager: Optional[KdeManager] = None):
-        """Initializes the instance service."""
+        """Initialize the instance service."""
         from .device_manager import DeviceManager
         from .virtual_device import VirtualDeviceService
 
@@ -33,7 +40,7 @@ class InstanceService:
         self.termination_in_progress = False
 
     def validate_dependencies(self, use_gamescope: bool = True) -> None:
-        """Validates if all necessary commands are available on the system."""
+        """Validate if all necessary commands are available on the system."""
         self.logger.info("Validating dependencies...")
         required_commands = ["bwrap", "steam"]
         if use_gamescope:
@@ -54,7 +61,7 @@ class InstanceService:
         self.logger.info("Dependencies validated successfully")
 
     def _launch_single_instance(self, profile: Profile, instance_num: int) -> None:
-        """Launches a single steam instance."""
+        """Launch a single steam instance."""
         self.logger.info(f"Preparing instance {instance_num}...")
 
         home_path = Config.get_steam_home_path(instance_num)
@@ -165,7 +172,7 @@ class InstanceService:
         instance_num: int,
         use_gamescope_override: Optional[bool] = None,
     ) -> None:
-        """Launches a single Steam instance."""
+        """Launch a single Steam instance."""
         if not self._virtual_joystick_checked:
             self._virtual_joystick_checked = True
             needs_virtual_joystick = False
@@ -268,7 +275,8 @@ class InstanceService:
 
     def _prepare_home(self, home_path: Path) -> None:
         """
-        Prepares the isolated Steam directories for the instance.
+        Prepare the isolated Steam directories for the instance.
+
         This involves creating the directory structure and copying app manifests
         to ensure games are recognized.
         """
@@ -297,7 +305,7 @@ class InstanceService:
         self.logger.info("Isolated Steam directories are ready.")
 
     def _prepare_environment(self, profile: Profile, device_info: dict, instance_num: int) -> dict:
-        """Prepares a dictionary of environment variables for the Steam instance."""
+        """Prepare a dictionary of environment variables for the Steam instance."""
         env = {}
 
         # Enable this if you experience system crashes and graphical glitches.
@@ -316,7 +324,7 @@ class InstanceService:
         return env
 
     def _validate_input_devices(self, profile: Profile, instance_num: int, instance_num_display: int) -> dict:
-        """Validates input devices and returns information about them."""
+        """Validate input devices and return information about them."""
         # Get specific player config
         player_config = (
             profile.player_configs[instance_num]
@@ -353,7 +361,7 @@ class InstanceService:
         }
 
     def terminate_all(self) -> None:
-        """Terminates all managed steam instances."""
+        """Terminate all managed steam instances."""
         if self.termination_in_progress:
             return
         try:

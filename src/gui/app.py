@@ -1,3 +1,10 @@
+"""
+GUI module for the Twinverse application.
+
+This module provides the main GUI window and application classes for the
+Twinverse application.
+"""
+
 import sys
 import threading
 import time
@@ -15,7 +22,10 @@ gi.require_version("Adw", "1")
 
 
 class TwinverseWindow(Adw.ApplicationWindow):
+    """Main window class for the Twinverse GUI application."""
+
     def __init__(self, *args, **kwargs):
+        """Initialize the main window and set up the UI."""
         super().__init__(*args, **kwargs)
         self.set_title("Twinverse")
         self.set_default_size(800, 600)
@@ -162,6 +172,7 @@ class TwinverseWindow(Adw.ApplicationWindow):
         self._cancel_launch_event.clear()
 
     def on_launch_clicked(self, button):
+        """Handle the launch button click event."""
         if self._is_running:
             self.on_stop_clicked()
             return
@@ -192,6 +203,7 @@ class TwinverseWindow(Adw.ApplicationWindow):
         self._launch_thread.start()
 
     def on_stop_clicked(self):
+        """Handle the stop button click event."""
         if self._launch_thread and self._launch_thread.is_alive():
             self.logger.info("Cancelling in-progress launch...")
             self._cancel_launch_event.set()
@@ -224,6 +236,7 @@ class TwinverseWindow(Adw.ApplicationWindow):
         self._is_running = False
 
     def on_close_request(self, *args):
+        """Handle the close request event."""
         self.logger.info("Close request received. Starting shutdown procedure.")
         self.set_sensitive(False)
         shutdown_thread = threading.Thread(target=self._shutdown_worker)
@@ -237,7 +250,10 @@ class TwinverseWindow(Adw.ApplicationWindow):
 
 
 class TwinverseApplication(Adw.Application):
+    """Main application class for the Twinverse GUI application."""
+
     def __init__(self, **kwargs):
+        """Initialize the application and set up resources."""
         super().__init__(application_id="io.github.mall0r.Twinverse", **kwargs)
         self.base_path = Utils.get_base_path()
 
@@ -250,6 +266,7 @@ class TwinverseApplication(Adw.Application):
         self.connect("activate", self.on_activate)
 
     def on_activate(self, app):
+        """Handle the application activation event."""
         self.win = TwinverseWindow(application=app)
 
         css_provider = Gtk.CssProvider()
@@ -265,7 +282,7 @@ class TwinverseApplication(Adw.Application):
 
 
 def run_gui():
-    """Launches the GUI application."""
+    """Launch the GUI application."""
     # Unset the old "prefer dark theme" setting to avoid Adwaita warnings
     settings = Gtk.Settings.get_default()
     settings.set_property("gtk-application-prefer-dark-theme", False)

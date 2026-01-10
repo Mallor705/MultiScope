@@ -1,3 +1,10 @@
+"""
+KDE manager module for the Twinverse application.
+
+This module provides functionality to manage KDE-specific features such as
+KWin scripts for window management and panel visibility control.
+"""
+
 import os
 import subprocess
 from pathlib import Path
@@ -9,16 +16,17 @@ from src.models import Profile
 
 
 class KdeManager:
+    """Manages KDE-specific features such as KWin scripts and panel visibility."""
+
     def __init__(self, logger: Logger):
+        """Initialize the KDE manager with necessary components."""
         self.logger = logger
         self.original_panel_states: dict[int, str] = {}
         self.qdbus_command = self._find_qdbus_command()
         self.kwin_script_id = None
 
     def start_kwin_script(self, profile: Profile):
-        """
-        Starts the appropriate KWin script using D-Bus.
-        """
+        """Start the appropriate KWin script using D-Bus."""
         if not self.is_kde_desktop():
             self.logger.warning("Not a KDE desktop, skipping KWin script.")
             return
@@ -87,9 +95,7 @@ class KdeManager:
             self.logger.error(f"Failed to load KWin script: {e}")
 
     def stop_kwin_script(self):
-        """
-        Stops and unloads the KWin splitscreen script using its ID.
-        """
+        """Stop and unload the KWin splitscreen script using its ID."""
         if not self.kwin_script_id:
             self.logger.info("No KWin script ID to stop.")
             return

@@ -12,7 +12,7 @@ from pathlib import Path
 
 
 def update_version_in_file(file_path, old_version, new_version):
-    """Updates the version in a specific file."""
+    """Update the version in a specific file."""
     with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
 
@@ -40,7 +40,7 @@ def update_version_in_file(file_path, old_version, new_version):
 
 
 def get_current_version():
-    """Gets the current version from the version file."""
+    """Get the current version from the version file."""
     version_file = Path("version")
     if version_file.exists():
         with open(version_file, "r", encoding="utf-8") as f:
@@ -49,7 +49,7 @@ def get_current_version():
 
 
 def set_new_version(new_version, force=False):
-    """Sets a new version and updates all relevant files."""
+    """Set a new version and update all relevant files."""
     old_version = get_current_version()
 
     if not old_version:
@@ -93,6 +93,7 @@ def set_new_version(new_version, force=False):
 
 
 def main():
+    """Handle command-line arguments and update version."""
     if len(sys.argv) < 2 or len(sys.argv) > 3:
         current_version = get_current_version()
         if current_version:

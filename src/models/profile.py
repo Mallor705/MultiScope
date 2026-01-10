@@ -1,3 +1,10 @@
+"""
+Module defining the profile model for the Twinverse application.
+
+This module contains the data models for representing profiles that define
+how to launch a set of Steam instances with specific configurations.
+"""
+
 import json
 from typing import Dict, List, Optional
 
@@ -8,9 +15,7 @@ from src.core import Config, ProfileNotFoundError  # noqa: F401
 
 
 class PlayerInstanceConfig(BaseModel):
-    """
-    Defines the specific configuration for a single player's game instance.
-    """
+    """Defines the specific configuration for a single player's game instance."""
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -23,24 +28,21 @@ class PlayerInstanceConfig(BaseModel):
 
 
 class SplitscreenConfig(BaseModel):
-    """
-    Configuration for splitscreen mode.
-    """
+    """Configuration for splitscreen mode."""
 
     model_config = ConfigDict(populate_by_name=True)
     orientation: str = Field(alias="ORIENTATION")
 
     @field_validator("orientation")
     def validate_orientation(cls, v):
+        """Validate that orientation is either horizontal or vertical."""
         if v not in ["horizontal", "vertical"]:
             raise ValueError("Orientation must be 'horizontal' or 'vertical'.")
         return v
 
 
 class Profile(BaseModel):
-    """
-    A profile for launching a set of Steam instances with a specific configuration.
-    """
+    """A profile for launching a set of Steam instances with a specific configuration."""
 
     model_config = ConfigDict(populate_by_name=True, extra="ignore")
 
@@ -60,7 +62,7 @@ class Profile(BaseModel):
 
     @classmethod
     def load(cls) -> "Profile":
-        """Loads the profile from the default JSON file."""
+        """Load the profile from the default JSON file."""
         profile_path = Config.get_profile_path()
         if not profile_path.exists():
             # If no profile exists, create a default one and save it
@@ -83,9 +85,7 @@ class Profile(BaseModel):
         return profile
 
     def save(self):
-        """
-        Saves the profile to the default JSON file.
-        """
+        """Save the profile to the default JSON file."""
         profile_path = Config.get_profile_path()
         profile_path.parent.mkdir(parents=True, exist_ok=True)
         data_to_save = self.model_dump(by_alias=True, exclude_none=True)
@@ -94,17 +94,20 @@ class Profile(BaseModel):
 
     @property
     def is_splitscreen_mode(self) -> bool:
-        """Checks if the profile is configured for splitscreen mode."""
+        """Check if the profile is configured for splitscreen mode."""
         return self.mode == "splitscreen"
 
     def effective_num_players(self) -> int:
+        """Calculate the effective number of players based on selected players or player configs."""
         if self.selected_players:
             return len(self.selected_players)
         return len(self.player_configs) if self.player_configs else 0
 
     def get_env_for_instance(self, instance_idx: int) -> Dict[str, str]:
-        """Returns the merged environment variables for a given instance index (0-based).
-        Per-player ENV overrides values from the global ENV."""
+        """Return the merged environment variables for a given instance index (0-based).
+
+        Per-player ENV overrides values from the global ENV.
+        """
         base_env: Dict[str, str] = dict(self.env or {})
         if 0 <= instance_idx < len(self.player_configs):
             player_env = self.player_configs[instance_idx].env or {}

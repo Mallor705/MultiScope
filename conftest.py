@@ -1,6 +1,4 @@
-"""
-Configuration file for pytest
-"""
+"""Configuration file for pytest."""
 
 import os
 import sys

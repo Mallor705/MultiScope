@@ -1,3 +1,10 @@
+"""
+Script to update the metainfo.xml file with new release information.
+
+This script parses release notes in Markdown format and adds them to the
+metainfo.xml file in the appropriate XML format for application stores.
+"""
+
 import argparse
 import re
 import xml.etree.ElementTree as ET
@@ -6,7 +13,7 @@ from datetime import datetime
 
 def update_metainfo(version, notes):
     """
-    Updates the metainfo.xml file by adding a new release.
+    Update the metainfo.xml file by adding a new release.
 
     Args:
         version (str): The new version string (e.g., "v1.2.3").

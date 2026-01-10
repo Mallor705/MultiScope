@@ -1,3 +1,10 @@
+"""
+Virtual device module for the Twinverse application.
+
+This module provides functionality to create and manage virtual input devices,
+particularly virtual joysticks for use with Steam instances.
+"""
+
 import time
 
 from evdev import AbsInfo, InputDevice, UInput
@@ -8,12 +15,15 @@ from src.core import VirtualDeviceError
 
 
 class VirtualDeviceService:
+    """Manages virtual input devices, particularly virtual joysticks for Steam instances."""
+
     def __init__(self, logger):
+        """Initialize the virtual device service with a logger."""
         self._logger = logger
         self._ui = None
 
     def create_virtual_joystick(self):
-        """Creates a minimal virtual joystick and finds its event node."""
+        """Create a minimal virtual joystick and find its event node."""
         if self._ui:
             self._logger.warning("Virtual joystick already exists.")
             # If it exists, we assume the devnode is also known and correct
@@ -61,7 +71,7 @@ class VirtualDeviceService:
             raise VirtualDeviceError(f"Failed to create virtual joystick: {ex}") from ex
 
     def destroy_virtual_joystick(self):
-        """Destroys the virtual joystick if it exists."""
+        """Destroy the virtual joystick if it exists."""
         if self._ui:
             try:
                 self._ui.close()

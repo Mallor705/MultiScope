@@ -1,12 +1,17 @@
+"""
+Configuration module for Twinverse application.
+
+This module defines global configuration settings and paths used throughout
+the Twinverse application.
+"""
+
 import os
 import sys
 from pathlib import Path
 
 
 class Config:
-    """
-    Global Twinverse configurations.
-    """
+    """Global Twinverse configurations."""
 
     APP_NAME = "twinverse"
 
@@ -29,10 +34,10 @@ class Config:
 
     @staticmethod
     def get_profile_path() -> Path:
-        """Returns the path to the default profile JSON file."""
+        """Return the path to the default profile JSON file."""
         return Config.CONFIG_DIR / "profile.json"
 
     @staticmethod
     def get_steam_home_path(instance_num: int) -> Path:
-        """Returns the isolated Steam home path for a given instance."""
+        """Return the isolated Steam home path for a given instance."""
         return Config.LOCAL_DIR / f"home_{instance_num + 1}"

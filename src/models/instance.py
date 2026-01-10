@@ -1,3 +1,10 @@
+"""
+Module defining the Steam instance model for the Twinverse application.
+
+This module contains the data model for representing a single, running
+instance of Steam.
+"""
+
 from typing import Optional
 
 from pydantic import BaseModel

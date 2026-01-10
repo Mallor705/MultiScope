@@ -1,3 +1,10 @@
+"""
+Command builder module for the Twinverse application.
+
+This module provides functionality to build complex command strings for launching
+Steam instances with various configurations, including gamescope and bwrap sandboxing.
+"""
+
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -7,6 +14,8 @@ from src.services.device_manager import DeviceManager
 
 
 class CommandBuilder:
+    """Builds command strings for launching Steam instances with various configurations."""
+
     def __init__(
         self,
         logger: Logger,
@@ -17,6 +26,7 @@ class CommandBuilder:
         home_path: Path,
         virtual_joystick_path: Optional[str],
     ):
+        """Initialize the CommandBuilder with necessary parameters."""
         self.logger = logger
         self.profile = profile
         self.device_info = device_info
@@ -27,7 +37,8 @@ class CommandBuilder:
 
     def build_command(self) -> List[str]:
         """
-        Builds the final command array in the correct order:
+        Build the final command array in the correct order.
+
         [gamescope] -> [bwrap] -> [steam]  (when gamescope is enabled)
         [bwrap] -> [steam]                  (when gamescope is disabled)
         """
@@ -54,7 +65,7 @@ class CommandBuilder:
         return final_cmd
 
     def _build_gamescope_command(self, should_add_grab_flags: bool) -> List[str]:
-        """Builds the Gamescope command."""
+        """Build the Gamescope command."""
         width, height = self.device_manager.get_instance_dimensions(self.profile, self.instance_num)
         if not width or not height:
             self.logger.error(f"Instance {self.instance_num}: Invalid dimensions. Aborting launch.")
@@ -101,7 +112,7 @@ class CommandBuilder:
         return cmd
 
     def _build_base_steam_command(self) -> List[str]:
-        """Builds the base steam command."""
+        """Build the base steam command."""
         if self.profile.use_gamescope:
             self.logger.info(f"Instance {self.instance_num}: Using Steam command with Gamescope flags.")
             return ["steam", "-gamepadui", "-steamdeck", "-steamos3"]
@@ -111,7 +122,8 @@ class CommandBuilder:
 
     def _build_bwrap_command(self, instance_idx: int) -> List[str]:
         """
-        Builds the bwrap command for sandboxing.
+        Build the bwrap command for sandboxing.
+
         This strategy uses the real user's home directory but mounts instance-specific
         Steam directories over the real ones to achieve isolation.
         """

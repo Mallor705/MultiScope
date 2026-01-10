@@ -1,3 +1,10 @@
+"""
+Device manager module for the Twinverse application.
+
+This module provides functionality to discover and manage system hardware devices
+such as input devices, audio devices, and display outputs.
+"""
+
 import logging
 import re
 import subprocess
@@ -20,12 +27,12 @@ class DeviceManager:
     """
 
     def __init__(self):
-        """Initializes the DeviceManager."""
+        """Initialize the DeviceManager."""
         pass
 
     def _run_command(self, command: str) -> str:
         """
-        Executes a shell command and returns its standard output.
+        Execute a shell command and return its standard output.
 
         Args:
             command (str): The command to execute.
@@ -46,7 +53,7 @@ class DeviceManager:
 
     def _get_device_name_from_id(self, device_id_full: str) -> str:
         """
-        Generates a human-readable name from a device's ID path.
+        Generate a human-readable name from a device's ID path.
 
         It cleans up the raw device ID string by removing path prefixes and
         technical suffixes, making it more suitable for display in a UI.
@@ -66,9 +73,9 @@ class DeviceManager:
 
     def get_input_devices(self) -> Dict[str, List[Dict[str, str]]]:
         """
-        Detects and categorizes available input devices.
+        Detect and categorize available input devices.
 
-        Parses the output of `ls -l /dev/input/by-id/` to find keyboards,
+        Parse the output of `ls -l /dev/input/by-id/` to find keyboards,
         mice, and joysticks.
 
         Returns:
@@ -112,7 +119,8 @@ class DeviceManager:
 
     def get_audio_devices(self) -> List[Dict[str, str]]:
         """
-        Detects available audio output devices (sinks) using `pactl`.
+        Detect available audio output devices (sinks) using `pactl`.
+
         It uses `flatpak-spawn --host` when running inside a Flatpak.
 
         Returns:
@@ -154,6 +162,7 @@ class DeviceManager:
         return sorted(audio_sinks, key=lambda x: x["name"])
 
     def get_screen_info(self) -> List[Dict[str, Union[int, bool]]]:
+        """Get information about connected screens/monitors."""
         monitors = []
         for i, monitor in enumerate(get_monitors()):
             monitors.append(
@@ -168,9 +177,11 @@ class DeviceManager:
         return monitors
 
     def get_instance_dimensions(self, profile: Profile, instance_num: int) -> Tuple[Optional[int], Optional[int]]:
-        """Calculates instance dimensions, accounting for splitscreen.
-        For groups of up to 4 instances, the logic is repeated for each group."""
+        """
+        Calculate instance dimensions, accounting for splitscreen.
 
+        For groups of up to 4 instances, the logic is repeated for each group.
+        """
         monitors = self.get_screen_info()
 
         monitors_sorted = sorted(monitors, key=lambda x: x["id"])

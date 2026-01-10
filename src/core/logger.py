@@ -1,3 +1,10 @@
+"""
+Logging module for the Twinverse application.
+
+This module provides a custom logger that writes to both stderr and a log file
+in the specified directory.
+"""
+
 import logging
 import sys
 from pathlib import Path
@@ -18,7 +25,7 @@ class Logger:
 
     def __init__(self, name: str, log_dir: Path, reset: bool = False):
         """
-        Initializes the logger and sets up its handlers.
+        Initialize the logger and set up its handlers.
 
         This creates the log directory if it doesn't exist and configures
         a logger with a specified name.
@@ -38,7 +45,7 @@ class Logger:
 
     def _setup_handlers(self, reset: bool):
         """
-        Configures and adds stream and file handlers to the logger.
+        Configure and add stream and file handlers to the logger.
 
         This method ensures that handlers are only configured once. It sets up
         a console handler (stderr) and a file handler, both with a consistent
@@ -67,7 +74,7 @@ class Logger:
 
     def _should_log(self, level: int) -> bool:
         """
-        Checks if a given log level is enabled for the logger.
+        Check if a given log level is enabled for the logger.
 
         Args:
             level (int): The logging level to check (e.g., `logging.INFO`).
@@ -79,7 +86,7 @@ class Logger:
 
     def info(self, message: str):
         """
-        Logs an informational message.
+        Log an informational message.
 
         Args:
             message (str): The message to log.
@@ -89,7 +96,7 @@ class Logger:
 
     def error(self, message: str):
         """
-        Logs an error message.
+        Log an error message.
 
         Args:
             message (str): The message to log.
@@ -99,7 +106,7 @@ class Logger:
 
     def warning(self, message: str):
         """
-        Logs a warning message.
+        Log a warning message.
 
         Args:
             message (str): The message to log.
@@ -109,7 +116,7 @@ class Logger:
 
     def flush(self):
         """
-        Flushes all handlers attached to the logger.
+        Flush all handlers attached to the logger.
 
         This is useful to ensure that all buffered log records have been
         written to their destination.

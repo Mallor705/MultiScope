@@ -1,3 +1,10 @@
+"""
+Utility module for the Twinverse application.
+
+This module provides utility functions and classes that are commonly used
+throughout the Twinverse application.
+"""
+
 import os
 import shlex
 import subprocess
@@ -7,11 +14,12 @@ from typing import Dict, List
 
 
 class Utils:
+    """Provides utility functions for the Twinverse application."""
 
     @staticmethod
     def get_base_path() -> Path:
         """
-        Gets the base path for the application, handling PyInstaller.
+        Get the base path for the application, handling PyInstaller.
 
         - When running as a script, it returns the project root.
         - When running as a PyInstaller bundle, it returns the path to the extracted files.
@@ -25,14 +33,12 @@ class Utils:
 
     @staticmethod
     def is_flatpak() -> bool:
-        """Checks if the application is running inside a Flatpak."""
+        """Check if the application is running inside a Flatpak."""
         return os.path.exists("/.flatpak-info")
 
     @staticmethod
     def run_host_command(command: List[str], **kwargs) -> subprocess.CompletedProcess:
-        """
-        Executes a command on the host system using 'flatpak-spawn --host'.
-        """
+        """Execute a command on the host system using 'flatpak-spawn --host'."""
         base_command = ["flatpak-spawn", "--host"]
         full_command = base_command + command
         return subprocess.run(full_command, **kwargs)
@@ -40,7 +46,7 @@ class Utils:
     @staticmethod
     def run_host_command_async(command: List[str], **kwargs) -> subprocess.Popen:
         """
-        Executes a command asynchronously on the host system using 'flatpak-spawn --host'.
+        Execute a command asynchronously on the host system using 'flatpak-spawn --host'.
 
         Returns:
             subprocess.Popen: The Popen object for the spawned process.
@@ -51,9 +57,7 @@ class Utils:
 
     @staticmethod
     def set_host_env_vars(env_vars: Dict[str, str]) -> None:
-        """
-        Sets environment variables on the host system when running in a Flatpak.
-        """
+        """Set environment variables on the host system when running in a Flatpak."""
         if not Utils.is_flatpak():
             return
 
