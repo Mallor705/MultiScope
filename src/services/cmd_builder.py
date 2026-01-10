@@ -49,28 +49,20 @@ class CommandBuilder:
             final_cmd = gamescope_cmd + ["--"] + final_cmd
             self.logger.info(f"Instance {self.instance_num}: Launching with Gamescope")
         else:
-            self.logger.info(
-                f"Instance {self.instance_num}: Launching without Gamescope (bwrap only)"
-            )
+            self.logger.info(f"Instance {self.instance_num}: Launching without Gamescope (bwrap only)")
 
         return final_cmd
 
     def _build_gamescope_command(self, should_add_grab_flags: bool) -> List[str]:
         """Builds the Gamescope command."""
-        width, height = self.device_manager.get_instance_dimensions(
-            self.profile, self.instance_num
-        )
+        width, height = self.device_manager.get_instance_dimensions(self.profile, self.instance_num)
         if not width or not height:
-            self.logger.error(
-                f"Instance {self.instance_num}: Invalid dimensions. Aborting launch."
-            )
+            self.logger.error(f"Instance {self.instance_num}: Invalid dimensions. Aborting launch.")
             return []
 
         # Get refresh rate for the specific instance
         refresh_rate = 60  # Default
-        if self.profile.player_configs and 0 <= self.instance_num < len(
-            self.profile.player_configs
-        ):
+        if self.profile.player_configs and 0 <= self.instance_num < len(self.profile.player_configs):
             refresh_rate = self.profile.player_configs[self.instance_num].refresh_rate
         else:
             self.logger.warning(
@@ -103,9 +95,7 @@ class CommandBuilder:
             cmd.append("-b")  # Borderless
 
         if should_add_grab_flags:
-            self.logger.info(
-                f"Instance {self.instance_num}: Using dedicated mouse. Grabbing input."
-            )
+            self.logger.info(f"Instance {self.instance_num}: Using dedicated mouse. Grabbing input.")
             cmd.append("--force-grab-cursor")
 
         return cmd
@@ -113,14 +103,10 @@ class CommandBuilder:
     def _build_base_steam_command(self) -> List[str]:
         """Builds the base steam command."""
         if self.profile.use_gamescope:
-            self.logger.info(
-                f"Instance {self.instance_num}: Using Steam command with Gamescope flags."
-            )
+            self.logger.info(f"Instance {self.instance_num}: Using Steam command with Gamescope flags.")
             return ["steam", "-gamepadui", "-steamdeck", "-steamos3"]
         else:
-            self.logger.info(
-                f"Instance {self.instance_num}: Using plain Steam command."
-            )
+            self.logger.info(f"Instance {self.instance_num}: Using plain Steam command.")
             return ["steam"]
 
     def _build_bwrap_command(self, instance_idx: int) -> List[str]:
@@ -170,9 +156,7 @@ class CommandBuilder:
         ]
         for device_path in device_paths_to_bind:
             if device_path:
-                self.logger.info(
-                    f"Instance {self.instance_num}: Exposing device '{device_path}' to sandbox."
-                )
+                self.logger.info(f"Instance {self.instance_num}: Exposing device '{device_path}' to sandbox.")
                 cmd.extend(["--dev-bind", device_path, device_path])
 
         if Path("/dev/uinput").exists():
@@ -193,9 +177,7 @@ class CommandBuilder:
 
         # Mount host's common games and compatibility tools into the sandboxed Steam directory
         host_steam_path = orig_local / "share/Steam"
-        sandbox_steam_path = (
-            orig_local / "share/Steam"
-        )  # Same path, but it's now a mount point
+        sandbox_steam_path = orig_local / "share/Steam"  # Same path, but it's now a mount point
 
         # Share games
         sandbox_common = Path(sandbox_steam_path) / "steamapps/common"
@@ -203,9 +185,7 @@ class CommandBuilder:
         if host_common.exists():
             for folder in host_common.iterdir():
                 if folder.is_dir():
-                    cmd.extend(
-                        ["--bind", str(folder), str(sandbox_common / folder.name)]
-                    )
+                    cmd.extend(["--bind", str(folder), str(sandbox_common / folder.name)])
 
         # Share compatibilitytools
         host_compat = Path(host_steam_path) / "compatibilitytools.d"
@@ -214,28 +194,20 @@ class CommandBuilder:
             ignore = {"LegacyRuntime"}
             for folder in host_compat.iterdir():
                 if folder.is_dir() and folder.name not in ignore:
-                    cmd.extend(
-                        ["--bind", str(folder), str(sandbox_compat / folder.name)]
-                    )
+                    cmd.extend(["--bind", str(folder), str(sandbox_compat / folder.name)])
         # --- End Home Directory Isolation ---
 
         # Ensure custom ENV variables reach Steam inside the sandbox
         try:
             extra_env = (
-                self.profile.get_env_for_instance(instance_idx)
-                if hasattr(self.profile, "get_env_for_instance")
-                else {}
+                self.profile.get_env_for_instance(instance_idx) if hasattr(self.profile, "get_env_for_instance") else {}
             )
             for k, v in (extra_env or {}).items():
                 if v is None:
                     v = ""
                 cmd.extend(["--setenv", str(k), str(v)])
             if extra_env:
-                self.logger.info(
-                    f"Instance {self.instance_num}: Added {len(extra_env)} --setenv entries to bwrap."
-                )
+                self.logger.info(f"Instance {self.instance_num}: Added {len(extra_env)} --setenv entries to bwrap.")
         except Exception as e:
-            self.logger.error(
-                f"Instance {self.instance_num}: Failed to add --setenv entries: {e}"
-            )
+            self.logger.error(f"Instance {self.instance_num}: Failed to add --setenv entries: {e}")
         return cmd

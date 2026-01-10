@@ -35,9 +35,7 @@ class DeviceManager:
                  if an error occurs.
         """
         try:
-            result = subprocess.run(
-                command, shell=True, capture_output=True, text=True, check=True
-            )
+            result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
             return result.stdout.strip()
         except FileNotFoundError:
             logging.error(f"Command not found: {command.split()[0]}")
@@ -63,9 +61,7 @@ class DeviceManager:
         name_part = re.sub(r"-event-(kbd|mouse|joystick)", "", name_part)
         name_part = re.sub(r"-if\d+", "", name_part)
         name_part = name_part.replace("usb-", "").replace("_", " ")
-        name_part = " ".join(
-            [word.capitalize() for word in name_part.split(" ")]
-        ).strip()
+        name_part = " ".join([word.capitalize() for word in name_part.split(" ")]).strip()
         return name_part
 
     def get_input_devices(self) -> Dict[str, List[Dict[str, str]]]:
@@ -107,15 +103,11 @@ class DeviceManager:
                     elif "event-kbd" in device_name_id_raw:
                         detected_devices["keyboard"].append(device)
             except (IndexError, AttributeError) as e:
-                logging.warning(
-                    f"Could not parse input device line: '{line}'. Error: {e}"
-                )
+                logging.warning(f"Could not parse input device line: '{line}'. Error: {e}")
                 continue
 
         for dev_type in detected_devices:
-            detected_devices[dev_type] = sorted(
-                detected_devices[dev_type], key=lambda x: x["name"]
-            )
+            detected_devices[dev_type] = sorted(detected_devices[dev_type], key=lambda x: x["name"])
         return detected_devices
 
     def get_audio_devices(self) -> List[Dict[str, str]]:
@@ -153,9 +145,7 @@ class DeviceManager:
                 elif "Name:" in line:
                     name = line.split(":", 1)[1].strip()
             except (IndexError, AttributeError) as e:
-                logging.warning(
-                    f"Could not parse audio device line: '{line}'. Error: {e}"
-                )
+                logging.warning(f"Could not parse audio device line: '{line}'. Error: {e}")
                 continue
 
         if name:
@@ -177,9 +167,7 @@ class DeviceManager:
             )
         return monitors
 
-    def get_instance_dimensions(
-        self, profile: Profile, instance_num: int
-    ) -> Tuple[Optional[int], Optional[int]]:
+    def get_instance_dimensions(self, profile: Profile, instance_num: int) -> Tuple[Optional[int], Optional[int]]:
         """Calculates instance dimensions, accounting for splitscreen.
         For groups of up to 4 instances, the logic is repeated for each group."""
 

@@ -30,11 +30,7 @@ class KdeManager:
             script_name = "kwin_gamescope.js"
         else:
             orientation = profile.splitscreen.orientation
-            script_name = (
-                "kwin_gamescope_vertical.js"
-                if orientation == "vertical"
-                else "kwin_gamescope_horizontal.js"
-            )
+            script_name = "kwin_gamescope_vertical.js" if orientation == "vertical" else "kwin_gamescope_horizontal.js"
 
         script_path = Path(__file__).parent.parent.parent / "res" / "kwin" / script_name
 
@@ -50,15 +46,11 @@ class KdeManager:
                 script_content = script_path.read_text()
 
                 # Create a temporary file on the host
-                tmp_creator = Utils.run_host_command(
-                    ["mktemp"], capture_output=True, text=True, check=True
-                )
+                tmp_creator = Utils.run_host_command(["mktemp"], capture_output=True, text=True, check=True)
                 tmp_path = tmp_creator.stdout.strip()
 
                 # Write the script content to the temporary file
-                Utils.run_host_command(
-                    ["tee", tmp_path], input=script_content, text=True, check=True
-                )
+                Utils.run_host_command(["tee", tmp_path], input=script_content, text=True, check=True)
 
                 # Load the script using qdbus
                 command = [
@@ -68,9 +60,7 @@ class KdeManager:
                     "loadScript",
                     tmp_path,
                 ]
-                result = Utils.run_host_command(
-                    command, capture_output=True, text=True, check=True
-                )
+                result = Utils.run_host_command(command, capture_output=True, text=True, check=True)
                 self.kwin_script_id = result.stdout.strip()
 
                 # Start the script
@@ -92,9 +82,7 @@ class KdeManager:
                 self.logger.info("Attempting to explicitly start the script...")
                 kwin_proxy.start()
 
-            self.logger.info(
-                f"KWin script loaded and started with ID: {self.kwin_script_id}."
-            )
+            self.logger.info(f"KWin script loaded and started with ID: {self.kwin_script_id}.")
 
         except Exception as e:
             self.logger.error(f"Failed to load KWin script: {e}")
@@ -109,9 +97,7 @@ class KdeManager:
 
         try:
             if Utils.is_flatpak():
-                self.logger.info(
-                    f"Unloading KWin script with ID: {self.kwin_script_id} via flatpak-spawn..."
-                )
+                self.logger.info(f"Unloading KWin script with ID: {self.kwin_script_id} via flatpak-spawn...")
                 command = [
                     self.qdbus_command,
                     "org.kde.KWin",
@@ -123,9 +109,7 @@ class KdeManager:
             else:
                 bus = pydbus.SessionBus()
                 kwin_proxy = bus.get("org.kde.KWin", "/Scripting")
-                self.logger.info(
-                    f"Unloading KWin script with ID: {self.kwin_script_id}..."
-                )
+                self.logger.info(f"Unloading KWin script with ID: {self.kwin_script_id}...")
                 kwin_proxy.unloadScript(str(self.kwin_script_id))
 
             self.logger.info("KWin script unloaded successfully.")
@@ -167,13 +151,9 @@ class KdeManager:
                 script,
             ]
             if Utils.is_flatpak():
-                result = Utils.run_host_command(
-                    command, capture_output=True, text=True, check=True
-                )
+                result = Utils.run_host_command(command, capture_output=True, text=True, check=True)
             else:
-                result = subprocess.run(
-                    command, capture_output=True, text=True, check=True
-                )
+                result = subprocess.run(command, capture_output=True, text=True, check=True)
             return result.stdout.strip()
         except subprocess.CalledProcessError as e:
             self.logger.error(f"Error executing qdbus script: {e}")
@@ -220,11 +200,7 @@ class KdeManager:
 
     def restore_panel_states(self):
         """Restore the visibility state of all panels to their original state."""
-        if (
-            not self.is_kde_desktop()
-            or not self.qdbus_command
-            or not self.original_panel_states
-        ):
+        if not self.is_kde_desktop() or not self.qdbus_command or not self.original_panel_states:
             return
 
         for i, state in self.original_panel_states.items():

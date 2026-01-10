@@ -23,17 +23,9 @@ class Config:
     SCRIPT_DIR: Path = _get_script_dir()
     APP_DIR: Path = Path(__file__).parent.parent.parent
 
-    LOCAL_DIR: Path = (
-        Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share")) / APP_NAME
-    )
-    CONFIG_DIR: Path = (
-        Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / APP_NAME
-    )
-    LOG_DIR: Path = (
-        Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache"))
-        / APP_NAME
-        / "logs"
-    )
+    LOCAL_DIR: Path = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share")) / APP_NAME
+    CONFIG_DIR: Path = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / APP_NAME
+    LOG_DIR: Path = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / APP_NAME / "logs"
 
     @staticmethod
     def get_profile_path() -> Path:
@@ -44,5 +36,3 @@ class Config:
     def get_steam_home_path(instance_num: int) -> Path:
         """Returns the isolated Steam home path for a given instance."""
         return Config.LOCAL_DIR / f"home_{instance_num + 1}"
-
-    # `migrate_legacy_paths` removed — legacy migration is no longer performed.

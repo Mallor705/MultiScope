@@ -57,9 +57,7 @@ class Profile(BaseModel):
         default_factory=lambda: [PlayerInstanceConfig(), PlayerInstanceConfig()],
         alias="PLAYERS",
     )
-    selected_players: Optional[List[int]] = Field(
-        default=None, alias="selected_players"
-    )
+    selected_players: Optional[List[int]] = Field(default=None, alias="selected_players")
 
     @classmethod
     def load(cls) -> "Profile":

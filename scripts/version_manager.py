@@ -40,9 +40,7 @@ def update_version_in_file(file_path, old_version, new_version):
 
     # Update version badge in README
     if "README" in str(file_path):
-        updated_content = re.sub(
-            r"Version-[0-9]+\.[0-9]+\.[0-9]+", f"Version-{new_version}", updated_content
-        )
+        updated_content = re.sub(r"Version-[0-9]+\.[0-9]+\.[0-9]+", f"Version-{new_version}", updated_content)
 
     if content != updated_content:
         with open(file_path, "w", encoding="utf-8") as f:

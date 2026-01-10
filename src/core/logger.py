@@ -48,9 +48,7 @@ class Logger:
         if self.logger.hasHandlers() or self._handlers_setup:
             return
 
-        formatter = logging.Formatter(
-            "%(asctime)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
-        )
+        formatter = logging.Formatter("%(asctime)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 
         # Console handler to stderr
         console_handler = logging.StreamHandler(sys.stderr)

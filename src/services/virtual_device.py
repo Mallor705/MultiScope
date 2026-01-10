@@ -26,24 +26,16 @@ class VirtualDeviceService:
                 e.EV_ABS: [
                     (
                         e.ABS_X,
-                        AbsInfo(
-                            value=0, min=-32768, max=32767, fuzz=0, flat=0, resolution=0
-                        ),
+                        AbsInfo(value=0, min=-32768, max=32767, fuzz=0, flat=0, resolution=0),
                     ),
                     (
                         e.ABS_Y,
-                        AbsInfo(
-                            value=0, min=-32768, max=32767, fuzz=0, flat=0, resolution=0
-                        ),
+                        AbsInfo(value=0, min=-32768, max=32767, fuzz=0, flat=0, resolution=0),
                     ),
                 ],
             }
-            self._ui = UInput(
-                capabilities, name=device_name, vendor=0x1234, product=0x5678
-            )
-            self._logger.info(
-                "Virtual device object created. Searching for its event node..."
-            )
+            self._ui = UInput(capabilities, name=device_name, vendor=0x1234, product=0x5678)
+            self._logger.info("Virtual device object created. Searching for its event node...")
 
             # Robustly find the device node
             start_time = time.time()
@@ -59,9 +51,7 @@ class VirtualDeviceService:
                         return device.path
                 time.sleep(0.1)
 
-            raise VirtualDeviceError(
-                "Virtual joystick created but its event node could not be found."
-            )
+            raise VirtualDeviceError("Virtual joystick created but its event node could not be found.")
 
         except Exception as ex:
             self._logger.error(f"Failed to create virtual joystick: {ex}")
