@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   pull_request:
-    branches: [main, master, build/workflow]
+    branches: [main, beta, dev]
   push:
-    branches: [main, master, build/workflow]
+    branches: [main, beta, dev]
   workflow_dispatch:
     inputs:
       version:

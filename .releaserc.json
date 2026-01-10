@@ -2,19 +2,18 @@
   "branches": [
     {
       "name": "main",
-      "prerelease": false
-    },
-    {
-      "name": "build/workflow",
-      "prerelease": false
+      "prerelease": false,
+      "draft": true
     },
     {
       "name": "beta",
-      "prerelease": true
+      "prerelease": true,
+      "draft": true
     },
     {
       "name": "dev",
-      "prerelease": true
+      "prerelease": true,
+      "draft": true
     }
   ],
   "plugins": [
@@ -62,8 +61,7 @@
           "*.flatpak"
         ],
         "releasedLabels": ["Status: Released"],
-        "releasedIssues": true,
-        "draft": true
+        "releasedIssues": true
       }
     ]
   ],
